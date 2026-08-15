@@ -1,0 +1,8 @@
+# Netlify reads this from inside the published directory.
+#
+# netlify.toml lives at the repo root, which a direct file upload never sees - so these headers
+# are declared here as well to survive both deploy paths (Git integration and API upload).
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: SAMEORIGIN
