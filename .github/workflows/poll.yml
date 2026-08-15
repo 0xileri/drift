@@ -1,0 +1,67 @@
+name: poll
+
+# Hourly divergence check. Runs at :10 past, a little after the providers publish the closed
+# hourly bucket. GitHub's scheduled runs are best-effort and can be delayed under load - that is
+# harmless here, because each run rebuilds history from the provider APIs rather than depending
+# on the previous run having happened on time.
+on:
+  schedule:
+    - cron: "10 * * * *"
+  workflow_dispatch: # lets you trigger a run by hand from the Actions tab
+
+# Needed to commit the feed back to the repo.
+permissions:
+  contents: write
+
+# Never let two runs overlap: both would write data/feed.json and race on the push.
+# cancel-in-progress stays false so an in-flight narration is allowed to finish.
+concurrency:
+  group: poll
+  cancel-in-progress: false
+
+jobs:
+  poll:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - run: npm ci
+
+      # Rebuilds ~30 days of joined history from LunarCrush + GeckoTerminal. Deliberately not
+      # cached: the providers are the source of truth, and a stale cache would silently feed the
+      # engine an outdated baseline.
+      - name: Rebuild history
+        env:
+          LUNARCRUSH_API_KEY: ${{ secrets.LUNARCRUSH_API_KEY }}
+        run: npm run backfill
+
+      # Scores the newest bucket and narrates it only if it crosses the threshold. Idempotent:
+      # an event already in the feed is not narrated again, so a re-run costs nothing.
+      - name: Evaluate and narrate
+        env:
+          LUNARCRUSH_API_KEY: ${{ secrets.LUNARCRUSH_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          BASE_RPC_URL: ${{ secrets.BASE_RPC_URL || 'https://mainnet.base.org' }}
+        run: npm run evaluate
+
+      - name: Commit feed if changed
+        run: |
+          git config user.name "drift-agent"
+          git config user.email "actions@github.com"
+          git add data/feed.json
+          if git diff --cached --quiet; then
+            echo "No new divergence events this hour."
+            exit 0
+          fi
+          COUNT=$(node -e "console.log(JSON.parse(require('fs').readFileSync('data/feed.json','utf8')).length)")
+          git commit -m "feed: divergence events through $(date -u '+%Y-%m-%d %H:%M') UTC (${COUNT} total)"
+          # Another run may have pushed since checkout; rebase rather than force.
+          git pull --rebase --autostash origin main
+          git push

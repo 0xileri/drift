@@ -1,8 +1,13 @@
 node_modules/
 dist/
 .env
+
+# Rebuilt from provider APIs on every run, so there's nothing to preserve here.
 data/history/
-data/feed.json
+
+# NOTE: data/feed.json is deliberately NOT ignored. The scheduled workflow commits it, which
+# makes the agent's output a public, timestamped, append-only record rather than a local file
+# nobody can check.
 
 # Per-machine tool settings, not project config
 .claude/settings.local.json

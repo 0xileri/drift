@@ -15,6 +15,7 @@
     "dedupe": "tsx scripts/dedupe-history.ts",
     "poll": "tsx src/runner.ts",
     "schedule": "tsx src/scheduler.ts",
+    "evaluate": "tsx src/evaluate.ts",
     "watch": "tsx watch src/runner.ts",
     "typecheck": "tsc --noEmit"
   },

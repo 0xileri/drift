@@ -1,30 +1,15 @@
-﻿import { mkdir, readFile, writeFile } from "node:fs/promises";
-import { fileURLToPath } from "node:url";
+﻿import { fileURLToPath } from "node:url";
 import { resolve } from "node:path";
-import { FEED_PATH, watchlist } from "./config.js";
+import { watchlist } from "./config.js";
 import { fetchOnchainSnapshot } from "./sources/dexscreener.js";
 import { fetchSocialSnapshot } from "./sources/lunarcrush.js";
 import { fetchRpcCrossCheck } from "./sources/baseRpc.js";
 import { fetchLatestBar } from "./sources/geckoterminal.js";
 import { appendSnapshot, readHistory } from "./engine/history.js";
 import { computeDivergence } from "./engine/divergence.js";
+import { appendToFeed } from "./engine/feed.js";
 import { narrateDivergence } from "./narration/narrate.js";
-import type { FeedEvent, PollSnapshot } from "./types.js";
-
-async function appendToFeed(event: FeedEvent): Promise<void> {
-  const path = fileURLToPath(FEED_PATH);
-  await mkdir(fileURLToPath(new URL(".", FEED_PATH)), { recursive: true });
-
-  let feed: FeedEvent[] = [];
-  try {
-    feed = JSON.parse(await readFile(path, "utf8"));
-  } catch (err) {
-    if ((err as NodeJS.ErrnoException).code !== "ENOENT") throw err;
-  }
-
-  feed.push(event);
-  await writeFile(path, JSON.stringify(feed, null, 2), "utf8");
-}
+import type { PollSnapshot } from "./types.js";
 
 async function pollToken(watched: (typeof watchlist)[number]): Promise<void> {
   const symbol = watched.symbol;

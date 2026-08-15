@@ -136,6 +136,25 @@ Open:
 - [ ] Minimal frontend/feed viewer
 - [ ] Website, X profile, GitHub repo, Discord/Telegram link for submission
 
+## continuous operation
+
+Two ways to keep it polling:
+
+**GitHub Actions (recommended)** — `.github/workflows/poll.yml` runs hourly and commits any new
+divergence events to `data/feed.json`, so the feed becomes a public, timestamped, append-only
+record rather than a local file nobody can verify. Requires two repo secrets:
+
+```bash
+gh secret set LUNARCRUSH_API_KEY
+gh secret set ANTHROPIC_API_KEY
+```
+
+Each run rebuilds history from the provider APIs rather than caching it, so a delayed or missed
+run is self-healing — there is no state to fall behind.
+
+**Local scheduler** — `npm run schedule` polls at `:05` past each hour and writes to local
+history. Only runs while the machine is on; use it for development, not for the demo window.
+
 ## operational notes
 
 **Poll on the hour.** Both data sources report the latest *closed* hourly bucket, so the runner
