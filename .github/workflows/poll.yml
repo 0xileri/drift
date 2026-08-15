@@ -23,6 +23,10 @@ jobs:
   poll:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    # Explicitly patient: this job has twenty minutes, so waiting out a tripped rate
+    # limiter is the right move. The deployed functions bake in the opposite setting.
+    env:
+      HTTP_FAST_FAIL: "0"
 
     steps:
       - uses: actions/checkout@v4

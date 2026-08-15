@@ -1,10 +1,20 @@
-# Static single-file site: nothing to build, just publish the directory.
+# Static single-file site plus two serverless functions.
 [build]
   publish = "site"
   command = ""
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
 
 [[headers]]
   for = "/*"
   [headers.values]
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
+
+# The API responses carry their own cache-control; don't let the static rule above shadow it.
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"

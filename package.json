@@ -17,7 +17,9 @@
     "schedule": "tsx src/scheduler.ts",
     "evaluate": "tsx src/evaluate.ts",
     "watch": "tsx watch src/runner.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "try": "tsx scripts/try-lookup.ts",
+    "test:fn": "tsx scripts/test-functions.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.32.1",
@@ -25,7 +27,11 @@
     "viem": "^2.21.0"
   },
   "devDependencies": {
+    "@netlify/functions": "^5.3.0",
+    "@types/adm-zip": "^0.5.8",
     "@types/node": "^22.7.0",
+    "adm-zip": "^0.6.0",
+    "esbuild": "^0.28.2",
     "tsx": "^4.19.0",
     "typescript": "^5.6.0"
   }

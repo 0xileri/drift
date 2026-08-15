@@ -1,0 +1,8 @@
+# Maps the pretty API paths onto the function endpoints.
+#
+# The functions also declare `config.path`, which Netlify honours when it builds from Git. This
+# file is the fallback for deploys that upload pre-bundled functions, where that config is not
+# read - without it the endpoints exist but only under /.netlify/functions/*, and the site's
+# fetch calls 404 with no obvious cause.
+/api/analyze  /.netlify/functions/analyze  200
+/api/narrate  /.netlify/functions/narrate  200

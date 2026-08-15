@@ -44,6 +44,15 @@ async function walk(dir) {
   return out;
 }
 
+// Functions travel separately from static assets: their own digest map, sha256 rather than sha1,
+// and a zip body per function. Absent (not bundled) simply means a static-only deploy.
+let functions = {};
+try {
+  functions = JSON.parse(await readFile(".netlify-build/manifest.json", "utf8"));
+} catch {
+  console.log("No function bundle found - deploying static files only.");
+}
+
 const paths = await walk(DIR);
 const files = new Map();
 
@@ -59,10 +68,23 @@ for (const [web, f] of files) console.log(`  ${web}  ${f.buf.length} bytes`);
 
 const digest = Object.fromEntries([...files].map(([web, f]) => [web, f.sha]));
 
+const fnDigest = Object.fromEntries(
+  Object.entries(functions).map(([name, f]) => [name, f.sha256])
+);
+
 const deploy = await api(`/sites/${SITE_ID}/deploys`, {
   method: "POST",
   headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ files: digest, draft: false }),
+  body: JSON.stringify({
+    files: digest,
+    functions: fnDigest,
+    // Netlify needs to be told these are ES modules, or it loads them as CommonJS and every
+    // handler fails at import time with "Cannot use import statement outside a module".
+    functions_config: Object.fromEntries(
+      Object.keys(functions).map((name) => [name, { node_bundler: "esbuild" }])
+    ),
+    draft: false,
+  }),
 });
 
 console.log(`\nDeploy ${deploy.id} created; ${deploy.required.length} file(s) need upload.`);
@@ -76,6 +98,21 @@ for (const sha of deploy.required) {
     method: "PUT",
     headers: { "Content-Type": "application/octet-stream" },
     body: f.buf,
+  });
+}
+
+const requiredFns = deploy.required_functions ?? [];
+if (requiredFns.length) console.log(`${requiredFns.length} function(s) need upload.`);
+
+for (const sha of requiredFns) {
+  const entry = Object.entries(functions).find(([, f]) => f.sha256 === sha);
+  if (!entry) continue;
+  const [name, f] = entry;
+  console.log(`  uploading function ${name}`);
+  await api(`/deploys/${deploy.id}/functions/${name}?runtime=js`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/octet-stream" },
+    body: await readFile(f.path),
   });
 }
 

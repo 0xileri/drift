@@ -35,6 +35,17 @@ interface TimeSeriesResponse {
  */
 const MIN_INTERVAL_MS = Number(process.env.LUNARCRUSH_MIN_INTERVAL_MS ?? 7000);
 
+/**
+ * Whether to wait out a rate limit or give up immediately.
+ *
+ * A batch job has twenty minutes and should absolutely wait - backing off hard is the only thing
+ * that clears a tripped limiter. An interactive request has ten seconds total, so a 20s backoff
+ * cannot help it; the request is already dead by the time the retry fires. Fail-fast lets the
+ * caller return "busy, try again" while the response still means something.
+ */
+const FAST_FAIL = process.env.HTTP_FAST_FAIL === "1";
+const RETRY_ATTEMPTS = FAST_FAIL ? 1 : 4;
+
 let lastRequestAt = 0;
 /** Serialises requests so concurrent callers can't bypass the spacing. */
 let queue: Promise<unknown> = Promise.resolve();
@@ -47,7 +58,7 @@ let queue: Promise<unknown> = Promise.resolve();
  * Throttled, retrying fetch. Backs off hard on connection drops because those indicate the rate
  * limiter is already unhappy — retrying fast makes it worse.
  */
-async function throttledFetch(url: string | URL, attempts = 4): Promise<Response> {
+async function throttledFetch(url: string | URL, attempts = RETRY_ATTEMPTS): Promise<Response> {
   const run = async (): Promise<Response> => {
     for (let attempt = 0; attempt < attempts; attempt++) {
       const since = Date.now() - lastRequestAt;

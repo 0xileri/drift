@@ -11,3 +11,5 @@ data/history/
 
 # Per-machine tool settings, not project config
 .claude/settings.local.json
+
+.netlify-build/

@@ -425,6 +425,122 @@
   .pill.yes { color: var(--onchain); }
   .pill.no { color: var(--muted); }
 
+  /* ---- Lookup ------------------------------------------------------------ */
+  .lookup-form { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 1.4rem 0 0.9rem; }
+
+  .lookup-form input {
+    font-family: var(--mono);
+    font-size: 1rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.65rem 0.9rem;
+    min-width: 0;
+    flex: 1 1 14rem;
+    background: var(--surface);
+    color: var(--ink);
+    border: 1px solid var(--rule);
+    border-radius: 0;
+  }
+  .lookup-form input:focus-visible { border-color: var(--social); }
+
+  .lookup-form button {
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    letter-spacing: 0.05em;
+    padding: 0.65rem 1.3rem;
+    border: 1px solid var(--ink);
+    background: var(--ink);
+    color: var(--ground);
+    cursor: pointer;
+  }
+  .lookup-form button:disabled { opacity: 0.45; cursor: progress; }
+
+  .examples {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--muted);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    align-items: baseline;
+  }
+  .examples button {
+    font: inherit;
+    color: var(--social);
+    background: none;
+    border: 0;
+    border-bottom: 1px solid var(--rule);
+    padding: 0 0 1px;
+    cursor: pointer;
+  }
+  .examples button:hover { border-color: var(--social); }
+
+  .result { margin-top: 1.6rem; border: 1px solid var(--rule); background: var(--surface); }
+  .result[hidden] { display: none; }
+
+  .r-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.6rem;
+    padding: 1rem 1.2rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .r-sym { font-family: var(--mono); font-weight: 700; font-size: 1.15rem; }
+  .r-pool { font-family: var(--mono); font-size: 0.7rem; color: var(--muted); }
+  .r-score {
+    margin-left: auto;
+    font-family: var(--mono);
+    font-variant-numeric: tabular-nums;
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+  .r-verdict {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    padding: 0.18em 0.55em;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+  }
+
+  .r-body { padding: 1.1rem 1.2rem; }
+  .r-spark { width: 100%; height: 90px; display: block; margin-bottom: 0.9rem; }
+  .r-narr { font-size: 0.93rem; margin: 0 0 0.9rem; }
+  .r-narr.pending { color: var(--muted); font-style: italic; }
+
+  .r-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    color: var(--muted);
+  }
+  .r-meta b { color: var(--ink-soft); font-variant-numeric: tabular-nums; font-weight: 600; }
+
+  /* The pool was matched by ticker, which proves nothing about token identity - so the caveat
+     travels with every result rather than living in small print elsewhere. */
+  .r-warn {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    line-height: 1.55;
+    color: var(--muted);
+    border-top: 1px dotted var(--rule);
+    padding: 0.8rem 1.2rem;
+  }
+  .r-warn a { color: var(--social); }
+
+  .lookup-err {
+    border-left: 2px solid var(--alert);
+    background: var(--surface);
+    padding: 0.85rem 1rem;
+    font-size: 0.9rem;
+    margin-top: 1.2rem;
+  }
+  .lookup-err[hidden] { display: none; }
+
   /* ---- Event feed -------------------------------------------------------- */
   .feed-sum { font-size: 0.9rem; margin-bottom: 1.4rem; }
   .empty { font-size: 0.95rem; color: var(--muted); }
@@ -535,6 +651,14 @@
     footer { gap: 1rem; }
   }
 
+  .visually-hidden {
+    position: absolute;
+    width: 1px; height: 1px;
+    margin: -1px; padding: 0; border: 0;
+    clip-path: inset(50%);
+    overflow: hidden; white-space: nowrap;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     * { animation: none !important; transition: none !important; }
   }
@@ -616,6 +740,53 @@
         <div class="stat"><span class="v">30</span><span class="k">days history</span></div>
         <div class="stat"><span class="v">5</span><span class="k">tokens watched</span></div>
         <div class="stat"><span class="v">6.0</span><span class="k">alert threshold</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Deliberately unnumbered: the indices below track the explanation in order, and the tool
+       is not a step in that argument. -->
+  <section id="try">
+    <div class="rail"><b>Try it</b>Any Base token</div>
+    <div class="body">
+      <h2>Run the agent on a token</h2>
+      <p>
+        Type a ticker and the full pipeline runs live: a week of social history, the same week of
+        pool volume, the divergence engine, then an explanation. Same code that produces the feed
+        below.
+      </p>
+
+      <form class="lookup-form" id="lookupForm">
+        <label for="tickerInput" class="visually-hidden">Token ticker</label>
+        <input id="tickerInput" name="ticker" placeholder="AERO" maxlength="12"
+               autocomplete="off" autocapitalize="characters" spellcheck="false" required />
+        <button type="submit" id="lookupBtn">Analyse</button>
+      </form>
+
+      <div class="examples">
+        <span>Try:</span>
+        <button type="button" data-ex="AERO">AERO</button>
+        <button type="button" data-ex="BRETT">BRETT</button>
+        <button type="button" data-ex="DEGEN">DEGEN</button>
+        <button type="button" data-ex="TOSHI">TOSHI</button>
+      </div>
+
+      <div class="lookup-err" id="lookupErr" hidden></div>
+
+      <div class="result" id="result" hidden>
+        <div class="r-head">
+          <span class="r-sym" id="rSym"></span>
+          <span class="r-pool" id="rPool"></span>
+          <span class="r-verdict" id="rVerdict"></span>
+          <span class="r-score" id="rScore"></span>
+        </div>
+        <div class="r-body">
+          <svg class="r-spark" id="rSpark" viewBox="0 0 600 90" preserveAspectRatio="none"
+               role="img" aria-label="Social and onchain momentum over the past week"></svg>
+          <p class="r-narr pending" id="rNarr"></p>
+          <div class="r-meta" id="rMeta"></div>
+        </div>
+        <p class="r-warn" id="rWarn"></p>
       </div>
     </div>
   </section>
@@ -1126,4 +1297,146 @@
   });
   lbl.textContent = "11.29";
   svg.appendChild(lbl);
+
+  /* ---- On-demand lookup -------------------------------------------------- */
+  (() => {
+    const form = document.getElementById("lookupForm");
+    const input = document.getElementById("tickerInput");
+    const btn = document.getElementById("lookupBtn");
+    const errBox = document.getElementById("lookupErr");
+    const result = document.getElementById("result");
+    const spark = document.getElementById("rSpark");
+
+    const $ = (id) => document.getElementById(id);
+    const fmtInt = (n) => Math.round(n).toLocaleString();
+
+    let inFlight = null;
+
+    function showError(msg) {
+      errBox.textContent = msg;
+      errBox.hidden = false;
+      result.hidden = true;
+    }
+
+    function drawSpark(series) {
+      spark.textContent = "";
+      if (!series || series.length < 2) return;
+
+      const W = 600, H = 90, pad = 6;
+      // Symmetric scale so zero sits on the centre line and the two traces stay comparable.
+      const peak = Math.max(2, ...series.flatMap(([, s, o]) => [Math.abs(s), Math.abs(o)]));
+      const x = (i) => pad + (i / (series.length - 1)) * (W - pad * 2);
+      const y = (v) => H / 2 - (v / peak) * (H / 2 - pad);
+
+      const line = (idx, colour) => {
+        const d = series.map((p, i) => (i ? "L" : "M") + x(i).toFixed(1) + " " + y(p[idx]).toFixed(1)).join(" ");
+        const node = el("path", {
+          d, fill: "none", stroke: colour, "stroke-width": "1.4", "stroke-linejoin": "round",
+        });
+        spark.appendChild(node);
+      };
+
+      spark.appendChild(el("line", {
+        x1: pad, x2: W - pad, y1: H / 2, y2: H / 2, stroke: "var(--rule)", "stroke-width": "1",
+      }));
+      line(2, "var(--onchain)");
+      line(1, "var(--social)");
+    }
+
+    async function lookup(symbol) {
+      if (inFlight) inFlight.abort();
+      const ctrl = new AbortController();
+      inFlight = ctrl;
+
+      btn.disabled = true;
+      btn.textContent = "Analysing…";
+      errBox.hidden = true;
+
+      try {
+        const res = await fetch("/api/analyze?symbol=" + encodeURIComponent(symbol), {
+          signal: ctrl.signal,
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+          showError(data.error || "Lookup failed.");
+          return;
+        }
+
+        const d = data.divergence;
+        const score = d.divergenceScore ?? 0;
+        const positive = score > 0;
+
+        $("rSym").textContent = data.symbol;
+        $("rPool").textContent = data.pool.name + " · $" + fmtInt(data.pool.liquidityUsd) + " liquidity";
+
+        const scoreEl = $("rScore");
+        scoreEl.textContent = (positive ? "+" : "") + score.toFixed(2);
+        scoreEl.style.color = positive ? "var(--social)" : "var(--onchain)";
+
+        const verdict = $("rVerdict");
+        verdict.textContent = d.significant
+          ? (positive ? "social ahead" : "onchain ahead")
+          : "within normal range";
+        verdict.style.color = d.significant ? (positive ? "var(--social)" : "var(--onchain)") : "var(--muted)";
+
+        $("rMeta").innerHTML =
+          "<span>social z <b>" + (d.socialZ ?? 0).toFixed(2) + "</b></span>" +
+          "<span>onchain z <b>" + (d.onchainZ ?? 0).toFixed(2) + "</b></span>" +
+          "<span>hours joined <b>" + data.hoursJoined + "</b></span>" +
+          "<span>bucket <b>" + new Date(data.bucketMs).toISOString().slice(0, 16).replace("T", " ") + " UTC</b></span>";
+
+        $("rWarn").innerHTML =
+          "Pool matched by ticker and ranked by liquidity — that does not prove token identity. " +
+          'Verify on <a href="https://basescan.org/address/' + data.pool.address + '" rel="noopener">BaseScan</a>: <code>' +
+          data.pool.address + "</code>";
+
+        drawSpark(data.series);
+
+        const narr = $("rNarr");
+        narr.textContent = "Writing the explanation…";
+        narr.classList.add("pending");
+        result.hidden = false;
+
+        // Second phase. Scores are already on screen, so a slow or failed narration degrades
+        // the page rather than blocking it.
+        try {
+          const nres = await fetch("/api/narrate", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ token: data.token }),
+            signal: ctrl.signal,
+          });
+          const ndata = await nres.json();
+          narr.textContent = nres.ok
+            ? ndata.narration
+            : "Explanation unavailable (" + (ndata.error || nres.status) + "). The scores above are unaffected.";
+        } catch (e) {
+          if (e.name === "AbortError") return;
+          narr.textContent = "Explanation unavailable. The scores above are unaffected.";
+        }
+        narr.classList.remove("pending");
+      } catch (e) {
+        if (e.name === "AbortError") return;
+        showError("Could not reach the agent. Check your connection and try again.");
+      } finally {
+        if (inFlight === ctrl) inFlight = null;
+        btn.disabled = false;
+        btn.textContent = "Analyse";
+      }
+    }
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const v = input.value.trim();
+      if (v) lookup(v);
+    });
+
+    for (const b of document.querySelectorAll(".examples button")) {
+      b.addEventListener("click", () => {
+        input.value = b.dataset.ex;
+        lookup(b.dataset.ex);
+      });
+    }
+  })();
 </script>

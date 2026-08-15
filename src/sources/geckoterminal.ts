@@ -73,6 +73,69 @@ export async function fetchPoolHistory(poolAddress: string, limit = 1000): Promi
     .sort((a, b) => a.timestampMs - b.timestampMs);
 }
 
+export interface PoolMatch {
+  address: string;
+  name: string;
+  liquidityUsd: number;
+  volume24hUsd: number;
+}
+
+interface SearchResponse {
+  data?: Array<{
+    attributes?: {
+      address?: string;
+      name?: string;
+      reserve_in_usd?: string;
+      volume_usd?: { h24?: string };
+    };
+  }>;
+}
+
+/**
+ * Finds the deepest Base pool whose name matches a ticker.
+ *
+ * IMPORTANT: matching is by symbol, which does NOT establish token identity - anyone can deploy a
+ * token with any ticker. Liquidity is used as the ranking heuristic because an impostor rarely
+ * outweighs the real market, but callers must surface the chosen pool address so a reader can
+ * verify it themselves rather than trusting the match.
+ */
+export async function findTopPool(symbol: string): Promise<PoolMatch | null> {
+  const url = new URL("https://api.geckoterminal.com/api/v2/search/pools");
+  url.searchParams.set("query", symbol);
+  url.searchParams.set("network", "base");
+
+  const res = await throttle(() =>
+    fetchWithRetry(url, { init: { headers: { Accept: "application/json" } } })
+  );
+  if (!res.ok) throw new Error(`GeckoTerminal pool search failed (${res.status}) for ${symbol}`);
+
+  const body = (await res.json()) as SearchResponse;
+  const upper = symbol.toUpperCase();
+
+  const pools = (body.data ?? [])
+    .map((p) => p.attributes)
+    .filter((a): a is NonNullable<typeof a> => Boolean(a?.address && a?.name))
+    // The API returns loose matches ("AERODROME-X / WETH" for "AERO"), so require the ticker to
+    // appear as a whole token in the pair name rather than as a substring of a longer symbol.
+    .filter((a) =>
+      a
+        .name!.split("/")
+        .map((side) => side.trim().split(/\s+/)[0].toUpperCase())
+        .includes(upper)
+    )
+    .sort((a, b) => Number(b.reserve_in_usd ?? 0) - Number(a.reserve_in_usd ?? 0));
+
+  const best = pools[0];
+  if (!best) return null;
+
+  return {
+    address: best.address!,
+    name: best.name!,
+    liquidityUsd: Number(best.reserve_in_usd ?? 0),
+    volume24hUsd: Number(best.volume_usd?.h24 ?? 0),
+  };
+}
+
 /**
  * Most recent CLOSED hourly bar. Skips the in-progress hour, whose volume is still accumulating
  * and would otherwise register as a volume collapse followed by a spike on the next poll.

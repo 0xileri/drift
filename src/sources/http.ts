@@ -83,6 +83,9 @@ export function createThrottle(minIntervalMs: number) {
   };
 }
 
+/** See the note in lunarcrush.ts: patience helps a batch job and cannot help a 10s request. */
+const FAST_FAIL = process.env.HTTP_FAST_FAIL === "1";
+
 export interface RetryOptions {
   attempts?: number;
   /** Base delay; grows linearly with attempt number. */
@@ -98,7 +101,7 @@ export interface RetryOptions {
  * retrying a 401 or a 404 just wastes time and rate limit.
  */
 export async function fetchWithRetry(url: string | URL, opts: RetryOptions = {}): Promise<Response> {
-  const { attempts = 4, backoffMs = 5000, init, onRetry } = opts;
+  const { attempts = FAST_FAIL ? 1 : 4, backoffMs = FAST_FAIL ? 500 : 5000, init, onRetry } = opts;
 
   for (let attempt = 0; attempt < attempts; attempt++) {
     try {
