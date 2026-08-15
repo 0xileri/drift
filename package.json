@@ -1,0 +1,31 @@
+{
+  "name": "drift",
+  "version": "0.1.0",
+  "description": "Divergence tracker agent: reads social momentum (LunarCrush) against onchain momentum (DexScreener + Base RPC) and narrates when they disagree.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "backfill": "tsx src/backfill.ts",
+    "calibrate": "tsx scripts/calibrate.ts",
+    "check:lunarcrush": "tsx scripts/check-lunarcrush.ts",
+    "check:anthropic": "tsx scripts/check-anthropic.ts",
+    "screen": "tsx scripts/screen-tokens.ts",
+    "find:pools": "tsx scripts/find-pools.ts",
+    "depth": "tsx scripts/depth-check.ts",
+    "dedupe": "tsx scripts/dedupe-history.ts",
+    "poll": "tsx src/runner.ts",
+    "schedule": "tsx src/scheduler.ts",
+    "watch": "tsx watch src/runner.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.32.1",
+    "dotenv": "^16.4.5",
+    "viem": "^2.21.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  }
+}
