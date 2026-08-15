@@ -1,34 +1,40 @@
-<title>Drift</title>
+<title>Drift-d</title>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="description" content="An agent that watches when social attention and onchain activity for a Base token disagree, and explains why the gap matters." />
 <link rel="canonical" href="https://drift-divergence.netlify.app/" />
-<meta property="og:title" content="Drift" />
-<meta property="og:description" content="Attention and money move at different speeds. Drift measures the gap." />
+<meta property="og:title" content="Drift-d" />
+<meta property="og:description" content="Attention and money move at different speeds. Drift-d measures the gap." />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://drift-divergence.netlify.app/" />
-<meta name="twitter:title" content="Drift" />
-<meta name="twitter:description" content="Attention and money move at different speeds. Drift measures the gap." />
+<meta name="twitter:title" content="Drift-d" />
+<meta name="twitter:description" content="Attention and money move at different speeds. Drift-d measures the gap." />
 <meta name="twitter:card" content="summary_large_image" />
 
 <style>
   /* ---- Tokens: complete light palette on bare :root ---------------------- */
+  /* Palette taken from the logo: charcoal mark, rust slash, warm paper ground.
+     The rust doubles as the social signal colour - the slash cutting the letterform is the
+     same idea the product measures, so the brand accent and the "attention" axis are one hue. */
   :root {
-    --ground: #eaeeed;
-    --surface: #f6f8f7;
-    --surface-2: #e0e6e5;
-    --ink: #0f1417;
-    --ink-soft: #3d4a4d;
-    --muted: #66787a;
-    --rule: #c9d3d2;
+    --ground: #f3f1ed;
+    --surface: #faf9f6;
+    --surface-2: #e7e4dd;
+    --ink: #23292e;
+    --ink-soft: #4a5259;
+    --muted: #7a8188;
+    --rule: #d5d1c8;
 
-    --social: #a83e0b;
-    --onchain: #0b5f63;
-    --social-wash: rgba(168, 62, 11, 0.13);
-    --onchain-wash: rgba(11, 95, 99, 0.13);
+    --social: #c2521c;
+    --onchain: #0e6a66;
+    --social-wash: rgba(194, 82, 28, 0.14);
+    --onchain-wash: rgba(14, 106, 102, 0.13);
     --alert: #8c2f4a;
 
-    --grid: rgba(15, 20, 23, 0.07);
+    --logo-ink: #2b3238;
+    --logo-rust: #c2521c;
+
+    --grid: rgba(35, 41, 46, 0.07);
 
     --mono: ui-monospace, "SF Mono", SFMono-Regular, "Cascadia Mono", "JetBrains Mono",
       Menlo, Consolas, monospace;
@@ -42,41 +48,47 @@
   /* System-dark (no stamp) - guarded so an explicit light choice still wins. */
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --ground: #0b1011;
-      --surface: #121a1b;
-      --surface-2: #1b2426;
-      --ink: #e3eae9;
-      --ink-soft: #b3c1c1;
-      --muted: #7f9092;
-      --rule: #263234;
+      --ground: #14181a;
+      --surface: #1c2124;
+      --surface-2: #262c30;
+      --ink: #e8e5df;
+      --ink-soft: #bcbdb9;
+      --muted: #8b8f8e;
+      --rule: #2f363a;
 
-      --social: #e8783c;
-      --onchain: #3fb2b6;
-      --social-wash: rgba(232, 120, 60, 0.16);
-      --onchain-wash: rgba(63, 178, 182, 0.16);
+      --social: #e5793d;
+      --onchain: #3fb0a8;
+      --social-wash: rgba(229, 121, 61, 0.16);
+      --onchain-wash: rgba(63, 176, 168, 0.16);
       --alert: #d9698a;
 
-      --grid: rgba(227, 234, 233, 0.08);
+      --logo-ink: #e8e5df;
+      --logo-rust: #e5793d;
+
+      --grid: rgba(232, 229, 223, 0.08);
     }
   }
 
   /* Explicit dark stamp - so the toggle wins in both directions. */
   :root[data-theme="dark"] {
-    --ground: #0b1011;
-    --surface: #121a1b;
-    --surface-2: #1b2426;
-    --ink: #e3eae9;
-    --ink-soft: #b3c1c1;
-    --muted: #7f9092;
-    --rule: #263234;
+    --ground: #14181a;
+    --surface: #1c2124;
+    --surface-2: #262c30;
+    --ink: #e8e5df;
+    --ink-soft: #bcbdb9;
+    --muted: #8b8f8e;
+    --rule: #2f363a;
 
-    --social: #e8783c;
-    --onchain: #3fb2b6;
-    --social-wash: rgba(232, 120, 60, 0.16);
-    --onchain-wash: rgba(63, 178, 182, 0.16);
+    --social: #e5793d;
+    --onchain: #3fb0a8;
+    --social-wash: rgba(229, 121, 61, 0.16);
+    --onchain-wash: rgba(63, 176, 168, 0.16);
     --alert: #d9698a;
 
-    --grid: rgba(227, 234, 233, 0.08);
+    --logo-ink: #e8e5df;
+    --logo-rust: #e5793d;
+
+    --grid: rgba(232, 229, 223, 0.08);
   }
 
   * { box-sizing: border-box; }
@@ -191,8 +203,43 @@
     margin-bottom: 1.6rem;
   }
 
-  .hero h1 { margin-bottom: 1.4rem; }
-  .hero h1 .gap {
+  /* ---- Masthead ---------------------------------------------------------- */
+  .mast {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.9rem, 2.5vw, 1.5rem);
+    margin-bottom: 1.6rem;
+  }
+
+  .mark {
+    width: clamp(56px, 11vw, 92px);
+    height: auto;
+    flex: none;
+    display: block;
+  }
+
+  /* The product name is the largest thing on the page - it is the brand, not the tagline. */
+  h1.name {
+    font-size: clamp(3rem, 11vw, 6rem);
+    line-height: 0.9;
+    letter-spacing: -0.055em;
+    font-weight: 700;
+    margin: 0;
+  }
+  h1.name .suffix { color: var(--social); }
+
+  .tagline {
+    font-family: var(--mono);
+    font-size: clamp(1.15rem, 2.9vw, 1.75rem);
+    line-height: 1.22;
+    letter-spacing: -0.025em;
+    font-weight: 600;
+    color: var(--ink);
+    text-wrap: balance;
+    max-width: 24ch;
+    margin: 0 0 1.3rem;
+  }
+  .tagline .gap {
     color: var(--social);
     /* The word "disagree" carries the thesis; the underline is the gap it names. */
     box-shadow: inset 0 -0.14em 0 var(--social-wash);
@@ -482,8 +529,9 @@
   @media (max-width: 720px) {
     section, footer { grid-template-columns: 1fr; gap: 0; }
     .rail { padding-top: 0; margin-bottom: 1rem; }
-    .rail b { display: inline; }
-    .rail br { display: none; }
+    /* b goes inline to save a line, but the <br> stays: without it the rail's separate
+       facts run together into one unreadable string ("DRIFT-DV0.1BASE NETWORK"). */
+    .rail b { display: inline; margin-right: 0.5rem; }
     footer { gap: 1rem; }
   }
 
@@ -495,12 +543,43 @@
 <div class="wrap">
 
   <section class="hero">
-    <div class="rail"><b>Drift</b>v0.1<br />Base network</div>
+    <!-- The masthead carries the name now, so the rail holds only what it does not repeat. -->
+    <div class="rail"><b>v0.1</b>Base network</div>
     <div class="body">
       <div class="wordmark">Divergence agent</div>
-      <h1>What people say and what money does <span class="gap">disagree</span> more often than you'd think.</h1>
+
+      <div class="mast">
+        <!-- The mark: a "d" cut by a slash. The cut is the divergence the product measures,
+             so the logo and the thesis are the same shape. Inline SVG rather than a raster so
+             it stays crisp at any size and follows the theme. -->
+        <svg class="mark" viewBox="340 175 575 850" role="img" aria-label="Drift-d logo">
+          <mask id="dcut">
+            <rect x="340" y="175" width="575" height="850" fill="#fff" />
+            <!-- counter of the d -->
+            <circle cx="605" cy="645" r="140" fill="#000" />
+            <!-- the channel the slash cuts through the letterform -->
+            <line x1="757" y1="170" x2="500" y2="1040" stroke="#000" stroke-width="52" />
+          </mask>
+          <g mask="url(#dcut)" fill="var(--logo-ink)">
+            <circle cx="605" cy="645" r="250" />
+            <path d="M765 268 L895 200 L895 700 L765 700 Z" />
+          </g>
+          <g stroke="var(--logo-rust)" stroke-width="24" stroke-linecap="butt">
+            <line x1="737" y1="262" x2="667" y2="500" />
+            <line x1="580" y1="792" x2="518" y2="1002" />
+          </g>
+        </svg>
+
+        <h1 class="name">Drift<span class="suffix">-d</span></h1>
+      </div>
+
+      <p class="tagline">
+        What people say and what money does <span class="gap">disagree</span> more often than
+        you'd think.
+      </p>
+
       <p class="lead">
-        Drift watches both signals for a Base token — social attention on one side, onchain
+        Drift-d watches both signals for a Base token — social attention on one side, onchain
         activity on the other — and reports the hours they come apart, with an explanation of
         which kind of gap it is.
       </p>
@@ -553,11 +632,11 @@
       <p>
         Neither number tells you much alone. A social score is a popularity contest; a volume
         chart is a crowd you can't see the face of. The information lives in the
-        <strong>disagreement between them</strong>, and that is the only thing Drift reports.
+        <strong>disagreement between them</strong>, and that is the only thing Drift-d reports.
       </p>
       <p>
         Most research agents take one data source, score it, and have a model narrate the score.
-        Drift does a different job: it reads two independent signals and explains what it means
+        Drift-d does a different job: it reads two independent signals and explains what it means
         when they stop agreeing.
       </p>
     </div>
@@ -664,7 +743,7 @@
     <div class="body">
       <h2>Every figure traces to a real call</h2>
       <p>
-        Drift reads market data through an aggregator, which is fast and reliable but is still
+        Drift-d reads market data through an aggregator, which is fast and reliable but is still
         somebody's summary of the chain. So when an event fires, the agent goes to the source:
         one direct <code>getReserves()</code> call reads the pool contract's live reserves and
         compares them against the reported liquidity.
@@ -952,7 +1031,7 @@
   </section>
 
   <footer>
-    <div class="rail"><b>Drift</b><br />Orion Builder<br />Hackathon 2026</div>
+    <div class="rail"><b>Drift-d</b><br />Orion Builder<br />Hackathon 2026</div>
     <div>
       <div class="links">
         <a href="https://github.com/0xileri/drift">GitHub</a>
@@ -961,7 +1040,7 @@
         <a href="#" aria-disabled="true" title="Not yet set up">Telegram</a>
       </div>
       <p class="fine">
-        Built for the Orion Builder Hackathon on Base. Drift reports measurements, not advice —
+        Built for the Orion Builder Hackathon on Base. Drift-d reports measurements, not advice —
         a divergence is an observation about two data series, and nothing on this page is a
         recommendation to buy or sell anything.
       </p>

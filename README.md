@@ -1,8 +1,10 @@
-# drift
+# Drift-d
 
 An agent that watches when social attention and onchain activity for a token disagree, and explains
 why the gap probably matters. Built for the [Orion Builder Hackathon](https://orionagents.org/hackathon)
 (Base network).
+
+**Live:** https://drift-divergence.netlify.app
 
 ## how it works
 
