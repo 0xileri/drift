@@ -1,0 +1,1027 @@
+{
+  "token": "AERO",
+  "generatedAt": "2026-08-15T01:42:04.248Z",
+  "from": "2026-08-08T00:00:00.000Z",
+  "to": "2026-08-15T00:00:00.000Z",
+  "count": 169,
+  "peak": {
+    "at": "2026-08-10T04:00:00.000Z",
+    "divergence": 11.291
+  },
+  "points": [
+    {
+      "t": 1786147200000,
+      "socialZ": -4.03,
+      "onchainZ": 0.93,
+      "divergence": -4.961
+    },
+    {
+      "t": 1786150800000,
+      "socialZ": 0.158,
+      "onchainZ": 0.069,
+      "divergence": 0.089
+    },
+    {
+      "t": 1786154400000,
+      "socialZ": 0.575,
+      "onchainZ": -2.803,
+      "divergence": 3.378
+    },
+    {
+      "t": 1786158000000,
+      "socialZ": 0.108,
+      "onchainZ": 3.258,
+      "divergence": -3.15
+    },
+    {
+      "t": 1786161600000,
+      "socialZ": -0.644,
+      "onchainZ": -0.215,
+      "divergence": -0.428
+    },
+    {
+      "t": 1786165200000,
+      "socialZ": -0.238,
+      "onchainZ": 0.117,
+      "divergence": -0.355
+    },
+    {
+      "t": 1786168800000,
+      "socialZ": -0.383,
+      "onchainZ": -0.255,
+      "divergence": -0.128
+    },
+    {
+      "t": 1786172400000,
+      "socialZ": -0.934,
+      "onchainZ": 0.655,
+      "divergence": -1.589
+    },
+    {
+      "t": 1786176000000,
+      "socialZ": 1.61,
+      "onchainZ": -1.723,
+      "divergence": 3.333
+    },
+    {
+      "t": 1786179600000,
+      "socialZ": 0.296,
+      "onchainZ": -1.359,
+      "divergence": 1.655
+    },
+    {
+      "t": 1786183200000,
+      "socialZ": -1.551,
+      "onchainZ": 0.293,
+      "divergence": -1.844
+    },
+    {
+      "t": 1786186800000,
+      "socialZ": 1.28,
+      "onchainZ": -0.493,
+      "divergence": 1.773
+    },
+    {
+      "t": 1786190400000,
+      "socialZ": 3.174,
+      "onchainZ": -2.04,
+      "divergence": 5.214
+    },
+    {
+      "t": 1786194000000,
+      "socialZ": 0.062,
+      "onchainZ": 0.911,
+      "divergence": -0.85
+    },
+    {
+      "t": 1786197600000,
+      "socialZ": 4.656,
+      "onchainZ": 0.557,
+      "divergence": 4.099
+    },
+    {
+      "t": 1786201200000,
+      "socialZ": -2.807,
+      "onchainZ": 2.353,
+      "divergence": -5.16
+    },
+    {
+      "t": 1786204800000,
+      "socialZ": 0.696,
+      "onchainZ": -3.074,
+      "divergence": 3.77
+    },
+    {
+      "t": 1786208400000,
+      "socialZ": -2.128,
+      "onchainZ": 0.545,
+      "divergence": -2.673
+    },
+    {
+      "t": 1786212000000,
+      "socialZ": 0.458,
+      "onchainZ": 3.463,
+      "divergence": -3.004
+    },
+    {
+      "t": 1786215600000,
+      "socialZ": -1.873,
+      "onchainZ": -2.324,
+      "divergence": 0.45
+    },
+    {
+      "t": 1786219200000,
+      "socialZ": 0.137,
+      "onchainZ": 2.416,
+      "divergence": -2.278
+    },
+    {
+      "t": 1786222800000,
+      "socialZ": 0.563,
+      "onchainZ": -1.815,
+      "divergence": 2.378
+    },
+    {
+      "t": 1786226400000,
+      "socialZ": 0.013,
+      "onchainZ": 1.899,
+      "divergence": -1.885
+    },
+    {
+      "t": 1786230000000,
+      "socialZ": -0.528,
+      "onchainZ": -1.213,
+      "divergence": 0.686
+    },
+    {
+      "t": 1786233600000,
+      "socialZ": -0.476,
+      "onchainZ": 1.495,
+      "divergence": -1.971
+    },
+    {
+      "t": 1786237200000,
+      "socialZ": 0.123,
+      "onchainZ": 0.19,
+      "divergence": -0.067
+    },
+    {
+      "t": 1786240800000,
+      "socialZ": -0.242,
+      "onchainZ": -1.589,
+      "divergence": 1.346
+    },
+    {
+      "t": 1786244400000,
+      "socialZ": 1.195,
+      "onchainZ": 1.093,
+      "divergence": 0.102
+    },
+    {
+      "t": 1786248000000,
+      "socialZ": 0.29,
+      "onchainZ": -1.5,
+      "divergence": 1.79
+    },
+    {
+      "t": 1786251600000,
+      "socialZ": -0.5,
+      "onchainZ": 1.349,
+      "divergence": -1.85
+    },
+    {
+      "t": 1786255200000,
+      "socialZ": 0.18,
+      "onchainZ": -3.172,
+      "divergence": 3.352
+    },
+    {
+      "t": 1786258800000,
+      "socialZ": 0.743,
+      "onchainZ": 1.966,
+      "divergence": -1.223
+    },
+    {
+      "t": 1786262400000,
+      "socialZ": -0.407,
+      "onchainZ": 1.489,
+      "divergence": -1.896
+    },
+    {
+      "t": 1786266000000,
+      "socialZ": -0.699,
+      "onchainZ": 2.21,
+      "divergence": -2.908
+    },
+    {
+      "t": 1786269600000,
+      "socialZ": 1.661,
+      "onchainZ": -2.116,
+      "divergence": 3.778
+    },
+    {
+      "t": 1786273200000,
+      "socialZ": -0.325,
+      "onchainZ": -3.143,
+      "divergence": 2.819
+    },
+    {
+      "t": 1786276800000,
+      "socialZ": 0.278,
+      "onchainZ": -1.133,
+      "divergence": 1.411
+    },
+    {
+      "t": 1786280400000,
+      "socialZ": 1.052,
+      "onchainZ": 4.722,
+      "divergence": -3.67
+    },
+    {
+      "t": 1786284000000,
+      "socialZ": 1.501,
+      "onchainZ": -0.23,
+      "divergence": 1.73
+    },
+    {
+      "t": 1786287600000,
+      "socialZ": 1.194,
+      "onchainZ": -1.775,
+      "divergence": 2.969
+    },
+    {
+      "t": 1786291200000,
+      "socialZ": 0.381,
+      "onchainZ": 1.229,
+      "divergence": -0.848
+    },
+    {
+      "t": 1786294800000,
+      "socialZ": 1.419,
+      "onchainZ": -0.771,
+      "divergence": 2.19
+    },
+    {
+      "t": 1786298400000,
+      "socialZ": -1.187,
+      "onchainZ": 2.411,
+      "divergence": -3.599
+    },
+    {
+      "t": 1786302000000,
+      "socialZ": -1.55,
+      "onchainZ": -3.094,
+      "divergence": 1.544
+    },
+    {
+      "t": 1786305600000,
+      "socialZ": 1.099,
+      "onchainZ": -1.771,
+      "divergence": 2.871
+    },
+    {
+      "t": 1786309200000,
+      "socialZ": -0.601,
+      "onchainZ": 3.914,
+      "divergence": -4.515
+    },
+    {
+      "t": 1786312800000,
+      "socialZ": 4.379,
+      "onchainZ": 1.28,
+      "divergence": 3.1
+    },
+    {
+      "t": 1786316400000,
+      "socialZ": -2.876,
+      "onchainZ": -0.302,
+      "divergence": -2.575
+    },
+    {
+      "t": 1786320000000,
+      "socialZ": 1.038,
+      "onchainZ": 0.257,
+      "divergence": 0.78
+    },
+    {
+      "t": 1786323600000,
+      "socialZ": -1.425,
+      "onchainZ": -0.605,
+      "divergence": -0.82
+    },
+    {
+      "t": 1786327200000,
+      "socialZ": 0.964,
+      "onchainZ": 0.242,
+      "divergence": 0.723
+    },
+    {
+      "t": 1786330800000,
+      "socialZ": 1.04,
+      "onchainZ": -0.126,
+      "divergence": 1.166
+    },
+    {
+      "t": 1786334400000,
+      "socialZ": 10,
+      "onchainZ": -1.291,
+      "divergence": 11.291
+    },
+    {
+      "t": 1786338000000,
+      "socialZ": -0.749,
+      "onchainZ": 0.336,
+      "divergence": -1.085
+    },
+    {
+      "t": 1786341600000,
+      "socialZ": -8.935,
+      "onchainZ": -2.181,
+      "divergence": -6.754
+    },
+    {
+      "t": 1786345200000,
+      "socialZ": -0.285,
+      "onchainZ": 0.777,
+      "divergence": -1.062
+    },
+    {
+      "t": 1786348800000,
+      "socialZ": 0.464,
+      "onchainZ": 0.789,
+      "divergence": -0.325
+    },
+    {
+      "t": 1786352400000,
+      "socialZ": 0.282,
+      "onchainZ": 1.199,
+      "divergence": -0.917
+    },
+    {
+      "t": 1786356000000,
+      "socialZ": 0.842,
+      "onchainZ": -2.669,
+      "divergence": 3.511
+    },
+    {
+      "t": 1786359600000,
+      "socialZ": 0.745,
+      "onchainZ": 3.976,
+      "divergence": -3.231
+    },
+    {
+      "t": 1786363200000,
+      "socialZ": -0.673,
+      "onchainZ": 0.431,
+      "divergence": -1.104
+    },
+    {
+      "t": 1786366800000,
+      "socialZ": 2.436,
+      "onchainZ": -0.482,
+      "divergence": 2.918
+    },
+    {
+      "t": 1786370400000,
+      "socialZ": -1.916,
+      "onchainZ": -0.694,
+      "divergence": -1.222
+    },
+    {
+      "t": 1786374000000,
+      "socialZ": -0.819,
+      "onchainZ": 0.154,
+      "divergence": -0.973
+    },
+    {
+      "t": 1786377600000,
+      "socialZ": 0.243,
+      "onchainZ": -1.937,
+      "divergence": 2.18
+    },
+    {
+      "t": 1786381200000,
+      "socialZ": 0.328,
+      "onchainZ": -1.755,
+      "divergence": 2.083
+    },
+    {
+      "t": 1786384800000,
+      "socialZ": 0.477,
+      "onchainZ": -1.531,
+      "divergence": 2.008
+    },
+    {
+      "t": 1786388400000,
+      "socialZ": -0.966,
+      "onchainZ": 4.792,
+      "divergence": -5.758
+    },
+    {
+      "t": 1786392000000,
+      "socialZ": -0.986,
+      "onchainZ": -1.445,
+      "divergence": 0.459
+    },
+    {
+      "t": 1786395600000,
+      "socialZ": 1.353,
+      "onchainZ": 1.415,
+      "divergence": -0.061
+    },
+    {
+      "t": 1786399200000,
+      "socialZ": 5.558,
+      "onchainZ": -1.904,
+      "divergence": 7.461
+    },
+    {
+      "t": 1786402800000,
+      "socialZ": 0.014,
+      "onchainZ": -0.124,
+      "divergence": 0.138
+    },
+    {
+      "t": 1786406400000,
+      "socialZ": -0.401,
+      "onchainZ": 2.04,
+      "divergence": -2.44
+    },
+    {
+      "t": 1786410000000,
+      "socialZ": 1.88,
+      "onchainZ": -0.124,
+      "divergence": 2.003
+    },
+    {
+      "t": 1786413600000,
+      "socialZ": 0.144,
+      "onchainZ": -1.537,
+      "divergence": 1.681
+    },
+    {
+      "t": 1786417200000,
+      "socialZ": 0.198,
+      "onchainZ": -3.476,
+      "divergence": 3.674
+    },
+    {
+      "t": 1786420800000,
+      "socialZ": 0.287,
+      "onchainZ": 2.632,
+      "divergence": -2.345
+    },
+    {
+      "t": 1786424400000,
+      "socialZ": 0.032,
+      "onchainZ": 1.974,
+      "divergence": -1.942
+    },
+    {
+      "t": 1786428000000,
+      "socialZ": -2.541,
+      "onchainZ": -3.269,
+      "divergence": 0.728
+    },
+    {
+      "t": 1786431600000,
+      "socialZ": -0.2,
+      "onchainZ": 2.869,
+      "divergence": -3.069
+    },
+    {
+      "t": 1786435200000,
+      "socialZ": 0.017,
+      "onchainZ": -0.511,
+      "divergence": 0.528
+    },
+    {
+      "t": 1786438800000,
+      "socialZ": 0.622,
+      "onchainZ": 1.09,
+      "divergence": -0.468
+    },
+    {
+      "t": 1786442400000,
+      "socialZ": 0.802,
+      "onchainZ": 1.258,
+      "divergence": -0.456
+    },
+    {
+      "t": 1786446000000,
+      "socialZ": 1.226,
+      "onchainZ": 0.109,
+      "divergence": 1.117
+    },
+    {
+      "t": 1786449600000,
+      "socialZ": 5.13,
+      "onchainZ": -1.017,
+      "divergence": 6.148
+    },
+    {
+      "t": 1786453200000,
+      "socialZ": -1.193,
+      "onchainZ": 0.419,
+      "divergence": -1.611
+    },
+    {
+      "t": 1786456800000,
+      "socialZ": 0.149,
+      "onchainZ": 0.851,
+      "divergence": -0.702
+    },
+    {
+      "t": 1786460400000,
+      "socialZ": -2.797,
+      "onchainZ": -0.363,
+      "divergence": -2.434
+    },
+    {
+      "t": 1786464000000,
+      "socialZ": 1.601,
+      "onchainZ": -1.305,
+      "divergence": 2.905
+    },
+    {
+      "t": 1786467600000,
+      "socialZ": -1.809,
+      "onchainZ": -0.272,
+      "divergence": -1.538
+    },
+    {
+      "t": 1786471200000,
+      "socialZ": 0.895,
+      "onchainZ": 0.448,
+      "divergence": 0.447
+    },
+    {
+      "t": 1786474800000,
+      "socialZ": -0.977,
+      "onchainZ": 1.014,
+      "divergence": -1.992
+    },
+    {
+      "t": 1786478400000,
+      "socialZ": -0.252,
+      "onchainZ": -0.883,
+      "divergence": 0.631
+    },
+    {
+      "t": 1786482000000,
+      "socialZ": -0.368,
+      "onchainZ": -0.51,
+      "divergence": 0.142
+    },
+    {
+      "t": 1786485600000,
+      "socialZ": 0.288,
+      "onchainZ": 1.183,
+      "divergence": -0.895
+    },
+    {
+      "t": 1786489200000,
+      "socialZ": 0.709,
+      "onchainZ": -4.464,
+      "divergence": 5.173
+    },
+    {
+      "t": 1786492800000,
+      "socialZ": -2.504,
+      "onchainZ": 2.291,
+      "divergence": -4.796
+    },
+    {
+      "t": 1786496400000,
+      "socialZ": 1.035,
+      "onchainZ": 0.496,
+      "divergence": 0.539
+    },
+    {
+      "t": 1786500000000,
+      "socialZ": 0.291,
+      "onchainZ": 0.119,
+      "divergence": 0.172
+    },
+    {
+      "t": 1786503600000,
+      "socialZ": -0.319,
+      "onchainZ": -0.166,
+      "divergence": -0.153
+    },
+    {
+      "t": 1786507200000,
+      "socialZ": -0.522,
+      "onchainZ": 0.678,
+      "divergence": -1.2
+    },
+    {
+      "t": 1786510800000,
+      "socialZ": -1.447,
+      "onchainZ": -3.187,
+      "divergence": 1.741
+    },
+    {
+      "t": 1786514400000,
+      "socialZ": 7.732,
+      "onchainZ": 4.007,
+      "divergence": 3.725
+    },
+    {
+      "t": 1786518000000,
+      "socialZ": -9.645,
+      "onchainZ": -4.856,
+      "divergence": -4.789
+    },
+    {
+      "t": 1786521600000,
+      "socialZ": 0.212,
+      "onchainZ": 1.231,
+      "divergence": -1.019
+    },
+    {
+      "t": 1786525200000,
+      "socialZ": -0.916,
+      "onchainZ": 4.37,
+      "divergence": -5.286
+    },
+    {
+      "t": 1786528800000,
+      "socialZ": 0.858,
+      "onchainZ": -0.891,
+      "divergence": 1.749
+    },
+    {
+      "t": 1786532400000,
+      "socialZ": -0.125,
+      "onchainZ": -4.804,
+      "divergence": 4.679
+    },
+    {
+      "t": 1786536000000,
+      "socialZ": 0.321,
+      "onchainZ": 6.373,
+      "divergence": -6.052
+    },
+    {
+      "t": 1786539600000,
+      "socialZ": 4.026,
+      "onchainZ": -1.279,
+      "divergence": 5.305
+    },
+    {
+      "t": 1786543200000,
+      "socialZ": 0.479,
+      "onchainZ": 0.904,
+      "divergence": -0.425
+    },
+    {
+      "t": 1786546800000,
+      "socialZ": -0.162,
+      "onchainZ": -0.792,
+      "divergence": 0.63
+    },
+    {
+      "t": 1786550400000,
+      "socialZ": -1.177,
+      "onchainZ": 0.255,
+      "divergence": -1.433
+    },
+    {
+      "t": 1786554000000,
+      "socialZ": -0.438,
+      "onchainZ": -2.962,
+      "divergence": 2.523
+    },
+    {
+      "t": 1786557600000,
+      "socialZ": 0.462,
+      "onchainZ": 2.022,
+      "divergence": -1.56
+    },
+    {
+      "t": 1786561200000,
+      "socialZ": -0.097,
+      "onchainZ": 1.23,
+      "divergence": -1.326
+    },
+    {
+      "t": 1786564800000,
+      "socialZ": -0.071,
+      "onchainZ": -4.019,
+      "divergence": 3.948
+    },
+    {
+      "t": 1786568400000,
+      "socialZ": 0.294,
+      "onchainZ": 4.073,
+      "divergence": -3.779
+    },
+    {
+      "t": 1786572000000,
+      "socialZ": 3.917,
+      "onchainZ": -3.044,
+      "divergence": 6.961
+    },
+    {
+      "t": 1786575600000,
+      "socialZ": -2.648,
+      "onchainZ": -1.894,
+      "divergence": -0.754
+    },
+    {
+      "t": 1786579200000,
+      "socialZ": 0.455,
+      "onchainZ": 4.112,
+      "divergence": -3.657
+    },
+    {
+      "t": 1786582800000,
+      "socialZ": 0.642,
+      "onchainZ": -1.251,
+      "divergence": 1.893
+    },
+    {
+      "t": 1786586400000,
+      "socialZ": -1.858,
+      "onchainZ": 0.242,
+      "divergence": -2.1
+    },
+    {
+      "t": 1786590000000,
+      "socialZ": 1.251,
+      "onchainZ": 0.105,
+      "divergence": 1.146
+    },
+    {
+      "t": 1786593600000,
+      "socialZ": -0.822,
+      "onchainZ": 1.735,
+      "divergence": -2.557
+    },
+    {
+      "t": 1786597200000,
+      "socialZ": -0.514,
+      "onchainZ": 0.324,
+      "divergence": -0.838
+    },
+    {
+      "t": 1786600800000,
+      "socialZ": -0.144,
+      "onchainZ": -0.505,
+      "divergence": 0.361
+    },
+    {
+      "t": 1786604400000,
+      "socialZ": -0.201,
+      "onchainZ": -2.09,
+      "divergence": 1.889
+    },
+    {
+      "t": 1786608000000,
+      "socialZ": -0.822,
+      "onchainZ": 2.151,
+      "divergence": -2.973
+    },
+    {
+      "t": 1786611600000,
+      "socialZ": 0.153,
+      "onchainZ": 0.324,
+      "divergence": -0.171
+    },
+    {
+      "t": 1786615200000,
+      "socialZ": 1.53,
+      "onchainZ": -0.14,
+      "divergence": 1.669
+    },
+    {
+      "t": 1786618800000,
+      "socialZ": -0.077,
+      "onchainZ": 0.284,
+      "divergence": -0.36
+    },
+    {
+      "t": 1786622400000,
+      "socialZ": -0.291,
+      "onchainZ": -0.208,
+      "divergence": -0.083
+    },
+    {
+      "t": 1786626000000,
+      "socialZ": 2.061,
+      "onchainZ": -0.155,
+      "divergence": 2.215
+    },
+    {
+      "t": 1786629600000,
+      "socialZ": 3.817,
+      "onchainZ": 0.375,
+      "divergence": 3.442
+    },
+    {
+      "t": 1786633200000,
+      "socialZ": -1.194,
+      "onchainZ": -0.034,
+      "divergence": -1.16
+    },
+    {
+      "t": 1786636800000,
+      "socialZ": -0.831,
+      "onchainZ": 0.264,
+      "divergence": -1.094
+    },
+    {
+      "t": 1786640400000,
+      "socialZ": 0.31,
+      "onchainZ": -1.462,
+      "divergence": 1.772
+    },
+    {
+      "t": 1786644000000,
+      "socialZ": 0.557,
+      "onchainZ": 0.094,
+      "divergence": 0.463
+    },
+    {
+      "t": 1786647600000,
+      "socialZ": 1.824,
+      "onchainZ": -0.678,
+      "divergence": 2.502
+    },
+    {
+      "t": 1786651200000,
+      "socialZ": 2.166,
+      "onchainZ": 1.04,
+      "divergence": 1.125
+    },
+    {
+      "t": 1786654800000,
+      "socialZ": -1.063,
+      "onchainZ": -1.197,
+      "divergence": 0.135
+    },
+    {
+      "t": 1786658400000,
+      "socialZ": -2.199,
+      "onchainZ": 1.298,
+      "divergence": -3.497
+    },
+    {
+      "t": 1786662000000,
+      "socialZ": 0.52,
+      "onchainZ": -0.617,
+      "divergence": 1.137
+    },
+    {
+      "t": 1786665600000,
+      "socialZ": -1.532,
+      "onchainZ": 0.299,
+      "divergence": -1.831
+    },
+    {
+      "t": 1786669200000,
+      "socialZ": 1.122,
+      "onchainZ": -0.411,
+      "divergence": 1.533
+    },
+    {
+      "t": 1786672800000,
+      "socialZ": -0.654,
+      "onchainZ": -4.783,
+      "divergence": 4.129
+    },
+    {
+      "t": 1786676400000,
+      "socialZ": 1.225,
+      "onchainZ": 4.889,
+      "divergence": -3.664
+    },
+    {
+      "t": 1786680000000,
+      "socialZ": -0.474,
+      "onchainZ": 0.249,
+      "divergence": -0.723
+    },
+    {
+      "t": 1786683600000,
+      "socialZ": 0.563,
+      "onchainZ": -0.571,
+      "divergence": 1.134
+    },
+    {
+      "t": 1786687200000,
+      "socialZ": -0.298,
+      "onchainZ": 1.738,
+      "divergence": -2.036
+    },
+    {
+      "t": 1786690800000,
+      "socialZ": 5.327,
+      "onchainZ": -1.904,
+      "divergence": 7.232
+    },
+    {
+      "t": 1786694400000,
+      "socialZ": -3.33,
+      "onchainZ": 1.111,
+      "divergence": -4.442
+    },
+    {
+      "t": 1786698000000,
+      "socialZ": -0.02,
+      "onchainZ": 0.564,
+      "divergence": -0.584
+    },
+    {
+      "t": 1786701600000,
+      "socialZ": 0.32,
+      "onchainZ": -0.982,
+      "divergence": 1.302
+    },
+    {
+      "t": 1786705200000,
+      "socialZ": -0.785,
+      "onchainZ": -3.325,
+      "divergence": 2.54
+    },
+    {
+      "t": 1786708800000,
+      "socialZ": -0.339,
+      "onchainZ": 4.182,
+      "divergence": -4.521
+    },
+    {
+      "t": 1786712400000,
+      "socialZ": -0.633,
+      "onchainZ": -1.895,
+      "divergence": 1.262
+    },
+    {
+      "t": 1786716000000,
+      "socialZ": 1.78,
+      "onchainZ": 1.226,
+      "divergence": 0.554
+    },
+    {
+      "t": 1786719600000,
+      "socialZ": -0.586,
+      "onchainZ": 0.98,
+      "divergence": -1.566
+    },
+    {
+      "t": 1786723200000,
+      "socialZ": 0.257,
+      "onchainZ": -0.322,
+      "divergence": 0.579
+    },
+    {
+      "t": 1786726800000,
+      "socialZ": -0.143,
+      "onchainZ": -0.01,
+      "divergence": -0.133
+    },
+    {
+      "t": 1786730400000,
+      "socialZ": 0.153,
+      "onchainZ": -1.515,
+      "divergence": 1.668
+    },
+    {
+      "t": 1786734000000,
+      "socialZ": -0.989,
+      "onchainZ": -1.878,
+      "divergence": 0.889
+    },
+    {
+      "t": 1786737600000,
+      "socialZ": 3.676,
+      "onchainZ": -0.708,
+      "divergence": 4.384
+    },
+    {
+      "t": 1786741200000,
+      "socialZ": -2.962,
+      "onchainZ": 1.223,
+      "divergence": -4.185
+    },
+    {
+      "t": 1786744800000,
+      "socialZ": 0.256,
+      "onchainZ": -1.967,
+      "divergence": 2.224
+    },
+    {
+      "t": 1786748400000,
+      "socialZ": -0.839,
+      "onchainZ": 4.516,
+      "divergence": -5.355
+    },
+    {
+      "t": 1786752000000,
+      "socialZ": 1.102,
+      "onchainZ": -0.765,
+      "divergence": 1.867
+    }
+  ]
+}
