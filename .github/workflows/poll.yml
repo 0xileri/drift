@@ -51,13 +51,21 @@ jobs:
           BASE_RPC_URL: ${{ secrets.BASE_RPC_URL || 'https://mainnet.base.org' }}
         run: npm run evaluate
 
+      # Bakes the feed into the page. Done here rather than in the browser so the site has no
+      # runtime dependency on GitHub serving feed.json - a rate-limited fetch would render an
+      # empty feed with no visible error.
+      - name: Rebuild site
+        run: node scripts/build-site.mjs
+
       - name: Commit feed if changed
+        id: commit
         run: |
           git config user.name "drift-agent"
           git config user.email "actions@github.com"
-          git add data/feed.json
+          git add data/feed.json site/index.html
           if git diff --cached --quiet; then
             echo "No new divergence events this hour."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           COUNT=$(node -e "console.log(JSON.parse(require('fs').readFileSync('data/feed.json','utf8')).length)")
@@ -65,3 +73,12 @@ jobs:
           # Another run may have pushed since checkout; rebase rather than force.
           git pull --rebase --autostash origin main
           git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      # Only redeploy when the feed actually moved, so a quiet hour costs no deploy.
+      - name: Deploy site to Netlify
+        if: steps.commit.outputs.changed == 'true' && env.NETLIFY_AUTH_TOKEN != ''
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        run: node scripts/deploy-netlify.mjs "$NETLIFY_SITE_ID"

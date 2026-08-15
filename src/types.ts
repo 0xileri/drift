@@ -78,4 +78,10 @@ export interface FeedEvent {
   divergence: DivergenceResult;
   rpcCrossCheck: RpcCrossCheck | null;
   narration: string;
+  /**
+   * True when the event was found by replaying recorded history rather than by a live poll at
+   * the time it describes. Real engine output over real data either way, but the distinction is
+   * shown in the feed so a reader is never misled about when the agent actually saw it.
+   */
+  backfilled?: boolean;
 }
