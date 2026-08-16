@@ -79,16 +79,24 @@ function onchainMetric(s: PollSnapshot): number | null {
 /**
  * Rescales an axis so a given z means the same rarity on both sides of the subtraction.
  *
- * Median/MAD normalisation equalises the BODY of the two distributions - measured over 3,297
- * hours, median |z| was 0.75 for social and 0.74 for onchain. The tails do not match: p99 was
- * 7.16 social against 4.82 onchain. The threshold sits at 6.0, inside exactly that gap, so
- * before this correction only the social axis could reach it. Every one of the 54 events under
- * the new floor classified as social-driven, and none as onchain-driven - not because Base
- * tokens behave that way, but because subtracting two differently-tailed scores measures the
- * shape of the inputs as much as the gap between them.
+ * Median/MAD normalisation equalises the BODY of the two distributions but not the tails. Over
+ * 4,458 hours the raw p99 |z| was 6.46 social against 2.92 onchain, so a threshold placed in
+ * that gap is reachable by one axis far more easily than the other.
  *
- * Dividing each axis by its own upper-decile |z| makes 1.0 mean "a p90 move for this series",
- * which is the comparison the score was always claiming to make.
+ * Dividing each axis by its own upper-decile |z| makes 1.0 mean "a p90 move for this series".
+ * That works where it was aimed: scaled p90 is 1.10 social against 0.92 onchain.
+ *
+ * It does NOT fully equalise them, and the measured numbers should be read rather than the
+ * intent. Scaled p99 is still 2.73 against 1.76, and the social axis crosses the 2.5 threshold
+ * on 1.3% of hours against 0.1% for onchain. 79% of events remain social-driven. Normalising at
+ * one quantile only matches the distributions at that quantile; social momentum has genuinely
+ * fatter tails than pool volume, and the two are still not interchangeable out where the alerts
+ * live.
+ *
+ * The fix that would actually settle it is a rank transform - replace each |z| with its
+ * percentile inside its own baseline, which makes the two identical by construction at every
+ * quantile rather than at one. That changes the score's units and needs recalibration, so it is
+ * named here rather than half-done.
  */
 function tailScale(baseline: number[]): number {
   if (baseline.length < 10) return 1;
@@ -205,13 +213,19 @@ export function computeDivergence(token: string, history: PollSnapshot[]): Diver
     };
   }
 
-  const socialZ = robustZScore(latestSocialMomentum, priorSocial);
-  const onchainZ = robustZScore(latestOnchainMomentum, priorOnchain);
+  const rawSocialZ = robustZScore(latestSocialMomentum, priorSocial);
+  const rawOnchainZ = robustZScore(latestOnchainMomentum, priorOnchain);
 
   // Subtracting raw z-scores compares two differently-tailed scales; see tailScale above.
   const socialScale = tailScale(priorSocial);
   const onchainScale = tailScale(priorOnchain);
-  const divergenceScore = socialZ / socialScale - onchainZ / onchainScale;
+
+  // The SCALED values are what the score is built from, so they are what gets reported. Publishing
+  // the raw ones alongside a score computed from the scaled ones meant socialZ - onchainZ did not
+  // equal divergenceScore on any event - an inconsistency a reader can check in one subtraction.
+  const socialZ = rawSocialZ / socialScale;
+  const onchainZ = rawOnchainZ / onchainScale;
+  const divergenceScore = socialZ - onchainZ;
 
   // Volumes for the two hours this reading compares, plus the pool's own prior volumes as the
   // yardstick for "too thin".
@@ -230,12 +244,7 @@ export function computeDivergence(token: string, history: PollSnapshot[]): Diver
     onchainMomentumLogRatio: latestOnchainMomentum,
     socialZ,
     onchainZ,
-    direction: classify(
-      socialZ / socialScale,
-      onchainZ / onchainScale,
-      latestSocialMomentum,
-      latestOnchainMomentum
-    ),
+    direction: classify(socialZ, onchainZ, latestSocialMomentum, latestOnchainMomentum),
     suppressedReason,
     divergenceScore,
     // A suppressed reading keeps its score for continuity in the series, but never becomes an

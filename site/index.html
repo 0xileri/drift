@@ -908,25 +908,32 @@
         tokens this is built to watch.
       </p>
 
-      <h3>The two axes were not on the same scale</h3>
+      <h3>The two axes are still not on the same scale</h3>
       <p>
-        Median/MAD equalises the middle of both distributions — median |z| of
-        <span class="num">0.75</span> social against <span class="num">0.74</span> onchain. The
-        tails do not match: <span class="num">7.16</span> against <span class="num">4.82</span> at
-        p99. The alert threshold sat inside that gap, so <strong>only the social side could ever
-        reach it</strong>.
+        Median/MAD equalises the middle of both distributions but not the tails. Raw p99 |z| runs
+        <span class="num">6.46</span> on the social side against <span class="num">2.92</span>
+        onchain, and an alert threshold placed in that gap is far easier for one axis to reach
+        than the other. Dividing each axis by its own upper-decile move fixes the part it aims at:
+        scaled p90 is <span class="num">1.10</span> against <span class="num">0.92</span>.
       </p>
       <p>
-        That went unnoticed until each event was labelled by which series drove it, at which point
-        every single one came back social-driven and none onchain-driven. The 2:1 skew toward
-        "attention ahead of money" was a property of the metric, not of Base tokens. Each axis is
-        now divided by its own upper-decile move, so a given score means the same rarity on both.
+        It does not fix the tails, and the measured numbers say so plainly. Scaled p99 is still
+        <span class="num">2.73</span> against <span class="num">1.76</span>, the social axis
+        crosses the threshold on <strong>1.3% of hours against 0.1%</strong> for onchain, and
+        <strong>79% of events remain social-driven</strong>. Normalising at one quantile only
+        matches two distributions at that quantile — social momentum has genuinely fatter tails
+        than pool volume.
+      </p>
+      <p>
+        A rank transform would settle it, replacing each score with its percentile inside its own
+        baseline so the two match at every quantile rather than one. That changes the score's
+        units and needs recalibration, so it is named here rather than half-done and claimed.
       </p>
 
       <h3>The threshold is a rate target, not an accuracy measurement</h3>
       <p>
-        Replayed across <strong>3,297 real scored hours</strong>, a cutoff of 2.5 produces about
-        1.6 events a day, which is readable. That is the entire justification. Nothing about it
+        Replayed across <strong>4,458 real scored hours</strong> on eight tokens, a cutoff of 2.5
+        produces about three events a day, which is readable. That is the entire justification. Nothing about it
         establishes that events above the line are more often <em>right</em> — and the scorecard
         below shows they are not.
       </p>
@@ -950,10 +957,10 @@
       </p>
       <!--SCORECARD:START-->
       <div class="stats">
-        <div class="stat"><span class="v">31%</span><span class="k">events followed</span></div>
-        <div class="stat"><span class="v">39%</span><span class="k">base rate, any hour</span></div>
-        <div class="stat"><span class="v">-7.8</span><span class="k">lift (points)</span></div>
-        <div class="stat"><span class="v">48</span><span class="k">events tested</span></div>
+        <div class="stat"><span class="v">30%</span><span class="k">events followed</span></div>
+        <div class="stat"><span class="v">38%</span><span class="k">base rate, any hour</span></div>
+        <div class="stat"><span class="v">-7.5</span><span class="k">lift (points)</span></div>
+        <div class="stat"><span class="v">86</span><span class="k">events tested</span></div>
       </div>
       <div class="tbl-scroll">
         <table>
@@ -968,20 +975,20 @@
           <tbody>
             <tr>
               <td class="sym">t+3h</td>
-              <td class="n">48</td>
+              <td class="n">86</td>
               <td class="n">40%</td>
-              <td class="n">60%</td>
+              <td class="n">61%</td>
             </tr>
             <tr>
               <td class="sym">t+6h</td>
-              <td class="n">48</td>
-              <td class="n">31%</td>
-              <td class="n">69%</td>
+              <td class="n">86</td>
+              <td class="n">30%</td>
+              <td class="n">70%</td>
             </tr>
             <tr>
               <td class="sym">t+12h</td>
-              <td class="n">48</td>
-              <td class="n">38%</td>
+              <td class="n">86</td>
+              <td class="n">37%</td>
               <td class="n">63%</td>
             </tr>
           </tbody>
@@ -989,7 +996,7 @@
       </div>
       <p class="fine" style="margin-top:0.9rem">
         &ldquo;Followed&rdquo; means the lagging series averaged at least 25% above its own
-        pre-event baseline in the hours afterwards. Threshold 2.5, 5 tokens,
+        pre-event baseline in the hours afterwards. Threshold 2.5, 8 tokens,
         replayed from recorded history. Regenerate with <code>npm run scorecard</code>.
       </p>
       <!--SCORECARD:END-->
@@ -1047,187 +1054,187 @@
       </p>
       <!--FEED:START-->
       <p class="feed-sum">
-        <b>92</b> events across <b>5</b> tokens.
+        <b>85</b> events across <b>8</b> tokens.
         Showing the 12 most recent.
       </p>
       <div class="feed">
         <article class="ev">
           <header class="ev-h">
             <span class="ev-tok">MORPHO</span>
-            <span class="ev-score d-social">+6.45</span>
-            <span class="ev-dir">social ahead</span>
-            <time class="ev-t" datetime="2026-08-14T13:00:00.000Z">14 Aug, 13:00 UTC</time>
+            <span class="ev-score d-onchain">-2.71</span>
+            <span class="ev-dir">onchain ahead</span>
+            <time class="ev-t" datetime="2026-08-15T18:00:00.000Z">15 Aug, 18:00 UTC</time>
             <span class="ev-bf" title="Found by replaying recorded history, not by a live poll at the time">replay</span>
           </header>
-          <p class="ev-n">MORPHO is showing a strong social-ahead-of-onchain divergence: social volume jumped sharply (log-ratio +2.22, roughly a 9x increase in hourly social activity) with an extreme social z-score (7.11, capped-range territory), while onchain activity rose only modestly (log-ratio +0.70, about a doubling) and sits near-normal on its own history (z of 0.66). The resulting divergence score of +6.45 confirms attention is running far hotter than actual chain activity — a pattern that has historically preceded either a delayed follow-through in onchain volume/txns or a fade in social buzz if money never shows up. With no 24h volume, liquidity, or txn counts available to corroborate, treat this as an early-attention signal only; watch the next few intervals for onchain volume/txns to confirm real capital is following the social spike, not just chatter.</p>
+          <p class="ev-n">MORPHO's gap is driven by social attention dropping sharply: the hourly log-ratio of -1.31 means social volume roughly quartered interval-over-interval, a move that lands at a z-score of -1.54 versus its own recent history. Onchain activity moved the opposite way, up 2.67 in log-ratio terms (z of 1.16), so the divergence score reflects attention falling much faster than volume rose. Worth watching over the next few hours is whether social volume and galaxy score stabilize or keep declining, and whether the onchain pickup shows up again in the next interval's volume rather than being a one-off spike.</p>
           <div class="ev-m">
-            <span>social z <b>7.11</b></span>
-            <span>onchain z <b>0.66</b></span>
+            <span>social z <b>-1.54</b></span>
+            <span>onchain z <b>1.16</b></span>
+            
+          </div>
+        </article>
+        <article class="ev">
+          <header class="ev-h">
+            <span class="ev-tok">VELVET</span>
+            <span class="ev-score d-onchain">-2.85</span>
+            <span class="ev-dir">onchain ahead</span>
+            <time class="ev-t" datetime="2026-08-15T15:00:00.000Z">15 Aug, 15:00 UTC</time>
+            <span class="ev-bf" title="Found by replaying recorded history, not by a live poll at the time">replay</span>
+          </header>
+          <p class="ev-n">VELVET's onchain volume jumped sharply — a log ratio of +1.77 (roughly a 5x hour-over-hour move) with a z-score of 2.34, a notably unusual spike against its recent history — while social attention actually cooled slightly (log ratio -0.45, z -0.52). The gap here is driven by onchain activity outpacing a modest pullback in chatter, not by any surge in attention. Worth watching over the next few hours whether social volume and sentiment start catching up to this onchain move or whether the transaction spike fades on its own.</p>
+          <div class="ev-m">
+            <span>social z <b>-0.52</b></span>
+            <span>onchain z <b>2.34</b></span>
+            
+          </div>
+        </article>
+        <article class="ev">
+          <header class="ev-h">
+            <span class="ev-tok">TIBBIR</span>
+            <span class="ev-score d-social">+3.46</span>
+            <span class="ev-dir">social ahead</span>
+            <time class="ev-t" datetime="2026-08-14T11:00:00.000Z">14 Aug, 11:00 UTC</time>
+            <span class="ev-bf" title="Found by replaying recorded history, not by a live poll at the time">replay</span>
+          </header>
+          <p class="ev-n">TIBBIR's attention outpaced its onchain activity this hour: social momentum rose sharply (log ratio +1.15, roughly a 3x jump interval-over-interval) with a social z-score of 2.76, a notable move relative to its own recent history, while onchain volume fell (log ratio -2.84) and sits within a normal range at z -0.70. That combination is what's driving the social-rising reading. Worth watching over the next few hours whether onchain volume picks back up to match the attention spike, or whether the social surge fades without any corresponding shift in intervalVolumeUsd.</p>
+          <div class="ev-m">
+            <span>social z <b>2.76</b></span>
+            <span>onchain z <b>-0.70</b></span>
             
           </div>
         </article>
         <article class="ev">
           <header class="ev-h">
             <span class="ev-tok">AERO</span>
-            <span class="ev-score d-social">+7.23</span>
+            <span class="ev-score d-social">+2.93</span>
             <span class="ev-dir">social ahead</span>
             <time class="ev-t" datetime="2026-08-14T07:00:00.000Z">14 Aug, 07:00 UTC</time>
             <span class="ev-bf" title="Found by replaying recorded history, not by a live poll at the time">replay</span>
           </header>
-          <p class="ev-n">AERO is showing a strong social-ahead-of-onchain divergence: social volume/sentiment surged (social log-ratio +1.17, roughly tripling hour-over-hour, with socialZ pinned at an extreme 5.3) while onchain activity actually contracted (onchain log-ratio -2.09, an interval volume drop of well over 80%, with onchainZ at -1.9). The resulting divergence score of +7.23 confirms attention is running far hotter than actual money movement. Historically this kind of gap — chatter spiking while transaction flow shrinks — has tended to precede either a delayed catch-up in onchain activity or a fade in social interest if the hype isn't backed by real flow. Watch the next few intervals for whether intervalVolumeUsd rebounds (validating the attention) or social metrics cool off without onchain follow-through (suggesting the spike was noise); with 24h volume/li</p>
+          <p class="ev-n">AERO's social attention climbed sharply this hour (log ratio +1.16, roughly a 3x move) while onchain volume actually fell (log ratio -2.09, a steep drop) — a social-rising divergence where attention outpaced activity. The social z-score of 2.08 marks this as a genuinely unusual spike for the token's recent history, not just noise. Worth watching whether onchain volume picks up in the next few hours to close the gap, or whether the social surge fades on its own.</p>
           <div class="ev-m">
-            <span>social z <b>5.33</b></span>
-            <span>onchain z <b>-1.90</b></span>
+            <span>social z <b>2.08</b></span>
+            <span>onchain z <b>-0.85</b></span>
             
           </div>
         </article>
         <article class="ev">
           <header class="ev-h">
-            <span class="ev-tok">KEYCAT</span>
-            <span class="ev-score d-onchain">-9.56</span>
+            <span class="ev-tok">VELVET</span>
+            <span class="ev-score d-social">+3.41</span>
+            <span class="ev-dir">social ahead</span>
+            <time class="ev-t" datetime="2026-08-14T06:00:00.000Z">14 Aug, 06:00 UTC</time>
+            <span class="ev-bf" title="Found by replaying recorded history, not by a live poll at the time">replay</span>
+          </header>
+          <p class="ev-n">VELVET's attention spiked hard — social volume momentum jumped 1.93 in log terms (roughly a 7x hour-over-hour move) with a socialZ of 2.24, a genuinely unusual reading against its own recent history — while onchain activity fell over the same window (log ratio -0.92, onchainZ -1.17). The direction field confirms this is social-rising: chatter outpaced and diverged from actual transacted volume. Worth watching over the next few hours whether intervalVolumeUsd starts climbing to meet the attention, or whether the social spike fades on its own without onchain ever following.</p>
+          <div class="ev-m">
+            <span>social z <b>2.24</b></span>
+            <span>onchain z <b>-1.17</b></span>
+            
+          </div>
+        </article>
+        <article class="ev">
+          <header class="ev-h">
+            <span class="ev-tok">VELVET</span>
+            <span class="ev-score d-onchain">-3.32</span>
             <span class="ev-dir">onchain ahead</span>
-            <time class="ev-t" datetime="2026-08-13T15:00:00.000Z">13 Aug, 15:00 UTC</time>
+            <time class="ev-t" datetime="2026-08-11T09:00:00.000Z">11 Aug, 09:00 UTC</time>
             <span class="ev-bf" title="Found by replaying recorded history, not by a live poll at the time">replay</span>
           </header>
-          <p class="ev-n">KEYCAT is showing a sharp negative divergence (-9.56): onchain activity is spiking hard (log ratio +10.18, z-score +4.42, essentially an interval volume surge to ~$1,899) while social attention is fading fast (log ratio -1.70, z-score -5.14, sentiment still high at 86 but galaxyScore/altRank weak). This &quot;money moving while chatter dies down&quot; pattern often reflects accumulation, a wallet/bot-driven flow, or a move that hasn't reached broader social awareness yet — sometimes a precursor to a delayed social catch-up if the onchain activity persists. Since volume24h/liquidity/txns24h are null, there's no broader context to corroborate the surge, so watch for confirmation via sustained interval volume or a rebound in social metrics before reading this as a durable trend.</p>
+          <p class="ev-n">Onchain volume for VELVET jumped hard between intervals, a log ratio of roughly 3.3 (well beyond a simple doubling), pushing its z-score to 4.3 against its own recent baseline — a sizable, unusual move for this token. Social attention rose too (log ratio 0.87, z of just under 1), but far more modestly, so the gap is driven by onchain activity outpacing chatter rather than the reverse. Worth watching over the next few hours: whether social volume and galaxy score start catching up to the onchain surge, or whether the transaction pace cools back toward its recent norm.</p>
           <div class="ev-m">
-            <span>social z <b>-5.14</b></span>
-            <span>onchain z <b>4.42</b></span>
-            
-          </div>
-        </article>
-        <article class="ev">
-          <header class="ev-h">
-            <span class="ev-tok">KEYCAT</span>
-            <span class="ev-score d-social">+9.70</span>
-            <span class="ev-dir">social ahead</span>
-            <time class="ev-t" datetime="2026-08-13T14:00:00.000Z">13 Aug, 14:00 UTC</time>
-            <span class="ev-bf" title="Found by replaying recorded history, not by a live poll at the time">replay</span>
-          </header>
-          <p class="ev-n">KEYCAT is showing a sharp social-onchain split: social momentum jumped hard (log ratio +2.15, roughly an 8.6x rise in social activity) with socialZ at 6.7 — well above its own recent norm — while onchain activity actually collapsed (log ratio -6.97, a near-total drop) and onchainZ sits at -3.0. That combination produces a strongly positive divergence score (9.70), meaning attention is spiking while real money movement is drying up rather than confirming it. Historically this pattern — hype building without matching onchain follow-through — has preceded either a delayed onchain catch-up or a fade in social interest once it's clear activity isn't backing the buzz. With volume24h, liquidity and txns24h all unavailable here, there's no independent confirmation of trading depth, so watch for actual intervalVolumeUsd or txns to pick up before treating this as more than a social-driven</p>
-          <div class="ev-m">
-            <span>social z <b>6.69</b></span>
-            <span>onchain z <b>-3.00</b></span>
-            
-          </div>
-        </article>
-        <article class="ev">
-          <header class="ev-h">
-            <span class="ev-tok">AERO</span>
-            <span class="ev-score d-social">+6.96</span>
-            <span class="ev-dir">social ahead</span>
-            <time class="ev-t" datetime="2026-08-12T22:00:00.000Z">12 Aug, 22:00 UTC</time>
-            <span class="ev-bf" title="Found by replaying recorded history, not by a live poll at the time">replay</span>
-          </header>
-          <p class="ev-n">AERO is showing a sharp divergence: social attention is heating up (social momentum +0.85 log-ratio, roughly doubling hour-over-hour, with socialZ near +3.9) while onchain activity is collapsing (momentum -3.35 log-ratio — a steep multi-fold drop — with onchainZ near -3.0). The resulting divergence score of +6.96 confirms attention is running far hotter than actual transaction flow, a pattern that has historically preceded either a fade in social buzz as traders realize activity isn't following, or a lagged pickup in onchain volume if the interest is genuine. With sentiment elevated (91) but galaxyScore modest (40.7) and no 24h volume/liquidity context available to corroborate, watch the next few intervals for onchain momentum to either confirm the social excitement or for social volume to cool off.</p>
-          <div class="ev-m">
-            <span>social z <b>3.92</b></span>
-            <span>onchain z <b>-3.04</b></span>
-            
-          </div>
-        </article>
-        <article class="ev">
-          <header class="ev-h">
-            <span class="ev-tok">AERO</span>
-            <span class="ev-score d-onchain">-6.05</span>
-            <span class="ev-dir">onchain ahead</span>
-            <time class="ev-t" datetime="2026-08-12T12:00:00.000Z">12 Aug, 12:00 UTC</time>
-            <span class="ev-bf" title="Found by replaying recorded history, not by a live poll at the time">replay</span>
-          </header>
-          <p class="ev-n">AERO's onchain activity just exploded — the hour-over-hour volume log ratio of 6.9 implies roughly a thousand-fold jump in interval volume, and the onchain z-score of 6.37 confirms this is far outside its normal range. Social metrics barely moved (log ratio 0.04, z-score 0.32, sentiment high but unremarkable at 95), so the divergence score of -6.05 reflects money moving hard while chatter stays flat. Historically this kind of onchain-led surge with quiet social can precede attention catching up after the fact, or signal a large one-off transaction/liquidity event rather than sustained trend. Watch whether social volume and galaxyScore start climbing in the next few hours, and confirm the onchain spike isn't a single outsized transaction before reading it as broad-based accumulation.</p>
-          <div class="ev-m">
-            <span>social z <b>0.32</b></span>
-            <span>onchain z <b>6.37</b></span>
-            
-          </div>
-        </article>
-        <article class="ev">
-          <header class="ev-h">
-            <span class="ev-tok">KEYCAT</span>
-            <span class="ev-score d-social">+6.68</span>
-            <span class="ev-dir">social ahead</span>
-            <time class="ev-t" datetime="2026-08-12T01:00:00.000Z">12 Aug, 01:00 UTC</time>
-            <span class="ev-bf" title="Found by replaying recorded history, not by a live poll at the time">replay</span>
-          </header>
-          <p class="ev-n">KEYCAT is showing a sharp social-ahead-of-onchain divergence: social volume/momentum jumped hard (log ratio +2.14, roughly an 8x hour-over-hour surge) with socialZ pinned at 6.91 — an extreme reading versus its own recent history — while onchain activity only ticked up modestly (log ratio +0.48, onchainZ near flat at 0.23). This pattern, where attention spikes well ahead of actual transaction flow, has historically tended to precede either a delayed catch-up in onchain activity as new attention converts to trades, or a fade back to baseline if the social spike proves to be noise/hype without follow-through. With sentiment high (88) but liquidity, 24h volume, and txns24h all unavailable, there's no confirming context on trade depth — watch the next few intervals for onchain momentum to either accelerate toward the social move or for social metrics to cool</p>
-          <div class="ev-m">
-            <span>social z <b>6.91</b></span>
-            <span>onchain z <b>0.23</b></span>
-            
-          </div>
-        </article>
-        <article class="ev">
-          <header class="ev-h">
-            <span class="ev-tok">AERO</span>
-            <span class="ev-score d-social">+6.15</span>
-            <span class="ev-dir">social ahead</span>
-            <time class="ev-t" datetime="2026-08-11T12:00:00.000Z">11 Aug, 12:00 UTC</time>
-            <span class="ev-bf" title="Found by replaying recorded history, not by a live poll at the time">replay</span>
-          </header>
-          <p class="ev-n">AERO is showing a sharp social-onchain split: social momentum roughly tripled (log ratio +1.12) with a strong z-score of 5.1, while onchain activity roughly halved (log ratio -1.12) and sits mildly below its recent norm (z -1.0). The resulting divergence score of 6.15 confirms attention is running hot while actual transaction volume cools — a pattern where hype (sentiment 89, social volume 29,366) is outpacing money movement. Historically this kind of gap has preceded either a delayed onchain catch-up (buyers acting on the attention) or a fade in social interest if the excitement doesn't convert. Watch for whether intervalVolumeUsd starts climbing again in the next reading — that would signal the divergence closing constructively rather than social hype fizzling out.</p>
-          <div class="ev-m">
-            <span>social z <b>5.13</b></span>
-            <span>onchain z <b>-1.02</b></span>
-            
-          </div>
-        </article>
-        <article class="ev">
-          <header class="ev-h">
-            <span class="ev-tok">AERO</span>
-            <span class="ev-score d-social">+7.46</span>
-            <span class="ev-dir">social ahead</span>
-            <time class="ev-t" datetime="2026-08-10T22:00:00.000Z">10 Aug, 22:00 UTC</time>
-            <span class="ev-bf" title="Found by replaying recorded history, not by a live poll at the time">replay</span>
-          </header>
-          <p class="ev-n">AERO is showing a strong social-ahead-of-onchain divergence: social volume/momentum jumped sharply (log ratio +1.20, roughly tripling hour-over-hour) with socialZ pinned at 5.56 — an extreme reading versus its own history — while onchain activity actually contracted (log ratio -2.06, activity dropping to roughly an eighth of the prior interval) with a mildly negative onchainZ of -1.90. The resulting divergence score of 7.46 confirms attention is running far hotter than actual transaction flow, a pattern that has historically preceded either a delayed pickup in onchain activity as chatter converts to trades, or a fade in social interest if the hype isn't backed by real usage. With no 24h volume, liquidity, or txn count available to add context, watch the next few intervals' onchain momentum and txn counts to see whether activity starts closing the gap or whether social cools off</p>
-          <div class="ev-m">
-            <span>social z <b>5.56</b></span>
-            <span>onchain z <b>-1.90</b></span>
+            <span>social z <b>0.98</b></span>
+            <span>onchain z <b>4.31</b></span>
             
           </div>
         </article>
         <article class="ev">
           <header class="ev-h">
             <span class="ev-tok">MORPHO</span>
-            <span class="ev-score d-social">+9.73</span>
-            <span class="ev-dir">social ahead</span>
-            <time class="ev-t" datetime="2026-08-10T11:00:00.000Z">10 Aug, 11:00 UTC</time>
+            <span class="ev-score d-onchain">-2.68</span>
+            <span class="ev-dir">onchain ahead</span>
+            <time class="ev-t" datetime="2026-08-10T23:00:00.000Z">10 Aug, 23:00 UTC</time>
             <span class="ev-bf" title="Found by replaying recorded history, not by a live poll at the time">replay</span>
           </header>
-          <p class="ev-n">MORPHO is showing a sharp social-onchain split: social volume/attention jumped hard (social momentum log-ratio +2.19, a multi-fold increase, with socialZ near the +10 cap — extreme relative to its own history), while onchain activity actually contracted (momentum log-ratio -3.09, a large drop, with onchainZ around -2.76). The resulting divergence score (~9.73) says attention is running far hotter than the money moving onchain. Historically this kind of hype-without-flow setup tends to either resolve with onchain activity catching up (buyers stepping in) or with social interest fading before it converts. Watch the next interval's onchain volume/txns for confirmation — if it stays flat while sentiment (87, elevated) and social volume (11,262) keep climbing, the divergence is more likely noise or pure narrative than a precursor to real onchain follow-through.</p>
+          <p class="ev-n">MORPHO's gap is onchain-driven: interval volume jumped by a log-ratio of 3.65 (roughly a 38x move hour-over-hour), pushing onchain's z-score to 1.72, while social activity actually cooled, with its momentum down 0.84 log-points and a z-score of -0.95. That's a real divergence between a sharp onchain volume spike and fading social attention, not an extreme reading on either axis by this token's own history. Worth watching over the next few hours whether social volume or sentiment picks up to catch up with the onchain surge, or whether the volume spike proves to be a one-off interval that fades back down.</p>
           <div class="ev-m">
-            <span>social z <b>6.97</b></span>
-            <span>onchain z <b>-2.76</b></span>
+            <span>social z <b>-0.95</b></span>
+            <span>onchain z <b>1.72</b></span>
             
           </div>
         </article>
         <article class="ev">
           <header class="ev-h">
             <span class="ev-tok">AERO</span>
-            <span class="ev-score d-onchain">-6.75</span>
-            <span class="ev-dir">onchain ahead</span>
-            <time class="ev-t" datetime="2026-08-10T06:00:00.000Z">10 Aug, 06:00 UTC</time>
+            <span class="ev-score d-social">+3.07</span>
+            <span class="ev-dir">social ahead</span>
+            <time class="ev-t" datetime="2026-08-10T22:00:00.000Z">10 Aug, 22:00 UTC</time>
             <span class="ev-bf" title="Found by replaying recorded history, not by a live poll at the time">replay</span>
           </header>
-          <p class="ev-n">AERO is showing a sharp cool-down on both sides at once: social momentum fell hard (log ratio -2.01, social volume dropping sharply hour over hour) while onchain interval volume dropped even faster (-2.32). The divergence score of -6.75 isn't from onchain outrunning social — both are contracting, but social's z-score (-8.93, near the -10 floor) is deteriorating far more severely than onchain's (-2.18) relative to each one's own recent history, so this reads as attention collapsing faster than actual activity. Historically this kind of dual pullback with social decaying disproportionately can precede a quiet consolidation phase or a further leg down if onchain activity keeps fading too. Watch whether onchain interval volume stabilizes in the next few hours — if it holds while social stays depressed, that's a genuine quiet-accumulation setup; if both keep sliding, it's just fading interest with no off</p>
+          <p class="ev-n">AERO's social attention jumped sharply—social volume roughly tripled hour-over-hour (log ratio 1.20), a z-score of 2.18 against its own recent history, while onchain activity fell by more than half (log ratio -2.06) over the same interval. The gap is driven by attention outpacing a declining onchain signal, per the social-rising direction. Worth watching over the next few hours whether the elevated interval volume shows up onchain to close the gap, or whether social interest cools back toward the weaker onchain trend.</p>
           <div class="ev-m">
-            <span>social z <b>-8.93</b></span>
-            <span>onchain z <b>-2.18</b></span>
+            <span>social z <b>2.18</b></span>
+            <span>onchain z <b>-0.89</b></span>
             
           </div>
         </article>
         <article class="ev">
           <header class="ev-h">
-            <span class="ev-tok">VIRTUAL</span>
-            <span class="ev-score d-onchain">-6.91</span>
+            <span class="ev-tok">MORPHO</span>
+            <span class="ev-score d-social">+4.06</span>
+            <span class="ev-dir">social ahead</span>
+            <time class="ev-t" datetime="2026-08-10T11:00:00.000Z">10 Aug, 11:00 UTC</time>
+            <span class="ev-bf" title="Found by replaying recorded history, not by a live poll at the time">replay</span>
+          </header>
+          <p class="ev-n">MORPHO's social attention climbed sharply this hour, roughly a 9x jump in mentions (log ratio +2.19), while onchain volume moved the other way, falling to about a twentieth of its prior level (log ratio -3.09). The social z-score of 2.59 is a genuinely unusual reading against this token's recent history, and it's outpacing the onchain side, which is why the direction reads social-rising. Worth watching over the next few hours whether that intervalVolumeUsd figure ticks back up to meet the attention spike, or whether the social surge fades on its own.</p>
+          <div class="ev-m">
+            <span>social z <b>2.59</b></span>
+            <span>onchain z <b>-1.47</b></span>
+            
+          </div>
+        </article>
+        <article class="ev">
+          <header class="ev-h">
+            <span class="ev-tok">MORPHO</span>
+            <span class="ev-score d-onchain">-2.85</span>
             <span class="ev-dir">onchain ahead</span>
             <time class="ev-t" datetime="2026-08-10T06:00:00.000Z">10 Aug, 06:00 UTC</time>
             <span class="ev-bf" title="Found by replaying recorded history, not by a live poll at the time">replay</span>
           </header>
-          <p class="ev-n">VIRTUAL is showing a sharp negative divergence (-6.91): onchain activity is spiking (interval volume log-ratio +3.21, a large jump, with onchainZ +1.23) while social attention is collapsing (socialZ -5.68, log-ratio -1.52, meaning social volume roughly halved+ hour-over-hour). This is the classic &quot;money moving while the crowd stays quiet&quot; pattern — activity onchain is accelerating well ahead of any chatter, which has historically preceded either quiet accumulation/distribution or a delayed social catch-up once the move becomes visible. Watch for whether onchain momentum keeps building over the next few intervals and whether social metrics (galaxyScore currently 63.5, sentiment 87) stabilize or continue fading, since a reversal in social alongside sustained onchain flow would confirm this is a lead-lag setup rather than noise.</p>
+          <p class="ev-n">MORPHO's social attention dropped sharply—the log ratio of -2.38 implies social volume fell to roughly a tenth of the prior hour's level—while onchain activity was essentially flat (+0.10 log ratio, near-zero z-score). The socialZ of -2.77 marks this as a genuinely unusual pullback in attention relative to this token's own recent history, and the direction field confirms social-falling as the driver, not a broader shared decline. Worth watching over the next few hours whether social volume and galaxy score stabilize or keep sliding, and whether onchain volume eventually follows attention lower or continues to hold steady.</p>
           <div class="ev-m">
-            <span>social z <b>-5.68</b></span>
-            <span>onchain z <b>1.23</b></span>
+            <span>social z <b>-2.77</b></span>
+            <span>onchain z <b>0.08</b></span>
+            
+          </div>
+        </article>
+        <article class="ev">
+          <header class="ev-h">
+            <span class="ev-tok">VVV</span>
+            <span class="ev-score d-onchain">-4.13</span>
+            <span class="ev-dir">onchain ahead</span>
+            <time class="ev-t" datetime="2026-08-10T06:00:00.000Z">10 Aug, 06:00 UTC</time>
+            <span class="ev-bf" title="Found by replaying recorded history, not by a live poll at the time">replay</span>
+          </header>
+          <p class="ev-n">VVV's attention dropped sharply hour-over-hour — social momentum logged -1.94 (roughly an 86% pullback in interval terms), with a socialZ of -3.12, a notably unusual reading against its own recent history. Onchain volume moved the other way over the same window (+2.10 log ratio, onchainZ just over 1), so the gap here is driven by attention falling faster than activity, not by onchain weakness. Worth watching over the next few hours whether social volume and sentiment stabilize or continue sliding, and whether that onchain volume pickup holds or was a one-hour spike.</p>
+          <div class="ev-m">
+            <span>social z <b>-3.12</b></span>
+            <span>onchain z <b>1.01</b></span>
+            
+          </div>
+        </article>
+        <article class="ev">
+          <header class="ev-h">
+            <span class="ev-tok">AERO</span>
+            <span class="ev-score d-social">+4.49</span>
+            <span class="ev-dir">social ahead</span>
+            <time class="ev-t" datetime="2026-08-10T04:00:00.000Z">10 Aug, 04:00 UTC</time>
+            <span class="ev-bf" title="Found by replaying recorded history, not by a live poll at the time">replay</span>
+          </header>
+          <p class="ev-n">AERO's attention spiked sharply against a much quieter chain: social volume roughly tripled hour over hour (log ratio +2.28), while onchain activity roughly quartered (log ratio -1.38), and the social z-score of 3.89 marks this as a genuinely unusual jump for this token's own recent history. The direction is social-rising - attention outpacing onchain by a wide margin, not the reverse. Worth watching over the next few hours whether intervalVolumeUsd starts climbing to meet the attention surge, or whether social volume cools back toward its baseline.</p>
+          <div class="ev-m">
+            <span>social z <b>3.89</b></span>
+            <span>onchain z <b>-0.61</b></span>
             
           </div>
         </article>
@@ -1471,7 +1478,7 @@
               '<strong>Live lookup is paused.</strong> The social data subscription behind it ' +
               'is not currently active, so the agent cannot read new hours right now. ' +
               'The <a href="#feed">recorded feed</a> below came from this same engine and is ' +
-              "unaffected — 92 events across 5 tokens.";
+              "unaffected — 85 events across 8 tokens.";
             errBox.hidden = false;
             result.hidden = true;
             return;

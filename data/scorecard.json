@@ -1,41 +1,44 @@
 {
-  "generatedAt": "2026-08-16T14:10:00.251Z",
+  "generatedAt": "2026-08-16T18:33:38.550Z",
   "threshold": 2.5,
-  "events": 48,
+  "events": 86,
   "tokens": [
     "AERO",
     "VIRTUAL",
     "KEYCAT",
     "MORPHO",
-    "BNKR"
+    "BNKR",
+    "VVV",
+    "VELVET",
+    "TIBBIR"
   ],
   "directionMix": {
-    "social-falling": 7,
-    "social-rising": 36,
-    "onchain-rising": 4,
-    "onchain-falling": 1
+    "social-rising": 48,
+    "social-falling": 20,
+    "onchain-falling": 5,
+    "onchain-rising": 13
   },
   "horizons": {
     "t+3h": {
-      "judged": 48,
-      "followedPct": 39.6,
-      "noFollowPct": 60.4,
+      "judged": 86,
+      "followedPct": 39.5,
+      "noFollowPct": 60.5,
       "unknown": 0
     },
     "t+6h": {
-      "judged": 48,
-      "followedPct": 31.3,
-      "noFollowPct": 68.8,
+      "judged": 86,
+      "followedPct": 30.2,
+      "noFollowPct": 69.8,
       "unknown": 0
     },
     "t+12h": {
-      "judged": 48,
-      "followedPct": 37.5,
-      "noFollowPct": 62.5,
+      "judged": 86,
+      "followedPct": 37.2,
+      "noFollowPct": 62.8,
       "unknown": 0
     }
   },
-  "baseRateT6Pct": 39.1,
-  "liftT6Points": -7.8,
+  "baseRateT6Pct": 37.7,
+  "liftT6Points": -7.5,
   "note": "followed = the lagging series averaged at least 25% above its own pre-event baseline in the hours after the event. Measured on LEVELS, not z-scores: a z-score is mean-reverting by construction, so comparing scores before and after would report a fade for almost any event regardless of what the underlying series did. Replayed from recorded history, not a live forward test."
 }
