@@ -39,7 +39,11 @@ export class LookupError extends Error {
       | "NO_SOCIAL"
       | "NO_OVERLAP"
       | "THIN_HISTORY"
-      | "UPSTREAM",
+      | "UPSTREAM"
+      // The social provider is reachable and the key is valid, but the plan behind it is not
+      // active. Distinct from UPSTREAM because nothing about retrying or waiting fixes it, and
+      // the reader deserves to know the difference between "broken" and "switched off".
+      | "SOCIAL_PLAN_INACTIVE",
     readonly status = 400
   ) {
     super(message);
@@ -81,6 +85,16 @@ export async function analyzeToken(
   // search. It is the slowest leg by far, and serialising it behind two GeckoTerminal calls was
   // most of the request budget. Kicked off before the await so the two run concurrently.
   const socialPromise = fetchSocialHistory(symbol, SOCIAL_WINDOW, "hour").catch((err) => {
+    // 402 means the LunarCrush plan lapsed. Reporting that as a generic failure would send
+    // someone debugging the code for a billing problem.
+    if (/\(402\)/.test(err.message)) {
+      throw new LookupError(
+        "Live lookup is paused: the social data subscription behind it is not currently active. " +
+          "The recorded feed below was produced by this same engine and is unaffected.",
+        "SOCIAL_PLAN_INACTIVE",
+        503
+      );
+    }
     throw new LookupError(
       `Social data unavailable for ${symbol}: ${err.message}`,
       "NO_SOCIAL",

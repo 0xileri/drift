@@ -540,6 +540,8 @@
     margin-top: 1.2rem;
   }
   .lookup-err[hidden] { display: none; }
+  .lookup-err a { color: var(--social); }
+  .lookup-err strong { color: var(--ink); }
 
   /* ---- Event feed -------------------------------------------------------- */
   .feed-sum { font-size: 0.9rem; margin-bottom: 1.4rem; }
@@ -1359,6 +1361,18 @@
         const data = await res.json();
 
         if (!res.ok) {
+          // A paused subscription is not a broken agent, and the page should not imply it is.
+          // Send the reader to the recorded feed, which the same engine produced.
+          if (data.code === "SOCIAL_PLAN_INACTIVE") {
+            errBox.innerHTML =
+              '<strong>Live lookup is paused.</strong> The social data subscription behind it ' +
+              'is not currently active, so the agent cannot read new hours right now. ' +
+              'The <a href="#feed">recorded feed</a> below came from this same engine and is ' +
+              "unaffected — 92 events across 5 tokens.";
+            errBox.hidden = false;
+            result.hidden = true;
+            return;
+          }
           showError(data.error || "Lookup failed.");
           return;
         }
