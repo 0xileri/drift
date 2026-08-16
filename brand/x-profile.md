@@ -62,16 +62,31 @@ Leads with a real recorded event rather than a claim about capability. The whole
 on figures tracing to real calls, so the launch post should be checkable too — the event below
 is in the public feed with its timestamp.
 
-### Single post (preferred)
+### Single post (preferred) — 274 chars
+
+X counts any URL as 23 characters no matter its real length, so the link costs less than it
+looks. Still under 280 without Premium.
 
 ```
 Most token tools tell you what's getting loud.
 
-On 24 Jul, VIRTUAL's onchain volume spiked while social engagement collapsed. Divergence: -11.8.
-Money moving while almost nobody was talking about it.
+24 Jul: VIRTUAL's onchain volume spiked while social engagement collapsed. Divergence -11.8.
 
-Drift-d watches for that gap on Base.
-92 events across 5 tokens so far.
+Money moving while nobody was talking about it.
+
+Drift-d watches for that gap on Base. 92 events, 5 tokens.
+
+drift-divergence.netlify.app
+```
+
+**Tighter variant — 252 chars**, if you want room to quote-tweet it later:
+
+```
+Most token tools tell you what's loud.
+
+24 Jul: VIRTUAL's onchain volume spiked as social engagement collapsed. Divergence -11.8 — money moving while nobody talked.
+
+Drift-d finds that gap on Base. 92 events, 5 tokens, 4 weeks.
 
 drift-divergence.netlify.app
 ```
