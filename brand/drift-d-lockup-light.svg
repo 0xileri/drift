@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="480" viewBox="0 0 1600 480">
+  <rect width="1600" height="480" fill="#f3f1ed"/>
+  <g transform="translate(300 70) scale(0.40000) translate(-340 -175)">
+    
+  <mask id="dcut">
+    <rect x="340" y="175" width="575" height="850" fill="#fff"/>
+    <circle cx="605" cy="645" r="140" fill="#000"/>
+    <line x1="757" y1="170" x2="500" y2="1040" stroke="#000" stroke-width="52"/>
+  </mask>
+  <g mask="url(#dcut)" fill="#2b3238">
+    <circle cx="605" cy="645" r="250"/>
+    <path d="M765 268 L895 200 L895 700 L765 700 Z"/>
+  </g>
+  <g stroke="#c2521c" stroke-width="24" stroke-linecap="butt">
+    <line x1="737" y1="262" x2="667" y2="500"/>
+    <line x1="580" y1="792" x2="518" y2="1002"/>
+  </g>
+  </g>
+  <text x="620" y="284" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace"
+        font-size="190" font-weight="700" letter-spacing="-6" fill="#2b3238">Drift<tspan fill="#c2521c">-d</tspan></text>
+</svg>

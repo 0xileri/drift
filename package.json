@@ -19,7 +19,8 @@
     "watch": "tsx watch src/runner.ts",
     "typecheck": "tsc --noEmit",
     "try": "tsx scripts/try-lookup.ts",
-    "test:fn": "tsx scripts/test-functions.ts"
+    "test:fn": "tsx scripts/test-functions.ts",
+    "brand": "node scripts/build-brand.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.32.1",
@@ -32,6 +33,7 @@
     "@types/node": "^22.7.0",
     "adm-zip": "^0.6.0",
     "esbuild": "^0.28.2",
+    "sharp": "^0.35.3",
     "tsx": "^4.19.0",
     "typescript": "^5.6.0"
   }

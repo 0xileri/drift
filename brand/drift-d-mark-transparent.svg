@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  
+  <g transform="translate(261.7 142) scale(0.87059) translate(-340 -175)">
+    
+  <mask id="dcut">
+    <rect x="340" y="175" width="575" height="850" fill="#fff"/>
+    <circle cx="605" cy="645" r="140" fill="#000"/>
+    <line x1="757" y1="170" x2="500" y2="1040" stroke="#000" stroke-width="52"/>
+  </mask>
+  <g mask="url(#dcut)" fill="#2b3238">
+    <circle cx="605" cy="645" r="250"/>
+    <path d="M765 268 L895 200 L895 700 L765 700 Z"/>
+  </g>
+  <g stroke="#c2521c" stroke-width="24" stroke-linecap="butt">
+    <line x1="737" y1="262" x2="667" y2="500"/>
+    <line x1="580" y1="792" x2="518" y2="1002"/>
+  </g>
+  </g>
+</svg>
