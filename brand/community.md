@@ -72,40 +72,89 @@ and these carry the padding for it.
 
 ### Pinned message
 
-Telegram has no 280-character limit, so this can carry more than the X post — but a wall of text
-in a pinned message goes unread. This is deliberately scannable.
+Rewritten against current output. The earlier draft quoted 92 events, 5 tokens, and a
+"divergence -11.8" from before the rank transform - scores are now bounded to +/-2, so that
+figure would have pointed readers at a page showing a different scale. It also predated the
+scorecard, which is now the most interesting thing here.
+
+Telegram allows 4096 characters, but a pinned message that scrolls goes unread. This is built to
+be skimmed: bold lines carry the argument, everything else is support.
 
 ```
 Drift-d — what this channel is
 
 Attention and money move at different speeds.
 
-A token can get loud before real volume shows up. It can also move serious volume while almost
-nobody is talking about it. Neither number means much alone — the information is in the
-disagreement between them.
+A token gets loud before the volume shows up. Or the volume moves while nobody is talking.
+Neither number tells you much on its own. The information is in the disagreement between them,
+and that gap is the only thing this agent reports.
 
-This agent watches both signals for Base tokens and posts the hours they come apart.
+━━━━━━━━━━━━━━━━━━━━
 
-How a reading is produced
-• Social momentum — interactions per hour, aggregated across X, Reddit, YouTube, TikTok
-• Onchain momentum — hourly volume for the token's own Base pool
-• A deterministic engine scores the gap. No model is involved in the number.
-• Claude explains what kind of gap it is. It never computes the score.
+HOW A READING IS MADE
 
-Where it stands
-92 events across 5 tokens over 4 weeks. 61 were attention arriving ahead of the money; 31 were
-money moving while the timeline stayed quiet. The second kind is the one nobody watches for.
+• Social momentum — interactions per hour, aggregated across X, Reddit, YouTube and TikTok
+• Onchain momentum — hourly volume in the token's own Base pool
+• Each side is ranked against its own history, then subtracted. No model touches the number.
+• Claude explains which kind of gap it is. It never computes the score.
 
-Sharpest so far: VIRTUAL, 24 Jul, divergence -11.8. Onchain volume spiked, social engagement
-collapsed in the same hour.
+Every figure traces to a real API call.
 
-Check it yourself
+━━━━━━━━━━━━━━━━━━━━
+
+WHERE IT STANDS
+
+125 events across 12 Base tokens.
+
+72 were attention arriving ahead of the money.
+53 were money moving while the timeline stayed quiet.
+
+The second kind is the one nobody watches for.
+
+━━━━━━━━━━━━━━━━━━━━
+
+AND THE PART MOST PROJECTS SKIP
+
+I went back and checked whether any of it predicts anything.
+
+After a divergence fires, the lagging series follows through 27.5% of the time.
+For an hour picked at random: 38.5%.
+
+So flagged hours do worse than chance. That result is on the homepage at headline size, not
+buried in a footnote.
+
+The engine measures exactly what it says it measures. What is NOT established is that the
+measurement leads anywhere. The likeliest reason is on the input side — attention is measured
+globally while volume is measured in a single Base pool, so the two describe different markets.
+Scoping both to the same one is the next thing to try.
+
+An agent whose claims cannot fail is not making claims. This one can, and did.
+
+━━━━━━━━━━━━━━━━━━━━
+
+CHECK IT YOURSELF
+
 Site — drift-divergence.netlify.app
+Type any Base ticker and the full pipeline runs live.
+
 Code — github.com/0xileri/drift
-The event feed is a public file with timestamps, so you can check what the agent said and when.
+Feed — github.com/0xileri/drift/blob/main/data/feed.json
+
+Every event is in a public file with timestamps, so you can check what the agent said and when.
+
+━━━━━━━━━━━━━━━━━━━━
+
+Built for the @Orion_Agents builder hackathon on Base.
 
 Not advice. A divergence is an observation about two data series, nothing more.
 ```
+
+**Formatting note:** Telegram renders `**bold**` only if you post via a bot with Markdown
+enabled. Typed by hand in the app, use the built-in formatter (select text → Bold) on the four
+section headers, or leave them as plain caps — they already read as headers.
+
+**Before pinning:** re-check the counts against `data/scorecard.json`. The poller runs hourly and
+the event total moves.
 
 ---
 
@@ -146,7 +195,10 @@ own Base pool. A deterministic engine scores the gap — no model touches the nu
 explains what kind of gap it is.
 
 **Where it stands**
-92 events across 5 tokens over 4 weeks. 61 attention-ahead, 31 money-ahead.
+125 events across 12 Base tokens. 72 attention-ahead, 53 money-ahead.
+
+Flagged hours follow through 27.5% of the time against a 38.5% base rate - that result is
+published, not hidden.
 
 **Check it yourself**
 Site — https://drift-divergence.netlify.app
