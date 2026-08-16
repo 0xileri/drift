@@ -105,6 +105,45 @@ export const watchlist: WatchedToken[] = [
     dexscreenerPairAddress: "0x0c3b466104545efa096b8f944c1e524e1d0d4888",
     rpcPoolAddress: "0x0c3b466104545efa096b8f944c1e524e1d0d4888",
   },
+
+  // --- Sourced from live Base pool activity, not a market-cap list ----------------------
+  //
+  // The earlier candidate list came from a "Base Ecosystem" listing directory and 25 of 32
+  // failed, mostly because being LISTED on Base is not the same as TRADING on Base. These were
+  // drawn from GeckoTerminal's top and trending Base pools instead, so gate one is passed by
+  // construction, then screened on social coverage and history depth.
+  //
+  // None of these four report a global volume figure, so the Base-share heuristic could not be
+  // computed for them. That is recorded rather than resolved: it usually means a token trades
+  // only on Base, which is the ideal case here, but it can also mean the index simply does not
+  // carry it. They cleared every gate that could be measured.
+  {
+    // $1.0M pool, 965 bars, 100% social coverage. Thin hourly volume at a $204 median, so the
+    // relative volume floor will suppress a fair share of its hours - included deliberately as
+    // a second thin-liquidity case alongside KEYCAT.
+    symbol: "DOGINME",
+    dexscreenerPairAddress: "0xade9bcd4b968ee26bed102dd43a55f6a8c2416df",
+    rpcPoolAddress: "0xade9bcd4b968ee26bed102dd43a55f6a8c2416df",
+  },
+  {
+    // $630k pool, 1000 bars, $5,191 median hourly volume - the densest of the additions.
+    symbol: "AVNT",
+    dexscreenerPairAddress: "0xe30d5bf485f7476ac15884a28ffb3c9cea635dcb",
+  },
+  {
+    // Uniswap V4. The identifier below is a bytes32 POOL ID, not a deployed contract address -
+    // GeckoTerminal serves OHLCV for it, but getReserves() has nothing to call, so no RPC
+    // cross-check. It also cannot be looked up on BaseScan the way a pool contract can.
+    symbol: "SURPLUS",
+    dexscreenerPairAddress:
+      "0xfc25fdd217e288d03a877f0b7d49e0bbe52b2288c88de929125062569fc7eb2a",
+  },
+  {
+    // Also Uniswap V4, same bytes32 caveat. Deepest pool of the four at $3.95M.
+    symbol: "POD",
+    dexscreenerPairAddress:
+      "0x7c84276e317f128b55bd270dbfba3ef94c84b984c124a1de7c4f72da90bfba45",
+  },
 ];
 
 /**

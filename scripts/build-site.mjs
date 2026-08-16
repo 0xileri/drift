@@ -46,29 +46,52 @@ let html;
 
 if (sorted.length === 0) {
   html = `
-      <p class="empty">No divergence events recorded yet. The agent polls hourly and posts here
+      <p class="feed-sum">No divergence events recorded yet. The agent polls hourly and posts here
       when a gap crosses the threshold.</p>`;
 } else {
+  // Opposed bars share a centre line, so the visible gap between the two is the score itself.
+  // Ranks are percentiles in [-1, 1]; half the row width represents a full 1.0.
+  const bar = (rank, cls) => {
+    const w = Math.min(100, Math.abs(rank) * 100);
+    const left = rank < 0 ? w : 0;
+    const right = rank >= 0 ? w : 0;
+    return `<div class="ev-bar ${cls}">` +
+      `<span class="l" style="width:${left.toFixed(1)}%"></span>` +
+      `<span class="r" style="width:${right.toFixed(1)}%"></span></div>`;
+  };
+
   const cards = shown
     .map((e) => {
-      const d = e.divergence.divergenceScore ?? 0;
-      // Sign carries the meaning: attention ahead of money, or money ahead of attention.
-      const dir = d > 0 ? "social ahead" : "onchain ahead";
-      const dirClass = d > 0 ? "d-social" : "d-onchain";
+      const v = e.divergence;
+      const d = v.divergenceScore ?? 0;
+      const up = d > 0;
+      const sr = v.socialRank ?? 0;
+      const or = v.onchainRank ?? 0;
+      const dir = (v.direction ?? (up ? "social-rising" : "onchain-rising")).replace("-", " ");
       return `
-        <article class="ev">
-          <header class="ev-h">
-            <span class="ev-tok">${esc(e.token)}</span>
-            <span class="ev-score ${dirClass}">${d > 0 ? "+" : ""}${d.toFixed(2)}</span>
-            <span class="ev-dir">${dir}</span>
-            <time class="ev-t" datetime="${new Date(e.timestampMs).toISOString()}">${fmt(e.timestampMs)} UTC</time>
-            ${e.backfilled ? '<span class="ev-bf" title="Found by replaying recorded history, not by a live poll at the time">replay</span>' : ""}
-          </header>
-          <p class="ev-n">${esc(e.narration)}</p>
-          <div class="ev-m">
-            <span>social rank <b>${(e.divergence.socialRank ?? 0).toFixed(2)}</b></span>
-            <span>onchain rank <b>${(e.divergence.onchainRank ?? 0).toFixed(2)}</b></span>
-            ${e.rpcCrossCheck ? `<span>pool verified at block <b>${esc(e.rpcCrossCheck.blockNumber)}</b></span>` : ""}
+        <article class="ev ${up ? "up" : "dn"}" data-token="${esc(e.token)}" data-score="${up ? "+" : ""}${d.toFixed(2)}" data-dir="${esc(v.direction ?? "")}">
+          <button class="ev-top" type="button" aria-expanded="false">
+            <span>
+              <span class="ev-tk">${esc(e.token)}</span>
+              <span class="ev-dir">${esc(dir)}</span>
+            </span>
+            <span class="ev-bars" aria-hidden="true">
+              ${bar(sr, "a")}
+              ${bar(or, "b")}
+            </span>
+            <span>
+              <span class="ev-score">${up ? "+" : ""}${d.toFixed(2)}</span>
+              <time class="ev-time" datetime="${new Date(e.timestampMs).toISOString()}">${fmt(e.timestampMs)} UTC</time>
+            </span>
+          </button>
+          <div class="ev-body">
+            <p class="ev-n">${esc(e.narration)}</p>
+            <div class="ev-m">
+              <span>social <b>${sr.toFixed(2)}</b></span>
+              <span>onchain <b>${or.toFixed(2)}</b></span>
+              ${e.rpcCrossCheck ? `<span>verified at block <b>${esc(e.rpcCrossCheck.blockNumber)}</b></span>` : ""}
+              ${e.backfilled ? '<span class="ev-badge" title="Found by replaying recorded history, not by a live poll at the time">replay</span>' : ""}
+            </div>
           </div>
         </article>`;
     })
@@ -79,7 +102,7 @@ if (sorted.length === 0) {
         <b>${sorted.length}</b> events across <b>${tokens}</b> tokens${live ? ` · <b>${live}</b> from live polling` : ""}.
         Showing the ${Math.min(SHOW, sorted.length)} most recent.
       </p>
-      <div class="feed">${cards}
+      <div class="events">${cards}
       </div>`;
 }
 
@@ -105,54 +128,48 @@ try {
 
 if (sc) {
   const h6 = sc.horizons["t+6h"];
+  const sign = sc.liftT6Points > 0 ? "+" : "";
+
+  // Each horizon as a bar against the base rate, so "worse than random" is something you see
+  // rather than something you have to compute from two numbers.
   const rows = ["t+3h", "t+6h", "t+12h"]
     .map((k) => {
       const h = sc.horizons[k];
       return [
-        "            <tr>",
-        `              <td class="sym">${k}</td>`,
-        `              <td class="n">${h.judged}</td>`,
-        `              <td class="n">${h.followedPct.toFixed(0)}%</td>`,
-        `              <td class="n">${h.noFollowPct.toFixed(0)}%</td>`,
-        "            </tr>",
+        '            <div class="hbar">',
+        `              <span class="h">${k}</span>`,
+        '              <span class="track">',
+        `                <span class="fill" data-w="${h.followedPct.toFixed(0)}"></span>`,
+        "              </span>",
+        `              <span class="pc">${h.followedPct.toFixed(0)}%</span>`,
+        "            </div>",
       ].join("\n");
     })
     .join("\n");
 
-  const sign = sc.liftT6Points > 0 ? "+" : "";
   const block = [
     "",
-    '      <div class="stats">',
-    `        <div class="stat"><span class="v">${h6.followedPct.toFixed(0)}%</span><span class="k">events followed</span></div>`,
-    `        <div class="stat"><span class="v">${sc.baseRateT6Pct.toFixed(0)}%</span><span class="k">base rate, any hour</span></div>`,
-    `        <div class="stat"><span class="v">${sign}${sc.liftT6Points.toFixed(1)}</span><span class="k">lift (points)</span></div>`,
-    `        <div class="stat"><span class="v">${sc.events}</span><span class="k">events tested</span></div>`,
+    '      <div class="score-nums">',
+    `        <div class="sn ev"><span class="v">${h6.followedPct.toFixed(0)}%</span><span class="k">events followed</span></div>`,
+    `        <div class="sn base"><span class="v">${sc.baseRateT6Pct.toFixed(0)}%</span><span class="k">any hour</span></div>`,
+    `        <div class="sn lift"><span class="v">${sign}${sc.liftT6Points.toFixed(1)}</span><span class="k">lift (points)</span></div>`,
     "      </div>",
-    '      <div class="tbl-scroll">',
-    "        <table>",
-    "          <thead>",
-    "            <tr>",
-    '              <th scope="col">Horizon</th>',
-    '              <th scope="col">Tested</th>',
-    '              <th scope="col">Laggard followed</th>',
-    '              <th scope="col">Did not</th>',
-    "            </tr>",
-    "          </thead>",
-    "          <tbody>",
+    '      <p class="score-verdict">',
+    "        Flagged events performed <strong>worse than hours picked at random</strong>.",
+    "      </p>",
+    '      <div class="hbars">',
     rows,
-    "          </tbody>",
-    "        </table>",
     "      </div>",
-    '      <p class="fine" style="margin-top:0.9rem">',
+    '      <p class="foot-fine" style="margin:1.2rem auto 0;text-align:center">',
     "        &ldquo;Followed&rdquo; means the lagging series averaged at least 25% above its own",
-    `        pre-event baseline in the hours afterwards. Threshold ${sc.threshold}, ${sc.tokens.length} tokens,`,
-    "        replayed from recorded history. Regenerate with <code>npm run scorecard</code>.",
+    `        pre-event baseline afterwards. ${sc.events} events, threshold ${sc.threshold}, ${sc.tokens.length} tokens.`,
+    "        Regenerate with <span class=\"m\">npm run scorecard</span>.",
     "      </p>",
     "      ",
   ].join("\n");
 
-  // Re-read: `html` above is the feed fragment, not the page, and the feed injection has
-  // already written to disk by this point.
+  // Re-read: the feed injection above has already written to disk, so the in-memory copy from
+  // earlier in this script is stale by the time the scorecard goes in.
   const page = await readFile(HTML, "utf8");
   const a = page.indexOf(SC_START);
   const b = page.indexOf(SC_END);

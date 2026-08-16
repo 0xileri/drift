@@ -1,1581 +1,1453 @@
 <title>Drift-d</title>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="description" content="An agent that watches when social attention and onchain activity for a Base token disagree, and explains why the gap matters." />
+<meta name="description" content="A divergence agent for Base. Watches when attention and money stop agreeing, measures the gap, then checks whether the signal was worth anything." />
 <link rel="canonical" href="https://drift-divergence.netlify.app/" />
 <meta property="og:title" content="Drift-d" />
-<meta property="og:description" content="Attention and money move at different speeds. Drift-d measures the gap." />
+<meta property="og:description" content="When attention moves before money, Drift-d notices. Then it checks whether that was worth knowing." />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://drift-divergence.netlify.app/" />
-<meta name="twitter:title" content="Drift-d" />
-<meta name="twitter:description" content="Attention and money move at different speeds. Drift-d measures the gap." />
 <meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Drift-d" />
+<meta name="twitter:description" content="When attention moves before money, Drift-d notices." />
 
 <style>
-  /* ---- Tokens: complete light palette on bare :root ---------------------- */
-  /* Palette taken from the logo: charcoal mark, rust slash, warm paper ground.
-     The rust doubles as the social signal colour - the slash cutting the letterform is the
-     same idea the product measures, so the brand accent and the "attention" axis are one hue. */
+  /* ============================================================================
+     Drift-d — signal separation.
+
+     Committed dark: this is an instrument reading a market, and a terminal that
+     repaints itself white is a different object. Every colour is painted
+     explicitly so the page holds on any host ground rather than borrowing one.
+
+     Colour has jobs, not moods:
+       --signal-a   social attention. The brand rust, spent ONLY on live signal.
+       --signal-b   onchain money.
+       --confirm    something that followed through.
+       --warn       something that did not.
+       --muted      history, inactive, already-known.
+     ========================================================================= */
   :root {
-    --ground: #f3f1ed;
-    --surface: #faf9f6;
-    --surface-2: #e7e4dd;
-    --ink: #23292e;
-    --ink-soft: #4a5259;
-    --muted: #7a8188;
-    --rule: #d5d1c8;
+    color-scheme: dark;
 
-    --social: #c2521c;
-    --onchain: #0e6a66;
-    --social-wash: rgba(194, 82, 28, 0.14);
-    --onchain-wash: rgba(14, 106, 102, 0.13);
-    --alert: #8c2f4a;
+    --bg: #0a0c0e;
+    --surface: #111519;
+    --surface-2: #171c22;
+    --line: #222a31;
+    --line-bright: #303a43;
 
-    --logo-ink: #2b3238;
-    --logo-rust: #c2521c;
+    --ink: #e9ecef;
+    --ink-dim: #98a2ab;
+    --muted: #59636c;
 
-    --grid: rgba(35, 41, 46, 0.07);
+    --signal-a: #e4622a;
+    --signal-b: #2fbdbd;
+    --confirm: #46a86f;
+    --warn: #cf5148;
 
-    --mono: ui-monospace, "SF Mono", SFMono-Regular, "Cascadia Mono", "JetBrains Mono",
-      Menlo, Consolas, monospace;
-    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
-      sans-serif;
+    --sans: "Inter Tight", "SF Pro Display", -apple-system, BlinkMacSystemFont,
+      "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --mono: ui-monospace, "SF Mono", SFMono-Regular, "Cascadia Mono",
+      "JetBrains Mono", Menlo, Consolas, monospace;
 
-    --col: 68ch;
-    --rail: 8.5rem;
-  }
-
-  /* System-dark (no stamp) - guarded so an explicit light choice still wins. */
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --ground: #14181a;
-      --surface: #1c2124;
-      --surface-2: #262c30;
-      --ink: #e8e5df;
-      --ink-soft: #bcbdb9;
-      --muted: #8b8f8e;
-      --rule: #2f363a;
-
-      --social: #e5793d;
-      --onchain: #3fb0a8;
-      --social-wash: rgba(229, 121, 61, 0.16);
-      --onchain-wash: rgba(63, 176, 168, 0.16);
-      --alert: #d9698a;
-
-      --logo-ink: #e8e5df;
-      --logo-rust: #e5793d;
-
-      --grid: rgba(232, 229, 223, 0.08);
-    }
-  }
-
-  /* Explicit dark stamp - so the toggle wins in both directions. */
-  :root[data-theme="dark"] {
-    --ground: #14181a;
-    --surface: #1c2124;
-    --surface-2: #262c30;
-    --ink: #e8e5df;
-    --ink-soft: #bcbdb9;
-    --muted: #8b8f8e;
-    --rule: #2f363a;
-
-    --social: #e5793d;
-    --onchain: #3fb0a8;
-    --social-wash: rgba(229, 121, 61, 0.16);
-    --onchain-wash: rgba(63, 176, 168, 0.16);
-    --alert: #d9698a;
-
-    --logo-ink: #e8e5df;
-    --logo-rust: #e5793d;
-
-    --grid: rgba(232, 229, 223, 0.08);
+    --gut: clamp(1.1rem, 4vw, 3rem);
+    --maxw: 1180px;
   }
 
   * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
 
   body {
     margin: 0;
-    background: var(--ground);
+    background: var(--bg);
     color: var(--ink);
     font-family: var(--sans);
-    font-size: 16px;
-    line-height: 1.65;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  ::selection { background: var(--social); color: var(--surface); }
-
-  a { color: inherit; }
-
-  :focus-visible {
-    outline: 2px solid var(--social);
-    outline-offset: 3px;
-    border-radius: 2px;
-  }
-
-  /* ---- Shell ------------------------------------------------------------- */
-  .wrap {
-    max-width: calc(var(--rail) + var(--col) + 6rem);
-    margin: 0 auto;
-    padding: 0 1.5rem 6rem;
-  }
-
-  section {
-    display: grid;
-    grid-template-columns: var(--rail) minmax(0, 1fr);
-    gap: 0 2.5rem;
-    padding: 3.5rem 0;
-    border-top: 1px solid var(--rule);
-  }
-
-  section:first-of-type { border-top: 0; }
-
-  .rail {
-    font-family: var(--mono);
-    font-size: 0.7rem;
-    letter-spacing: 0.09em;
-    text-transform: uppercase;
-    color: var(--muted);
-    line-height: 1.5;
-    padding-top: 0.5rem;
-  }
-
-  .rail b {
-    display: block;
-    color: var(--ink);
-    font-weight: 600;
-  }
-
-  .body { min-width: 0; }
-
-  /* ---- Type -------------------------------------------------------------- */
-  h1, h2, h3 {
-    font-family: var(--mono);
-    font-weight: 600;
-    letter-spacing: -0.03em;
-    text-wrap: balance;
-    margin: 0;
-  }
-
-  h1 { font-size: clamp(2.4rem, 7vw, 3.9rem); line-height: 1.02; }
-  h2 { font-size: clamp(1.35rem, 3vw, 1.75rem); line-height: 1.15; margin-bottom: 1rem; }
-  h3 {
-    font-size: 0.95rem;
-    letter-spacing: 0.02em;
-    margin-bottom: 0.35rem;
-  }
-
-  p { margin: 0 0 1.05rem; max-width: 66ch; color: var(--ink-soft); }
-  p.lead {
-    font-size: 1.16rem;
-    line-height: 1.55;
-    color: var(--ink);
-    max-width: 60ch;
-  }
-  p:last-child { margin-bottom: 0; }
-
-  strong { color: var(--ink); font-weight: 600; }
-
-  code, .num {
-    font-family: var(--mono);
-    font-variant-numeric: tabular-nums;
-  }
-  code {
-    font-size: 0.87em;
-    background: var(--surface-2);
-    padding: 0.12em 0.38em;
-    border-radius: 3px;
-    color: var(--ink);
-  }
-
-  .tag-social { color: var(--social); font-weight: 600; }
-  .tag-onchain { color: var(--onchain); font-weight: 600; }
-
-  /* ---- Hero -------------------------------------------------------------- */
-  .hero { padding-top: 4.5rem; }
-
-  .wordmark {
-    font-family: var(--mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.34em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 1.6rem;
-  }
-
-  /* ---- Masthead ---------------------------------------------------------- */
-  .mast {
-    display: flex;
-    align-items: center;
-    gap: clamp(0.9rem, 2.5vw, 1.5rem);
-    margin-bottom: 1.6rem;
-  }
-
-  .mark {
-    width: clamp(56px, 11vw, 92px);
-    height: auto;
-    flex: none;
-    display: block;
-  }
-
-  /* The product name is the largest thing on the page - it is the brand, not the tagline. */
-  h1.name {
-    font-size: clamp(3rem, 11vw, 6rem);
-    line-height: 0.9;
-    letter-spacing: -0.055em;
-    font-weight: 700;
-    margin: 0;
-  }
-  h1.name .suffix { color: var(--social); }
-
-  .tagline {
-    font-family: var(--mono);
-    font-size: clamp(1.15rem, 2.9vw, 1.75rem);
-    line-height: 1.22;
-    letter-spacing: -0.025em;
-    font-weight: 600;
-    color: var(--ink);
-    text-wrap: balance;
-    max-width: 24ch;
-    margin: 0 0 1.3rem;
-  }
-  .tagline .gap {
-    color: var(--social);
-    /* The word "disagree" carries the thesis; the underline is the gap it names. */
-    box-shadow: inset 0 -0.14em 0 var(--social-wash);
-  }
-
-  .cta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.65rem;
-    margin-top: 1.9rem;
-  }
-
-  .btn {
-    font-family: var(--mono);
-    font-size: 0.8rem;
-    letter-spacing: 0.04em;
-    text-decoration: none;
-    padding: 0.6rem 1.05rem;
-    border: 1px solid var(--ink);
-    background: var(--ink);
-    color: var(--ground);
-    transition: opacity 0.15s ease;
-  }
-  .btn:hover { opacity: 0.82; }
-
-  .btn.ghost {
-    background: transparent;
-    color: var(--ink);
-    border-color: var(--rule);
-  }
-  .btn.ghost:hover { border-color: var(--ink); opacity: 1; }
-
-  .btn[aria-disabled="true"] {
-    opacity: 0.42;
-    pointer-events: none;
-    border-style: dashed;
-  }
-
-  /* ---- Chart ------------------------------------------------------------- */
-  .plot {
-    margin-top: 3rem;
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    padding: 1.35rem 1.35rem 1rem;
-  }
-
-  .plot-head {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 0.75rem;
-    margin-bottom: 1.1rem;
-  }
-
-  .plot-title {
-    font-family: var(--mono);
-    font-size: 0.78rem;
-    letter-spacing: 0.05em;
-    color: var(--ink);
-  }
-
-  .legend {
-    display: flex;
-    gap: 1.1rem;
-    font-family: var(--mono);
-    font-size: 0.68rem;
-    letter-spacing: 0.05em;
-    color: var(--muted);
-  }
-  .legend span { display: inline-flex; align-items: center; gap: 0.4rem; }
-  .swatch { width: 14px; height: 2px; display: inline-block; }
-
-  .plot-scroll { overflow-x: auto; }
-  .plot svg { display: block; width: 100%; min-width: 460px; height: auto; }
-
-  .plot-foot {
-    margin-top: 0.85rem;
-    font-family: var(--mono);
-    font-size: 0.68rem;
-    color: var(--muted);
-    line-height: 1.5;
-  }
-
-  /* ---- Stats ------------------------------------------------------------- */
-  .stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 1px;
-    background: var(--rule);
-    border: 1px solid var(--rule);
-    margin-top: 1.6rem;
-  }
-  .stat { background: var(--surface); padding: 1rem 1.1rem; }
-  .stat .v {
-    font-family: var(--mono);
-    font-variant-numeric: tabular-nums;
-    font-size: 1.5rem;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    display: block;
-    line-height: 1.1;
-  }
-  .stat .k {
-    font-family: var(--mono);
-    font-size: 0.65rem;
-    letter-spacing: 0.09em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-top: 0.3rem;
-    display: block;
-  }
-
-  /* ---- Pipeline (a real sequence, so it is numbered) --------------------- */
-  ol.pipeline { list-style: none; margin: 0; padding: 0; counter-reset: step; }
-  ol.pipeline li {
-    counter-increment: step;
-    display: grid;
-    grid-template-columns: 2.4rem minmax(0, 1fr);
-    gap: 1rem;
-    padding: 1.15rem 0;
-    border-bottom: 1px dotted var(--rule);
-  }
-  ol.pipeline li:last-child { border-bottom: 0; }
-  ol.pipeline li::before {
-    content: counter(step, decimal-leading-zero);
-    font-family: var(--mono);
-    font-size: 0.75rem;
-    color: var(--muted);
-    padding-top: 0.22rem;
-    font-variant-numeric: tabular-nums;
-  }
-  ol.pipeline p { margin: 0; font-size: 0.95rem; }
-  .src {
-    font-family: var(--mono);
-    font-size: 0.66rem;
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-top: 0.3rem;
-    display: block;
-  }
-
-  /* ---- Callout ----------------------------------------------------------- */
-  .note {
-    border-left: 2px solid var(--social);
-    background: var(--social-wash);
-    padding: 1rem 1.15rem;
-    margin: 1.5rem 0;
-  }
-  .note p { margin: 0; color: var(--ink); font-size: 0.95rem; }
-  .note p + p { margin-top: 0.7rem; }
-
-  /* ---- Table ------------------------------------------------------------- */
-  .tbl-scroll { overflow-x: auto; margin-top: 1.2rem; }
-  table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: 0.85rem; }
-  th, td {
-    text-align: left;
-    padding: 0.6rem 0.9rem 0.6rem 0;
-    border-bottom: 1px solid var(--rule);
-    white-space: nowrap;
-  }
-  th {
-    font-family: var(--mono);
-    font-size: 0.65rem;
-    letter-spacing: 0.09em;
-    text-transform: uppercase;
-    color: var(--muted);
-    font-weight: 500;
-  }
-  td { color: var(--ink-soft); }
-  td.sym { font-family: var(--mono); color: var(--ink); font-weight: 600; }
-  td.n { font-family: var(--mono); font-variant-numeric: tabular-nums; }
-
-  .pill {
-    font-family: var(--mono);
-    font-size: 0.62rem;
-    letter-spacing: 0.06em;
-    padding: 0.16em 0.5em;
-    border: 1px solid currentColor;
-    border-radius: 999px;
-  }
-  .pill.yes { color: var(--onchain); }
-  .pill.no { color: var(--muted); }
-
-  /* ---- Lookup ------------------------------------------------------------ */
-  .lookup-form { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 1.4rem 0 0.9rem; }
-
-  .lookup-form input {
-    font-family: var(--mono);
-    font-size: 1rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    padding: 0.65rem 0.9rem;
-    min-width: 0;
-    flex: 1 1 14rem;
-    background: var(--surface);
-    color: var(--ink);
-    border: 1px solid var(--rule);
-    border-radius: 0;
-  }
-  .lookup-form input:focus-visible { border-color: var(--social); }
-
-  .lookup-form button {
-    font-family: var(--mono);
-    font-size: 0.82rem;
-    letter-spacing: 0.05em;
-    padding: 0.65rem 1.3rem;
-    border: 1px solid var(--ink);
-    background: var(--ink);
-    color: var(--ground);
-    cursor: pointer;
-  }
-  .lookup-form button:disabled { opacity: 0.45; cursor: progress; }
-
-  .examples {
-    font-family: var(--mono);
-    font-size: 0.68rem;
-    color: var(--muted);
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.45rem;
-    align-items: baseline;
-  }
-  .examples button {
-    font: inherit;
-    color: var(--social);
-    background: none;
-    border: 0;
-    border-bottom: 1px solid var(--rule);
-    padding: 0 0 1px;
-    cursor: pointer;
-  }
-  .examples button:hover { border-color: var(--social); }
-
-  .result { margin-top: 1.6rem; border: 1px solid var(--rule); background: var(--surface); }
-  .result[hidden] { display: none; }
-
-  .r-head {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 0.6rem;
-    padding: 1rem 1.2rem;
-    border-bottom: 1px solid var(--rule);
-  }
-  .r-sym { font-family: var(--mono); font-weight: 700; font-size: 1.15rem; }
-  .r-pool { font-family: var(--mono); font-size: 0.7rem; color: var(--muted); }
-  .r-score {
-    margin-left: auto;
-    font-family: var(--mono);
-    font-variant-numeric: tabular-nums;
-    font-size: 1.5rem;
-    font-weight: 700;
-  }
-  .r-verdict {
-    font-family: var(--mono);
-    font-size: 0.62rem;
-    letter-spacing: 0.09em;
-    text-transform: uppercase;
-    padding: 0.18em 0.55em;
-    border: 1px solid currentColor;
-    border-radius: 999px;
-  }
-
-  .r-body { padding: 1.1rem 1.2rem; }
-  .r-spark { width: 100%; height: 90px; display: block; margin-bottom: 0.9rem; }
-  .r-narr { font-size: 0.93rem; margin: 0 0 0.9rem; }
-  .r-narr.pending { color: var(--muted); font-style: italic; }
-
-  .r-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    font-family: var(--mono);
-    font-size: 0.66rem;
-    color: var(--muted);
-  }
-  .r-meta b { color: var(--ink-soft); font-variant-numeric: tabular-nums; font-weight: 600; }
-
-  /* The pool was matched by ticker, which proves nothing about token identity - so the caveat
-     travels with every result rather than living in small print elsewhere. */
-  .r-warn {
-    font-family: var(--mono);
-    font-size: 0.66rem;
-    line-height: 1.55;
-    color: var(--muted);
-    border-top: 1px dotted var(--rule);
-    padding: 0.8rem 1.2rem;
-  }
-  .r-warn a { color: var(--social); }
-
-  .lookup-err {
-    border-left: 2px solid var(--alert);
-    background: var(--surface);
-    padding: 0.85rem 1rem;
-    font-size: 0.9rem;
-    margin-top: 1.2rem;
-  }
-  .lookup-err[hidden] { display: none; }
-  .lookup-err a { color: var(--social); }
-  .lookup-err strong { color: var(--ink); }
-
-  /* ---- Event feed -------------------------------------------------------- */
-  .feed-sum { font-size: 0.9rem; margin-bottom: 1.4rem; }
-  .empty { font-size: 0.95rem; color: var(--muted); }
-
-  .feed { display: flex; flex-direction: column; gap: 1px; background: var(--rule);
-          border: 1px solid var(--rule); }
-  .ev { background: var(--surface); padding: 1.1rem 1.2rem; }
-
-  .ev-h {
-    display: flex;
-    align-items: baseline;
-    flex-wrap: wrap;
-    gap: 0.55rem;
-    margin-bottom: 0.6rem;
-  }
-  .ev-tok {
-    font-family: var(--mono);
-    font-weight: 600;
-    font-size: 0.9rem;
-    letter-spacing: 0.02em;
-  }
-  .ev-score {
-    font-family: var(--mono);
-    font-variant-numeric: tabular-nums;
-    font-weight: 600;
-    font-size: 0.9rem;
-  }
-  /* Direction is the reading, so it gets the signal colour rather than the number alone. */
-  .d-social { color: var(--social); }
-  .d-onchain { color: var(--onchain); }
-
-  .ev-dir {
-    font-family: var(--mono);
-    font-size: 0.64rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-  .ev-t {
-    font-family: var(--mono);
-    font-size: 0.66rem;
-    color: var(--muted);
-    margin-left: auto;
-    white-space: nowrap;
-  }
-  .ev-bf {
-    font-family: var(--mono);
-    font-size: 0.58rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--muted);
-    border: 1px solid var(--rule);
-    border-radius: 999px;
-    padding: 0.1em 0.5em;
-  }
-
-  .ev-n { font-size: 0.92rem; margin: 0 0 0.7rem; max-width: 72ch; }
-
-  .ev-m {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.1rem;
-    font-family: var(--mono);
-    font-size: 0.66rem;
-    color: var(--muted);
-  }
-  .ev-m b { color: var(--ink-soft); font-variant-numeric: tabular-nums; font-weight: 600; }
-
-  @media (max-width: 520px) {
-    .ev-t { margin-left: 0; width: 100%; }
-  }
-
-  /* ---- Footer ------------------------------------------------------------ */
-  footer {
-    border-top: 1px solid var(--rule);
-    padding: 2.5rem 0 0;
-    display: grid;
-    grid-template-columns: var(--rail) minmax(0, 1fr);
-    gap: 2.5rem;
-  }
-  .links { display: flex; flex-wrap: wrap; gap: 1.4rem; }
-  .links a {
-    font-family: var(--mono);
-    font-size: 0.78rem;
-    letter-spacing: 0.03em;
-    text-decoration: none;
-    border-bottom: 1px solid var(--rule);
-    padding-bottom: 2px;
-  }
-  .links a:hover { border-color: var(--social); }
-  .links a[aria-disabled="true"] { opacity: 0.45; pointer-events: none; border-style: dashed; }
-
-  .fine {
-    font-family: var(--mono);
-    font-size: 0.66rem;
-    color: var(--muted);
-    margin-top: 1.6rem;
+    font-size: 16.5px;
     line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
   }
 
-  /* ---- Responsive -------------------------------------------------------- */
-  @media (max-width: 720px) {
-    section, footer { grid-template-columns: 1fr; gap: 0; }
-    .rail { padding-top: 0; margin-bottom: 1rem; }
-    /* b goes inline to save a line, but the <br> stays: without it the rail's separate
-       facts run together into one unreadable string ("DRIFT-DV0.1BASE NETWORK"). */
-    .rail b { display: inline; margin-right: 0.5rem; }
-    footer { gap: 1rem; }
+  ::selection { background: var(--signal-a); color: #0a0c0e; }
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--signal-a); outline-offset: 3px; }
+
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--gut); }
+
+  /* ---- machine vs human -----------------------------------------------------
+     Mono is reserved for values the engine produced: scores, tickers, states,
+     timestamps. Prose is never mono. The typeface tells you whether a human or
+     the machine is talking. */
+  .m { font-family: var(--mono); font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+  .lbl {
+    font-family: var(--mono);
+    font-size: 0.63rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
   }
 
-  .visually-hidden {
-    position: absolute;
-    width: 1px; height: 1px;
-    margin: -1px; padding: 0; border: 0;
-    clip-path: inset(50%);
-    overflow: hidden; white-space: nowrap;
+  h1, h2, h3 { margin: 0; font-weight: 620; letter-spacing: -0.033em; text-wrap: balance; }
+  h2 { font-size: clamp(1.6rem, 3.4vw, 2.5rem); line-height: 1.08; }
+  h3 { font-size: 1.02rem; letter-spacing: -0.015em; }
+  p { margin: 0 0 1rem; color: var(--ink-dim); max-width: 64ch; }
+  p:last-child { margin-bottom: 0; }
+  strong { color: var(--ink); font-weight: 600; }
+  em { color: var(--ink); font-style: normal; border-bottom: 1px solid var(--signal-a); }
+
+  /* ============================ status bar ================================= */
+  .status {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(10, 12, 14, 0.88);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+    /* nowrap inside means the row can grow past the viewport on a narrow screen; clip here so
+       the ticker truncates instead of the whole page scrolling sideways. */
+    overflow: hidden;
+  }
+  .status-in {
+    max-width: var(--maxw); margin: 0 auto;
+    padding: 0.5rem var(--gut);
+    display: flex; align-items: center; gap: 1.3rem;
+    font-family: var(--mono); font-size: 0.68rem;
+    letter-spacing: 0.06em; white-space: nowrap;
+  }
+  .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--confirm); flex: none;
+    animation: pulse 2.8s ease-out infinite;
+  }
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(70,168,111,0.5); }
+    70% { box-shadow: 0 0 0 7px rgba(70,168,111,0); }
+    100% { box-shadow: 0 0 0 0 rgba(70,168,111,0); }
+  }
+  .status .sep { color: var(--line-bright); }
+  .status b { color: var(--ink); font-weight: 600; }
+  .status .k { color: var(--muted); }
+
+  /* Ticker reads the events already in the DOM, so it cannot disagree with the
+     feed rendered below it. */
+  .tick { margin-left: auto; display: flex; align-items: center; overflow: hidden; min-width: 0; }
+  .tick-item { display: inline-flex; align-items: center; gap: 0.55rem; animation: tickin 0.45s ease-out; }
+  @keyframes tickin { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  /* ============================== hero ===================================== */
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
+    gap: clamp(1.5rem, 4vw, 3.4rem);
+    align-items: center;
+    padding: clamp(2.4rem, 6vw, 4.6rem) 0 clamp(2rem, 5vw, 3.4rem);
+  }
+  .brandline { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 1.5rem; }
+  .brandline svg { width: 30px; height: 30px; display: block; }
+  .brandline .n {
+    font-family: var(--mono); font-size: 0.82rem;
+    letter-spacing: 0.3em; text-transform: uppercase; color: var(--ink);
+  }
+  .hero h1 { font-size: clamp(2.1rem, 5.2vw, 3.5rem); line-height: 1.03; margin-bottom: 1.1rem; }
+  .hero h1 .a { color: var(--signal-a); }
+  .hero h1 .b { color: var(--signal-b); }
+  .hero .sub { font-size: 1.02rem; max-width: 40ch; margin-bottom: 1.7rem; }
+
+  .probe { max-width: 27rem; }
+  .probe-row { display: flex; gap: 0.5rem; }
+  .probe input {
+    flex: 1 1 auto; min-width: 0;
+    font-family: var(--mono); font-size: 0.95rem;
+    letter-spacing: 0.13em; text-transform: uppercase;
+    padding: 0.72rem 0.9rem;
+    color: var(--ink); background: var(--surface);
+    border: 1px solid var(--line-bright); border-radius: 2px;
+  }
+  .probe input::placeholder { color: var(--muted); }
+  .probe input:focus-visible { border-color: var(--signal-a); outline: none; }
+  .probe button {
+    font-family: var(--mono); font-size: 0.76rem;
+    letter-spacing: 0.11em; text-transform: uppercase;
+    padding: 0.72rem 1.15rem;
+    color: #0a0c0e; background: var(--signal-a);
+    border: 1px solid var(--signal-a); border-radius: 2px;
+    cursor: pointer; transition: opacity 0.15s;
+  }
+  .probe button:hover { opacity: 0.86; }
+  .probe button:disabled { opacity: 0.45; cursor: progress; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.7rem; }
+  .chips button {
+    font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.09em;
+    padding: 0.28rem 0.6rem; color: var(--ink-dim);
+    background: transparent; border: 1px solid var(--line);
+    border-radius: 2px; cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .chips button:hover { border-color: var(--signal-a); color: var(--signal-a); }
+
+  .runsteps {
+    display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.8rem;
+    font-family: var(--mono); font-size: 0.6rem;
+    letter-spacing: 0.09em; text-transform: uppercase;
+  }
+  .runsteps[hidden] { display: none; }
+  .runsteps span {
+    color: var(--muted); border: 1px solid var(--line);
+    border-radius: 2px; padding: 0.18rem 0.45rem;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .runsteps span.on { color: var(--signal-a); border-color: var(--signal-a); }
+  .runsteps span.done { color: var(--confirm); border-color: rgba(70,168,111,0.4); }
+
+  .scope {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--line); border-radius: 3px; overflow: hidden;
+  }
+  .scope canvas { display: block; width: 100%; height: 340px; }
+  .scope-tag {
+    position: absolute; top: 0.7rem; left: 0.85rem;
+    display: flex; gap: 1rem;
+    font-family: var(--mono); font-size: 0.63rem; letter-spacing: 0.1em;
+  }
+  .scope-tag i { display: inline-block; width: 11px; height: 2px; margin-right: 0.35rem; vertical-align: middle; }
+  .scope-live {
+    position: absolute; top: 0.7rem; right: 0.85rem;
+    font-family: var(--mono); font-size: 0.6rem;
+    letter-spacing: 0.14em; color: var(--muted);
+  }
+
+  /* ============================ sections =================================== */
+  section { padding: clamp(3rem, 7vw, 5.6rem) 0; border-top: 1px solid var(--line); }
+  .shead { display: flex; align-items: baseline; gap: 0.9rem; margin-bottom: 1.6rem; }
+  .shead .ix { font-family: var(--mono); font-size: 0.68rem; color: var(--signal-a); letter-spacing: 0.12em; }
+
+  .statement {
+    font-size: clamp(1.5rem, 3.6vw, 2.35rem);
+    line-height: 1.16; letter-spacing: -0.03em; font-weight: 600;
+    color: var(--ink); max-width: 22ch; margin: 0 0 1.4rem;
+  }
+  .two {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    gap: clamp(1.4rem, 3vw, 2.6rem);
+  }
+
+  .pipe { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 3px; overflow: hidden; }
+  .node {
+    background: var(--surface); padding: 1rem 1.15rem;
+    display: grid; grid-template-columns: 2rem 1fr; gap: 0.9rem;
+    align-items: start; transition: background 0.18s;
+  }
+  .node:hover, .node:focus-within { background: var(--surface-2); }
+  .node .num { font-family: var(--mono); font-size: 0.68rem; color: var(--muted); padding-top: 0.18rem; }
+  .node:hover .num { color: var(--signal-a); }
+  .node h3 { margin-bottom: 0.2rem; }
+  .node p { font-size: 0.9rem; margin: 0; }
+  .node .src {
+    font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--muted); margin-top: 0.35rem; display: block;
+  }
+  .node.a h3 { color: var(--signal-a); }
+  .node.b h3 { color: var(--signal-b); }
+
+  .lab {
+    background: var(--surface); border: 1px solid var(--line);
+    border-left: 2px solid var(--signal-a); border-radius: 3px;
+    padding: 1.05rem 1.2rem; margin: 1.2rem 0;
+    font-family: var(--mono); font-size: 0.8rem; line-height: 1.85;
+  }
+  .lab .was { color: var(--warn); }
+  .lab .now { color: var(--confirm); }
+  .lab .arrow { color: var(--muted); }
+  .lab .note {
+    color: var(--ink-dim); font-family: var(--sans); font-size: 0.86rem;
+    display: block; margin-top: 0.5rem; line-height: 1.55;
+  }
+
+  /* ---- scorecard ---- */
+  .score-hero { text-align: center; padding: clamp(1.4rem, 4vw, 2.6rem) 0 0; }
+  .score-q {
+    font-size: clamp(1.35rem, 3.4vw, 2.1rem);
+    letter-spacing: -0.03em; font-weight: 600; color: var(--ink); margin: 0 0 2rem;
+  }
+  .score-nums {
+    display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-end;
+    gap: clamp(1.6rem, 6vw, 4.5rem); margin-bottom: 1.8rem;
+  }
+  .sn { text-align: center; }
+  .sn .v {
+    font-family: var(--mono); font-variant-numeric: tabular-nums;
+    font-size: clamp(2.2rem, 6.5vw, 3.9rem); font-weight: 620;
+    letter-spacing: -0.045em; line-height: 1; display: block;
+  }
+  .sn .k {
+    font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--muted); margin-top: 0.5rem; display: block;
+  }
+  .sn.lift .v { color: var(--warn); }
+  .sn.ev .v { color: var(--ink); }
+  .sn.base .v { color: var(--ink-dim); }
+  .score-verdict {
+    font-size: 1.05rem; color: var(--ink); max-width: 34ch;
+    margin: 0 auto 1.6rem; line-height: 1.45;
+  }
+  .hbars { display: grid; gap: 0.55rem; max-width: 34rem; margin: 0 auto; }
+  .hbar {
+    display: grid; grid-template-columns: 3.6rem 1fr 2.8rem; gap: 0.7rem;
+    align-items: center; font-family: var(--mono); font-size: 0.72rem;
+  }
+  .hbar .track { height: 9px; background: var(--surface-2); border-radius: 1px; overflow: hidden; position: relative; }
+  .hbar .fill { height: 100%; background: var(--warn); width: 0; transition: width 1.1s cubic-bezier(.2,.7,.3,1); }
+  .hbar .pc { text-align: right; color: var(--ink); }
+  .hbar .h { color: var(--muted); }
+
+  /* ---- coverage ---- */
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15.5rem), 1fr)); gap: 0.7rem; }
+  .card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 3px; padding: 0.9rem 1rem;
+    transition: border-color 0.18s, transform 0.18s;
+  }
+  .card:hover { border-color: var(--line-bright); transform: translateY(-2px); }
+  .card .tk { font-family: var(--mono); font-weight: 620; font-size: 0.94rem; }
+  .card .pl { font-family: var(--mono); font-size: 0.62rem; color: var(--muted); margin-top: 0.15rem; }
+  .card .rows { margin-top: 0.7rem; display: grid; gap: 0.28rem; font-family: var(--mono); font-size: 0.68rem; }
+  .card .rows div { display: flex; justify-content: space-between; gap: 0.6rem; }
+  .card .rows span:first-child { color: var(--muted); }
+  .card .rpc-y { color: var(--confirm); }
+  .card .rpc-n { color: var(--muted); }
+
+  /* ---- event cards ---- */
+  .events { display: grid; gap: 0.6rem; }
+  .ev {
+    background: var(--surface); border: 1px solid var(--line);
+    border-left: 2px solid var(--muted); border-radius: 3px; overflow: hidden;
+  }
+  .ev.up { border-left-color: var(--signal-a); }
+  .ev.dn { border-left-color: var(--signal-b); }
+  .ev-top {
+    width: 100%; background: none; border: 0; color: inherit; text-align: left;
+    padding: 0.85rem 1rem; display: grid;
+    grid-template-columns: 6.2rem 1fr auto; gap: 0.9rem;
+    align-items: center; cursor: pointer; font: inherit;
+  }
+  .ev-top:hover { background: var(--surface-2); }
+  .ev-tk { font-family: var(--mono); font-weight: 620; font-size: 0.9rem; }
+  .ev-dir {
+    font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.11em;
+    text-transform: uppercase; color: var(--muted); display: block; margin-top: 0.1rem;
+  }
+  /* Opposed bars from a shared centre: the visible gap between them IS the score. */
+  .ev-bars { display: grid; gap: 3px; min-width: 0; }
+  .ev-bar { display: grid; grid-template-columns: 1fr 1fr; height: 7px; align-items: center; }
+  .ev-bar .l { justify-self: end; height: 100%; }
+  .ev-bar .r { justify-self: start; height: 100%; }
+  .ev-bar.a .l, .ev-bar.a .r { background: var(--signal-a); }
+  .ev-bar.b .l, .ev-bar.b .r { background: var(--signal-b); }
+  .ev-score { font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 1.15rem; font-weight: 620; text-align: right; }
+  .ev.up .ev-score { color: var(--signal-a); }
+  .ev.dn .ev-score { color: var(--signal-b); }
+  .ev-time { font-family: var(--mono); font-size: 0.6rem; color: var(--muted); display: block; text-align: right; margin-top: 0.1rem; }
+  .ev-body { display: none; padding: 0 1rem 1rem; }
+  .ev.open .ev-body { display: block; animation: reveal 0.28s ease-out; }
+  @keyframes reveal { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+  .ev-n { font-size: 0.9rem; color: var(--ink-dim); margin: 0 0 0.7rem; max-width: none; }
+  .ev-m { display: flex; flex-wrap: wrap; gap: 0.9rem; font-family: var(--mono); font-size: 0.65rem; color: var(--muted); }
+  .ev-m b { color: var(--ink-dim); font-weight: 600; }
+  .ev-badge {
+    font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.11em;
+    text-transform: uppercase; color: var(--muted);
+    border: 1px solid var(--line-bright); border-radius: 999px; padding: 0.1em 0.45em;
+  }
+  .feed-sum { font-family: var(--mono); font-size: 0.68rem; color: var(--muted); margin-bottom: 0.9rem; }
+  .feed-sum b { color: var(--ink); }
+
+  /* ---- result panel ---- */
+  .res { margin-top: 1.1rem; background: var(--surface); border: 1px solid var(--line); border-radius: 3px; }
+  .res[hidden] { display: none; }
+  .res-h { padding: 0.9rem 1.05rem; border-bottom: 1px solid var(--line); display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.7rem; }
+  .res-h .tk { font-family: var(--mono); font-weight: 620; font-size: 1.05rem; }
+  .res-h .pl { font-family: var(--mono); font-size: 0.64rem; color: var(--muted); }
+  .res-h .sc { margin-left: auto; font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 1.35rem; font-weight: 620; }
+  .res-b { padding: 0.95rem 1.05rem; }
+  .res-spark { width: 100%; height: 74px; display: block; margin-bottom: 0.8rem; }
+  .res-n { font-size: 0.9rem; margin-bottom: 0.7rem; }
+  .res-n.pending { color: var(--muted); }
+  .res-warn { border-top: 1px dotted var(--line); padding: 0.7rem 1.05rem; font-family: var(--mono); font-size: 0.62rem; color: var(--muted); line-height: 1.6; }
+  .res-warn a { color: var(--signal-a); }
+  .err { border-left: 2px solid var(--warn); background: var(--surface); padding: 0.8rem 1rem; font-size: 0.9rem; margin-top: 1.1rem; border-radius: 3px; }
+  .err[hidden] { display: none; }
+  .err a { color: var(--signal-a); }
+
+  .tscroll { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; min-width: 30rem; font-size: 0.84rem; }
+  th, td { text-align: left; padding: 0.55rem 0.9rem 0.55rem 0; border-bottom: 1px solid var(--line); }
+  th { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.13em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+  td { color: var(--ink-dim); }
+
+  /* ---- footer ---- */
+  footer { border-top: 1px solid var(--line); padding: clamp(2.4rem, 5vw, 3.6rem) 0 2.6rem; }
+  .foot-mark { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 1.4rem; }
+  .foot-mark svg { width: 26px; height: 26px; }
+  .foot-mark .n { font-family: var(--mono); font-size: 0.76rem; letter-spacing: 0.28em; text-transform: uppercase; }
+  .foot-stats { display: flex; flex-wrap: wrap; gap: 1.6rem; font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.06em; margin-bottom: 1.5rem; }
+  .foot-stats b { color: var(--ink); font-weight: 600; }
+  .foot-stats span { color: var(--muted); }
+  .foot-links { display: flex; flex-wrap: wrap; gap: 1.3rem; margin-bottom: 1.4rem; }
+  .foot-links a {
+    font-family: var(--mono); font-size: 0.74rem; text-decoration: none;
+    color: var(--ink-dim); border-bottom: 1px solid var(--line); padding-bottom: 2px;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .foot-links a:hover { color: var(--signal-a); border-color: var(--signal-a); }
+  .foot-fine { font-family: var(--mono); font-size: 0.63rem; color: var(--muted); line-height: 1.7; max-width: 60ch; }
+  .foot-scope { width: 100%; height: 56px; display: block; margin-top: 1.6rem; opacity: 0.6; }
+
+  .vh { position: absolute; width: 1px; height: 1px; margin: -1px; clip-path: inset(50%); overflow: hidden; }
+
+  /* Content arrives; it does not perform. */
+  .rv { opacity: 0; transform: translateY(14px); transition: opacity 0.6s ease-out, transform 0.6s cubic-bezier(.2,.7,.3,1); }
+  .rv.in { opacity: 1; transform: none; }
+
+  @media (max-width: 860px) {
+    .hero { grid-template-columns: 1fr; }
+    .scope canvas { height: 250px; }
+    .status .hide-sm { display: none; }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    * { animation: none !important; transition: none !important; }
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .rv { opacity: 1; transform: none; }
   }
 </style>
 
+<div class="status">
+  <div class="status-in">
+    <span class="dot" aria-hidden="true"></span>
+    <span><b>ENGINE ONLINE</b></span>
+    <span class="sep" aria-hidden="true">/</span>
+    <span class="hide-sm"><span class="k">TOKENS</span> <b id="stTok">12</b></span>
+    <span><span class="k">EVENTS</span> <b id="stEv">—</b></span>
+    <div class="tick" id="tick" aria-hidden="true"></div>
+  </div>
+</div>
+
 <div class="wrap">
 
-  <section class="hero">
-    <!-- The masthead carries the name now, so the rail holds only what it does not repeat. -->
-    <div class="rail"><b>v0.1</b>Base network</div>
-    <div class="body">
-      <div class="wordmark">Divergence agent</div>
-
-      <div class="mast">
-        <!-- The mark: a "d" cut by a slash. The cut is the divergence the product measures,
-             so the logo and the thesis are the same shape. Inline SVG rather than a raster so
-             it stays crisp at any size and follows the theme. -->
-        <svg class="mark" viewBox="340 175 575 850" role="img" aria-label="Drift-d logo">
-          <mask id="dcut">
+  <div class="hero">
+    <div>
+      <div class="brandline">
+        <svg viewBox="340 175 575 850" role="img" aria-label="Drift-d">
+          <mask id="dm">
             <rect x="340" y="175" width="575" height="850" fill="#fff" />
-            <!-- counter of the d -->
             <circle cx="605" cy="645" r="140" fill="#000" />
-            <!-- the channel the slash cuts through the letterform -->
             <line x1="757" y1="170" x2="500" y2="1040" stroke="#000" stroke-width="52" />
           </mask>
-          <g mask="url(#dcut)" fill="var(--logo-ink)">
+          <g mask="url(#dm)" fill="#e9ecef">
             <circle cx="605" cy="645" r="250" />
             <path d="M765 268 L895 200 L895 700 L765 700 Z" />
           </g>
-          <g stroke="var(--logo-rust)" stroke-width="24" stroke-linecap="butt">
+          <g stroke="#e4622a" stroke-width="24">
             <line x1="737" y1="262" x2="667" y2="500" />
             <line x1="580" y1="792" x2="518" y2="1002" />
           </g>
         </svg>
-
-        <h1 class="name">Drift<span class="suffix">-d</span></h1>
+        <span class="n">Drift-d</span>
       </div>
 
-      <p class="tagline">
-        What people say and what money does <span class="gap">disagree</span> more often than
-        you'd think.
+      <h1>When <span class="a">attention</span> moves before <span class="b">money</span>, Drift-d notices.</h1>
+      <p class="sub">
+        Two signals, each ranked against its own history, subtracted. When the gap is wide enough the
+        agent explains it — then checks, later, whether it was worth knowing.
       </p>
 
-      <p class="lead">
-        Drift-d watches both signals for a Base token — social attention on one side, onchain
-        activity on the other — and reports the hours they come apart, with an explanation of
-        which kind of gap it is.
-      </p>
-
-      <div class="cta">
-        <a class="btn" href="#feed">See what it found</a>
-        <a class="btn ghost" href="https://github.com/0xileri/drift">Source on GitHub</a>
-        <a class="btn ghost" href="#engine">How the engine works</a>
-      </div>
-
-      <div class="plot">
-        <div class="plot-head">
-          <span class="plot-title">AERO · 169 hourly buckets · 8–15 Aug 2026</span>
-          <span class="legend">
-            <span><i class="swatch" style="background:var(--social)"></i> social</span>
-            <span><i class="swatch" style="background:var(--onchain)"></i> onchain</span>
-            <span><i class="swatch" style="background:var(--alert)"></i> event</span>
-          </span>
+      <form class="probe" id="probe">
+        <label for="tk" class="vh">Token ticker</label>
+        <div class="probe-row">
+          <input id="tk" name="tk" placeholder="AERO" maxlength="12" autocomplete="off"
+                 autocapitalize="characters" spellcheck="false" required />
+          <button type="submit" id="go">Analyse</button>
         </div>
-        <div class="plot-scroll">
-          <svg id="chart" viewBox="0 0 900 300" role="img"
-               aria-label="Two plotted signals for AERO over 169 hours. Social and onchain momentum track near zero for most hours and separate sharply at seven points, which cross the alert threshold.">
-          </svg>
+        <div class="chips">
+          <button type="button" data-t="AERO">AERO</button>
+          <button type="button" data-t="VELVET">VELVET</button>
+          <button type="button" data-t="TIBBIR">TIBBIR</button>
+          <button type="button" data-t="DEGEN">DEGEN</button>
         </div>
-        <p class="plot-foot">
-          Real recorded output, replayed through the engine one hour at a time — not an
-          illustration. Shaded bands mark the 7 hours where the gap crossed 6.0.
-          Peak: <span class="num">11.29</span> on 10 Aug 04:00 UTC.
-        </p>
-      </div>
-
-      <div class="stats">
-        <div class="stat"><span class="v">3,417</span><span class="k">snapshots</span></div>
-        <div class="stat"><span class="v">30</span><span class="k">days history</span></div>
-        <div class="stat"><span class="v">5</span><span class="k">tokens watched</span></div>
-        <div class="stat"><span class="v">&minus;7.8</span><span class="k">measured lift (pts)</span></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Deliberately unnumbered: the indices below track the explanation in order, and the tool
-       is not a step in that argument. -->
-  <section id="try">
-    <div class="rail"><b>Try it</b>Any Base token</div>
-    <div class="body">
-      <h2>Run the agent on a token</h2>
-      <p>
-        Type a ticker and the full pipeline runs live: a week of social history, the same week of
-        pool volume, the divergence engine, then an explanation. Same code that produces the feed
-        below.
-      </p>
-
-      <form class="lookup-form" id="lookupForm">
-        <label for="tickerInput" class="visually-hidden">Token ticker</label>
-        <input id="tickerInput" name="ticker" placeholder="AERO" maxlength="12"
-               autocomplete="off" autocapitalize="characters" spellcheck="false" required />
-        <button type="submit" id="lookupBtn">Analyse</button>
+        <div class="runsteps" id="steps" hidden>
+          <span data-s="social">social</span>
+          <span data-s="onchain">onchain</span>
+          <span data-s="rank">rank</span>
+          <span data-s="diverge">divergence</span>
+          <span data-s="narrate">narration</span>
+        </div>
       </form>
 
-      <div class="examples">
-        <span>Try:</span>
-        <button type="button" data-ex="AERO">AERO</button>
-        <button type="button" data-ex="BRETT">BRETT</button>
-        <button type="button" data-ex="DEGEN">DEGEN</button>
-        <button type="button" data-ex="TOSHI">TOSHI</button>
-      </div>
+      <div class="err" id="err" hidden></div>
 
-      <div class="lookup-err" id="lookupErr" hidden></div>
-
-      <div class="result" id="result" hidden>
-        <div class="r-head">
-          <span class="r-sym" id="rSym"></span>
-          <span class="r-pool" id="rPool"></span>
-          <span class="r-verdict" id="rVerdict"></span>
-          <span class="r-score" id="rScore"></span>
+      <div class="res" id="res" hidden>
+        <div class="res-h">
+          <span><span class="tk" id="rTk"></span><span class="ev-dir" id="rDir"></span></span>
+          <span class="pl" id="rPl"></span>
+          <span class="sc" id="rSc"></span>
         </div>
-        <div class="r-body">
-          <svg class="r-spark" id="rSpark" viewBox="0 0 600 90" preserveAspectRatio="none"
-               role="img" aria-label="Social and onchain momentum over the past week"></svg>
-          <p class="r-narr pending" id="rNarr"></p>
-          <div class="r-meta" id="rMeta"></div>
+        <div class="res-b">
+          <svg class="res-spark" id="rSpark" viewBox="0 0 600 74" preserveAspectRatio="none"
+               role="img" aria-label="Social and onchain rank over the past week"></svg>
+          <p class="res-n pending" id="rN"></p>
+          <div class="ev-m" id="rM"></div>
         </div>
-        <p class="r-warn" id="rWarn"></p>
+        <p class="res-warn" id="rW"></p>
+      </div>
+    </div>
+
+    <div class="scope">
+      <div class="scope-tag">
+        <span style="color:var(--signal-a)"><i style="background:var(--signal-a)"></i>SOCIAL</span>
+        <span style="color:var(--signal-b)"><i style="background:var(--signal-b)"></i>ONCHAIN</span>
+      </div>
+      <span class="scope-live" id="scopeLive">—</span>
+      <canvas id="scope" aria-label="Two signals drifting apart and back together; markers appear where the gap crosses the alert threshold"></canvas>
+    </div>
+  </div>
+
+  <section class="rv">
+    <div class="shead"><span class="ix m">01</span><span class="lbl">The insight</span></div>
+    <div class="two">
+      <div><p class="statement">Attention and money move at different speeds.</p></div>
+      <div>
+        <p>
+          A token can get loud before real volume shows up — an early signal, or a paid pump. It can
+          also move serious volume while almost nobody is talking, which is what quiet accumulation
+          looks like from outside.
+        </p>
+        <p>
+          Neither number means much alone. A social score is a popularity contest; a volume chart is
+          a crowd you cannot see the face of. The information is in the <em>disagreement</em>, and
+          that gap is the only thing this agent reports.
+        </p>
       </div>
     </div>
   </section>
 
-  <section>
-    <div class="rail"><b>01</b><br />The insight</div>
-    <div class="body">
-      <h2>Attention and money move at different speeds</h2>
-      <p>
-        A token can get loud before real volume shows up — an early signal, or a paid pump. It
-        can also move serious volume while almost nobody is talking about it, which is what
-        quiet accumulation looks like from the outside.
-      </p>
-      <p>
-        Neither number tells you much alone. A social score is a popularity contest; a volume
-        chart is a crowd you can't see the face of. The information lives in the
-        <strong>disagreement between them</strong>, and that is the only thing Drift-d reports.
-      </p>
-      <p>
-        Most research agents take one data source, score it, and have a model narrate the score.
-        Drift-d does a different job: it reads two independent signals and explains what it means
-        when they stop agreeing.
-      </p>
+  <section class="rv">
+    <div class="shead"><span class="ix m">02</span><span class="lbl">How a reading is produced</span></div>
+    <div class="pipe">
+      <div class="node a" tabindex="0">
+        <span class="num">01</span>
+        <div>
+          <h3>Social momentum</h3>
+          <p>Interactions per hour, aggregated across X, Reddit, YouTube and TikTok.</p>
+          <span class="src">LunarCrush time-series</span>
+        </div>
+      </div>
+      <div class="node b" tabindex="0">
+        <span class="num">02</span>
+        <div>
+          <h3>Onchain momentum</h3>
+          <p>Hourly volume for the token's own Base pool — pool-specific, not aggregate cross-venue
+             volume that would blur where the trading happened.</p>
+          <span class="src">GeckoTerminal OHLCV</span>
+        </div>
+      </div>
+      <div class="node" tabindex="0">
+        <span class="num">03</span>
+        <div>
+          <h3>Rank, then subtract</h3>
+          <p>Each side is replaced by its percentile within its own history, so the two are
+             comparable before they are compared. Deterministic — no model involved.</p>
+          <span class="src">Local engine</span>
+        </div>
+      </div>
+      <div class="node" tabindex="0">
+        <span class="num">04</span>
+        <div>
+          <h3>Onchain verification</h3>
+          <p>When a gap crosses the threshold, one direct call reads the pool contract's live
+             reserves and checks them against the aggregator.</p>
+          <span class="src">Base RPC · getReserves()</span>
+        </div>
+      </div>
+      <div class="node" tabindex="0">
+        <span class="num">05</span>
+        <div>
+          <h3>Narration</h3>
+          <p>Claude reads the score and every input behind it, then explains which kind of gap it is.
+             It never computes the number.</p>
+          <span class="src">Claude</span>
+        </div>
+      </div>
     </div>
   </section>
 
-  <section>
-    <div class="rail"><b>02</b><br />Pipeline<br />5 stages</div>
-    <div class="body">
-      <h2>How a reading is produced</h2>
-      <ol class="pipeline">
-        <li>
-          <div>
-            <h3 class="tag-social">Social momentum</h3>
-            <p>Interactions and sentiment per hourly bucket, aggregated across X, Reddit, YouTube,
-               TikTok and web3-native chatter.</p>
-            <span class="src">LunarCrush time-series</span>
-          </div>
-        </li>
-        <li>
-          <div>
-            <h3 class="tag-onchain">Onchain momentum</h3>
-            <p>Volume for the token's own Base pool, hour by hour — pool-specific, not aggregate
-               cross-venue volume that would blur where the trading actually happened.</p>
-            <span class="src">GeckoTerminal OHLCV</span>
-          </div>
-        </li>
-        <li>
-          <div>
-            <h3>Divergence engine</h3>
-            <p>Both series are converted to momentum, scored against the token's own recent
-               behaviour, and subtracted. Fully deterministic — no model involved at this stage.</p>
-            <span class="src">Local · log-ratio + robust z-score</span>
-          </div>
-        </li>
-        <li>
-          <div>
-            <h3>Onchain verification</h3>
-            <p>When a gap crosses the threshold, one direct call reads the pool contract's live
-               reserves and checks them against what the aggregator reported.</p>
-            <span class="src">Base RPC · getReserves()</span>
-          </div>
-        </li>
-        <li>
-          <div>
-            <h3>Narration</h3>
-            <p>Claude reads the score and every input behind it, then explains which kind of gap
-               it is and what to watch next. It never computes the number.</p>
-            <span class="src">Claude</span>
-          </div>
-        </li>
-      </ol>
-    </div>
-  </section>
-
-  <section id="engine">
-    <div class="rail"><b>03</b><br />The engine</div>
-    <div class="body">
-      <h2>Two decisions that make the number trustworthy</h2>
-      <p>
-        The scoring engine is the part worth scrutinising, because everything downstream inherits
-        its mistakes. Two problems showed up when it was first run against real pools, and both
-        would have produced confident, wrong output rather than an error.
-      </p>
-
-      <h3>Momentum is a log ratio, not a percent change</h3>
-      <p>
-        Percent change is unbounded as the previous value approaches zero. On a thin pool, one
-        quiet hour followed by an active one produced z-scores as high as
-        <span class="num">178,000</span> — that is division by almost nothing, not momentum. And
-        thin pools are exactly what this agent is built to watch, so the artifact lived precisely
-        where the product does.
-      </p>
-      <div class="note">
+  <section class="rv" id="engine">
+    <div class="shead"><span class="ix m">03</span><span class="lbl">The engine</span></div>
+    <h2>Three corrections, each found by measuring</h2>
+    <div class="two" style="margin-top:1.5rem">
+      <div>
+        <h3>Momentum is a log ratio</h3>
         <p>
-          <strong>Before:</strong> max |z| <span class="num">178,497</span> · median
-          <span class="num">0.08</span>
+          Percent change is unbounded as the previous value nears zero. On a thin pool, one quiet
+          hour followed by an active one produced scores in the six figures — division by almost
+          nothing, not momentum. And thin pools are what this agent is built to watch.
         </p>
+        <div class="lab">
+          <span class="was">before &nbsp;max |z| 178,497</span><br />
+          <span class="arrow">↓ log ratio</span><br />
+          <span class="now">after &nbsp;&nbsp;max |z| 6.2</span>
+          <span class="note">Bounded — but not cured.</span>
+        </div>
+
+        <h3>A floor, relative to each pool</h3>
         <p>
-          <strong>After:</strong> median <span class="num">0.75</span> ·
-          p99 <span class="num">7.16</span> · the ±10 cap binds on
-          <span class="num">0.2%</span> of hours
+          A ratio between two tiny numbers is still noise wearing a plausible score, and 62% of the
+          first events had an hour under $1,000. The floor scales to each pool's own median, because
+          a flat cut would have deleted 68% of the thinnest token's hours and 3% of the deepest.
         </p>
       </div>
-
-      <h3>But bounding an artifact is not removing it</h3>
-      <p>
-        The log ratio stopped the blow-ups without fixing what caused them. A ratio between two
-        tiny numbers is still noise wearing a plausible score, and
-        <strong>62% of the first 92 events</strong> had an hour under $1,000 — one of them scored
-        6.17 on volume going from $3,953 to a single cent.
-      </p>
-      <p>
-        There is now a floor, set relative to each pool's own median rather than in dollars.
-        Median hourly volume runs $43,214 for AERO and $347 for BNKR, so a flat cut would have
-        dropped 3% of MORPHO's hours and 68% of KEYCAT's — deleting exactly the thin-liquidity
-        tokens this is built to watch.
-      </p>
-
-      <h3>The two axes are compared by rank, not by scale</h3>
-      <p>
-        Subtracting two z-scores assumes they mean the same thing. They did not. Social chatter is
-        a dense count that moves smoothly; pool volume is spiky and often near zero, so its own
-        spikes inflate the yardstick it is measured against. Raw p99 ran
-        <span class="num">6.46</span> social against <span class="num">2.92</span> onchain, and
-        the alert threshold sat inside that gap — reachable by one axis far more easily than the
-        other.
-      </p>
-      <p>
-        Scaling each axis by its upper-decile move narrowed the middle but left the tails apart,
-        and <strong>79% of events still came back social-driven</strong>. Normalising at one
-        quantile only matches two distributions at that quantile.
-      </p>
-      <p>
-        Each side is now replaced by <strong>its percentile within its own history</strong>. A
-        reading of +0.98 means "larger than 98% of this series' own moves" whether the series is
-        social chatter or pool volume, so the two are uniform by construction and match at every
-        quantile rather than one. Measured: p99 of <span class="num">0.995</span> against
-        <span class="num">0.978</span>.
-      </p>
-      <div class="note">
+      <div>
+        <h3>The two axes were not comparable</h3>
         <p>
-          <strong>Social-driven vs onchain-driven events</strong>
+          Subtracting two z-scores assumes they mean the same thing. Social chatter is a dense count
+          that moves smoothly; pool volume is spiky and often near zero, so its own spikes inflate
+          the yardstick it is measured against.
         </p>
+        <div class="lab">
+          <span class="arrow">raw p99</span> &nbsp;social <span class="was">6.46</span> &nbsp;onchain <span class="was">2.92</span><br />
+          <span class="arrow">↓ percentile rank</span><br />
+          <span class="arrow">now p99</span> &nbsp;social <span class="now">0.995</span> &nbsp;onchain <span class="now">0.978</span>
+          <span class="note">
+            Each side is now its own percentile, uniform by construction, so the two match at every
+            quantile rather than at the one a scale was tuned to.
+          </span>
+        </div>
         <p>
-          Before: <span class="num">3.78</span> to 1 &nbsp;·&nbsp; After:
-          <span class="num">0.96</span> to 1
-        </p>
-        <p>
-          The lopsidedness was a property of the metric, not of Base tokens. Nearby cutoffs skew
-          again — 1.60 gives 1.23:1, 1.80 gives 1.39:1 — so the balance at 1.70 is a real feature
-          of that level rather than a rounding accident.
+          Visible in the labels: the social-to-onchain split moved from <strong>3.78:1</strong> to
+          <strong>0.96:1</strong>. The lopsidedness was a property of the metric, not of Base tokens.
         </p>
       </div>
-
-      <h3>The threshold is a rate target, not an accuracy measurement</h3>
-      <p>
-        Replayed across <strong>4,458 real scored hours</strong> on eight tokens, a cutoff of 1.7
-        produces about four events a day and an even split between the two event types. That is the
-        entire justification. Nothing about it
-        establishes that events above the line are more often <em>right</em> — and the scorecard
-        below shows they are not.
-      </p>
     </div>
   </section>
 
-  <section id="scorecard">
-    <div class="rail"><b>04</b><br />The scorecard<br />Measured</div>
-    <div class="body">
-      <h2>What actually happened next</h2>
-      <p>
-        The agent used to publish readings and never check them. Every explanation ended with
-        "watch the next few intervals" and nobody watched. The hourly series was already on disk,
-        so the test cost nothing — it just had never been run.
-      </p>
-      <p>
-        The claim being tested is the narrow one this agent implies: after the two series come
-        apart, the <strong>lagging</strong> one moves. Measured on levels, not on scores — a
-        z-score falls after a spike by construction, so comparing scores would report a fade for
-        almost any event regardless of what the market did.
-      </p>
+  <section class="rv" id="scorecard">
+    <div class="shead"><span class="ix m">04</span><span class="lbl">The scorecard</span></div>
+    <div class="score-hero">
+      <p class="score-q">Did the signal actually work?</p>
       <!--SCORECARD:START-->
-      <div class="stats">
-        <div class="stat"><span class="v">26%</span><span class="k">events followed</span></div>
-        <div class="stat"><span class="v">38%</span><span class="k">base rate, any hour</span></div>
-        <div class="stat"><span class="v">-12.1</span><span class="k">lift (points)</span></div>
-        <div class="stat"><span class="v">90</span><span class="k">events tested</span></div>
+      <div class="score-nums">
+        <div class="sn ev"><span class="v">28%</span><span class="k">events followed</span></div>
+        <div class="sn base"><span class="v">39%</span><span class="k">any hour</span></div>
+        <div class="sn lift"><span class="v">-11.0</span><span class="k">lift (points)</span></div>
       </div>
-      <div class="tbl-scroll">
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">Horizon</th>
-              <th scope="col">Tested</th>
-              <th scope="col">Laggard followed</th>
-              <th scope="col">Did not</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="sym">t+3h</td>
-              <td class="n">90</td>
-              <td class="n">34%</td>
-              <td class="n">66%</td>
-            </tr>
-            <tr>
-              <td class="sym">t+6h</td>
-              <td class="n">90</td>
-              <td class="n">26%</td>
-              <td class="n">74%</td>
-            </tr>
-            <tr>
-              <td class="sym">t+12h</td>
-              <td class="n">90</td>
-              <td class="n">31%</td>
-              <td class="n">69%</td>
-            </tr>
-          </tbody>
-        </table>
+      <p class="score-verdict">
+        Flagged events performed <strong>worse than hours picked at random</strong>.
+      </p>
+      <div class="hbars">
+            <div class="hbar">
+              <span class="h">t+3h</span>
+              <span class="track">
+                <span class="fill" data-w="31"></span>
+              </span>
+              <span class="pc">31%</span>
+            </div>
+            <div class="hbar">
+              <span class="h">t+6h</span>
+              <span class="track">
+                <span class="fill" data-w="28"></span>
+              </span>
+              <span class="pc">28%</span>
+            </div>
+            <div class="hbar">
+              <span class="h">t+12h</span>
+              <span class="track">
+                <span class="fill" data-w="31"></span>
+              </span>
+              <span class="pc">31%</span>
+            </div>
       </div>
-      <p class="fine" style="margin-top:0.9rem">
+      <p class="foot-fine" style="margin:1.2rem auto 0;text-align:center">
         &ldquo;Followed&rdquo; means the lagging series averaged at least 25% above its own
-        pre-event baseline in the hours afterwards. Threshold 1.7, 8 tokens,
-        replayed from recorded history. Regenerate with <code>npm run scorecard</code>.
+        pre-event baseline afterwards. 131 events, threshold 1.7, 12 tokens.
+        Regenerate with <span class="m">npm run scorecard</span>.
       </p>
       <!--SCORECARD:END-->
-      <p style="margin-top:1.3rem">
-        Read that honestly: <strong>flagged hours do worse than hours picked at random</strong>,
-        and the gap does not close at any threshold between 1.5 and 4.0. On this month of data,
-        across these tokens, the score does not identify hours where money is more likely to
-        follow attention.
-      </p>
-      <p>
-        The engine still measures what it says it measures, and the divergences are real
-        disagreements between two real series. What is not established is that they lead
-        anywhere. Publishing that is the point — a claim that cannot fail is not a claim, and
-        the scorecard is the part of this project that can.
-      </p>
-      <p>
-        The most likely defect is on the input side rather than in the scoring: attention is
-        measured globally while volume is measured in a single Base pool, so the two describe
-        different markets. Scoping both sides to the same one is the next thing to try.
-      </p>
+    </div>
+    <div class="two" style="margin-top:2.4rem">
+      <div>
+        <p>
+          The agent used to publish readings and never check them. Every explanation ended with
+          "watch the next few intervals" and nobody watched. The hourly series was already on disk,
+          so the test cost nothing — it had simply never been run.
+        </p>
+        <p>
+          The claim tested is the narrow one this agent implies: after the two series come apart, the
+          <strong>lagging</strong> one moves. Measured on levels rather than scores, because a rank
+          falls after a spike by construction and comparing scores would report a fade for almost any
+          event.
+        </p>
+      </div>
+      <div>
+        <p>
+          Read it plainly: flagged hours do <strong>worse than hours picked at random</strong>, and
+          the gap does not close at any threshold tested. On this month of data, the score does not
+          identify hours where money is more likely to follow attention.
+        </p>
+        <p>
+          The engine still measures what it says it measures. What is not established is that the
+          measurement leads anywhere — and publishing that is the point. A claim that cannot fail is
+          not a claim.
+        </p>
+        <p>
+          The likeliest defect is on the input side: attention is measured globally while volume is
+          measured in one Base pool, so the two describe different markets. Scoping both to the same
+          one is the next thing to try.
+        </p>
+      </div>
     </div>
   </section>
 
-  <section>
-    <div class="rail"><b>05</b><br />Verification</div>
-    <div class="body">
-      <h2>Every figure traces to a real call</h2>
-      <p>
-        Drift-d reads market data through an aggregator, which is fast and reliable but is still
-        somebody's summary of the chain. So when an event fires, the agent goes to the source:
-        one direct <code>getReserves()</code> call reads the pool contract's live reserves and
-        compares them against the reported liquidity.
-      </p>
-      <p>
-        That check is deliberately the same move as the product itself — catching two sources
-        disagreeing — applied one layer deeper. Three of the five watched pools are V2-style
-        pairs that support it; the other two are concentrated-liquidity pools where the call
-        does not exist, and the agent reports that rather than pretending otherwise.
-      </p>
-      <p>
-        Output is committed to a public file on every run, so the record is timestamped and
-        append-only. You can check what the agent said and when, instead of taking a demo's word
-        for it.
-      </p>
+  <section class="rv">
+    <div class="shead"><span class="ix m">05</span><span class="lbl">Verification</span></div>
+    <div class="two">
+      <div><h2>Every figure traces to a real call</h2></div>
+      <div>
+        <p>
+          Market data arrives through an aggregator — fast and reliable, but still somebody's summary
+          of the chain. So when an event fires, the agent goes to the source: one direct
+          <span class="m">getReserves()</span> call reads the pool's live reserves and compares them
+          against the reported liquidity.
+        </p>
+        <p>
+          That check is deliberately the same move as the product itself — catching two sources
+          disagreeing — applied one layer deeper. Pools that expose it get it; concentrated-liquidity
+          and Uniswap V4 pools do not, and the agent reports that rather than pretending otherwise.
+        </p>
+        <p>
+          Output is committed to a public file on every run, so the record is timestamped and
+          append-only. You can check what the agent said and when.
+        </p>
+      </div>
     </div>
   </section>
 
-  <section id="feed">
-    <div class="rail"><b>06</b><br />The feed<br />Recorded output</div>
-    <div class="body">
-      <h2>What the agent has found</h2>
-      <p>
-        Every reading below is the agent's own output: a deterministic score, and an explanation
-        written from that score and the inputs behind it. Nothing here was written by hand.
-      </p>
-      <!--FEED:START-->
+  <section class="rv">
+    <div class="shead"><span class="ix m">06</span><span class="lbl">Coverage</span></div>
+    <h2>What it watches</h2>
+    <p style="margin:0.9rem 0 1.5rem">
+      Twelve Base tokens, each screened on both axes: hourly social coverage with interactions that
+      actually vary, and a pool with dense history. Screening a market-cap list first returned 25
+      failures out of 32 — being listed on Base is not the same as trading on Base.
+    </p>
+    <div class="cards">
+      <div class="card"><div class="tk">AERO</div><div class="pl">AERO / USDC</div><div class="rows">
+        <div><span>liquidity</span><span>$26.6M</span></div><div><span>hours</span><span>738</span></div>
+        <div><span>rpc</span><span class="rpc-y">supported</span></div></div></div>
+      <div class="card"><div class="tk">VVV</div><div class="pl">VVV / WETH</div><div class="rows">
+        <div><span>liquidity</span><span>$9.4M</span></div><div><span>hours</span><span>739</span></div>
+        <div><span>rpc</span><span class="rpc-y">supported</span></div></div></div>
+      <div class="card"><div class="tk">VELVET</div><div class="pl">VELVET / USDC</div><div class="rows">
+        <div><span>liquidity</span><span>$6.2M</span></div><div><span>hours</span><span>739</span></div>
+        <div><span>rpc</span><span class="rpc-n">v3 pool</span></div></div></div>
+      <div class="card"><div class="tk">VIRTUAL</div><div class="pl">VIRTUAL / WETH</div><div class="rows">
+        <div><span>liquidity</span><span>$4.2M</span></div><div><span>hours</span><span>580</span></div>
+        <div><span>rpc</span><span class="rpc-y">supported</span></div></div></div>
+      <div class="card"><div class="tk">POD</div><div class="pl">POD / ETH</div><div class="rows">
+        <div><span>liquidity</span><span>$3.9M</span></div><div><span>hours</span><span>739</span></div>
+        <div><span>rpc</span><span class="rpc-n">v4 pool</span></div></div></div>
+      <div class="card"><div class="tk">TIBBIR</div><div class="pl">TIBBIR / VIRTUAL</div><div class="rows">
+        <div><span>liquidity</span><span>$2.6M</span></div><div><span>hours</span><span>738</span></div>
+        <div><span>rpc</span><span class="rpc-y">supported</span></div></div></div>
+      <div class="card"><div class="tk">BNKR</div><div class="pl">BNKR / WETH</div><div class="rows">
+        <div><span>liquidity</span><span>$1.5M</span></div><div><span>hours</span><span>736</span></div>
+        <div><span>rpc</span><span class="rpc-n">v3 pool</span></div></div></div>
+      <div class="card"><div class="tk">MORPHO</div><div class="pl">MORPHO / WETH</div><div class="rows">
+        <div><span>liquidity</span><span>$1.4M</span></div><div><span>hours</span><span>739</span></div>
+        <div><span>rpc</span><span class="rpc-n">v3 pool</span></div></div></div>
+      <div class="card"><div class="tk">SURPLUS</div><div class="pl">Surplus / WETH</div><div class="rows">
+        <div><span>liquidity</span><span>$1.2M</span></div><div><span>hours</span><span>739</span></div>
+        <div><span>rpc</span><span class="rpc-n">v4 pool</span></div></div></div>
+      <div class="card"><div class="tk">DOGINME</div><div class="pl">doginme / WETH</div><div class="rows">
+        <div><span>liquidity</span><span>$1.0M</span></div><div><span>hours</span><span>486</span></div>
+        <div><span>rpc</span><span class="rpc-y">supported</span></div></div></div>
+      <div class="card"><div class="tk">AVNT</div><div class="pl">AVNT / USDC</div><div class="rows">
+        <div><span>liquidity</span><span>$630K</span></div><div><span>hours</span><span>739</span></div>
+        <div><span>rpc</span><span class="rpc-n">v3 pool</span></div></div></div>
+      <div class="card"><div class="tk">KEYCAT</div><div class="pl">KEYCAT / WETH</div><div class="rows">
+        <div><span>liquidity</span><span>$560K</span></div><div><span>hours</span><span>704</span></div>
+        <div><span>rpc</span><span class="rpc-y">supported</span></div></div></div>
+    </div>
+    <p style="margin-top:1.2rem;font-size:0.88rem">
+      KEYCAT and DOGINME are in the set on purpose — the thinnest pools, where the volume floor earns
+      its place.
+    </p>
+  </section>
+
+  <section class="rv" id="feed">
+    <div class="shead"><span class="ix m">07</span><span class="lbl">Recorded events</span></div>
+    <h2>What the agent has found</h2>
+    <p style="margin:0.9rem 0 1.5rem">
+      Every reading below is the agent's own output: a deterministic score, and an explanation written
+      from that score and the inputs behind it. Nothing here was written by hand. Click any event to
+      read the full explanation.
+    </p>
+    <!--FEED:START-->
       <p class="feed-sum">
-        <b>90</b> events across <b>6</b> tokens.
+        <b>125</b> events across <b>10</b> tokens.
         Showing the 12 most recent.
       </p>
-      <div class="feed">
-        <article class="ev">
-          <header class="ev-h">
-            <span class="ev-tok">VELVET</span>
-            <span class="ev-score d-onchain">-1.82</span>
-            <span class="ev-dir">onchain ahead</span>
-            <time class="ev-t" datetime="2026-08-16T10:00:00.000Z">16 Aug, 10:00 UTC</time>
-            <span class="ev-bf" title="Found by replaying recorded history, not by a live poll at the time">replay</span>
-          </header>
-          <p class="ev-n">VELVET's onchain volume jumped sharply this hour (log ratio +0.87, roughly a doubling), landing in the top ~7% of its own history for this token, while social attention pulled back at a similar magnitude, ranking in the bottom ~11% of its own history. That combination puts the divergence score near the extreme end of its range, with onchain activity clearly driving the gap rather than attention. Worth watching over the next few hours whether social volume and sentiment catch up to the onchain move or whether the volume surge itself fades, which would tell you if this was a one-off print or the start of a sustained shift.</p>
-          <div class="ev-m">
-            <span>social rank <b>-0.89</b></span>
-            <span>onchain rank <b>0.93</b></span>
-            
+      <div class="events">
+        <article class="ev up" data-token="VVV" data-score="+1.74" data-dir="social-rising">
+          <button class="ev-top" type="button" aria-expanded="false">
+            <span>
+              <span class="ev-tk">VVV</span>
+              <span class="ev-dir">social rising</span>
+            </span>
+            <span class="ev-bars" aria-hidden="true">
+              <div class="ev-bar a"><span class="l" style="width:0.0%"></span><span class="r" style="width:88.3%"></span></div>
+              <div class="ev-bar b"><span class="l" style="width:86.0%"></span><span class="r" style="width:0.0%"></span></div>
+            </span>
+            <span>
+              <span class="ev-score">+1.74</span>
+              <time class="ev-time" datetime="2026-08-16T15:00:00.000Z">16 Aug, 15:00 UTC</time>
+            </span>
+          </button>
+          <div class="ev-body">
+            <p class="ev-n">VVV's attention climbed sharply this hour (social momentum +0.58 log-ratio, roughly a 78% jump) while onchain volume collapsed (-1.85 log-ratio, about an 84% drop), putting social in the top 12% and onchain in the bottom 14% of each series' own history. That combination pushes the divergence score to 1.74, a wide gap driven by rising attention outpacing sharply falling onchain activity. Worth watching over the next few hours whether the interval volume rebounds toward what the social spike would imply, or whether the social reading cools back down and the two series realign.</p>
+            <div class="ev-m">
+              <span>social <b>0.88</b></span>
+              <span>onchain <b>-0.86</b></span>
+              
+              <span class="ev-badge" title="Found by replaying recorded history, not by a live poll at the time">replay</span>
+            </div>
           </div>
         </article>
-        <article class="ev">
-          <header class="ev-h">
-            <span class="ev-tok">VELVET</span>
-            <span class="ev-score d-social">+1.84</span>
-            <span class="ev-dir">social ahead</span>
-            <time class="ev-t" datetime="2026-08-16T09:00:00.000Z">16 Aug, 09:00 UTC</time>
-            <span class="ev-bf" title="Found by replaying recorded history, not by a live poll at the time">replay</span>
-          </header>
-          <p class="ev-n">VELVET's onchain volume dropped sharply between intervals (a log ratio of -1.03, roughly a two-thirds decline) while social activity kept climbing (+0.79 log ratio) — a divergence score of 1.84 out of a possible 2. The onchain move sits in the bottom ~4% of this token's own history and the social move in the top ~12%, so both are unusually large in opposite directions. Worth watching over the next few hours whether interval volume stabilizes or extends the decline, and whether social attention (galaxy score 70.4, sentiment 84) holds or fades back toward the onchain trend.</p>
-          <div class="ev-m">
-            <span>social rank <b>0.88</b></span>
-            <span>onchain rank <b>-0.96</b></span>
-            
+        <article class="ev dn" data-token="VELVET" data-score="-1.82" data-dir="onchain-rising">
+          <button class="ev-top" type="button" aria-expanded="false">
+            <span>
+              <span class="ev-tk">VELVET</span>
+              <span class="ev-dir">onchain rising</span>
+            </span>
+            <span class="ev-bars" aria-hidden="true">
+              <div class="ev-bar a"><span class="l" style="width:89.3%"></span><span class="r" style="width:0.0%"></span></div>
+              <div class="ev-bar b"><span class="l" style="width:0.0%"></span><span class="r" style="width:92.9%"></span></div>
+            </span>
+            <span>
+              <span class="ev-score">-1.82</span>
+              <time class="ev-time" datetime="2026-08-16T10:00:00.000Z">16 Aug, 10:00 UTC</time>
+            </span>
+          </button>
+          <div class="ev-body">
+            <p class="ev-n">VELVET's onchain volume jumped sharply (log ratio +0.87, roughly a doubling) while social attention fell by a similar magnitude (-0.84), a divergence of -1.82 that's near the extreme end of the range. This onchain move sits in the top ~7% of the token's own volume history, even as social activity ranks in the bottom ~11% of its own history — so the gap is driven by unusually strong onchain flow against a quiet social backdrop, per the onchain-rising direction. Worth watching over the next few hours whether social volume and sentiment pick back up to catch up with the onchain move, or whether the volume surge fades back toward baseline.</p>
+            <div class="ev-m">
+              <span>social <b>-0.89</b></span>
+              <span>onchain <b>0.93</b></span>
+              
+              <span class="ev-badge" title="Found by replaying recorded history, not by a live poll at the time">replay</span>
+            </div>
           </div>
         </article>
-        <article class="ev">
-          <header class="ev-h">
-            <span class="ev-tok">VVV</span>
-            <span class="ev-score d-onchain">-1.83</span>
-            <span class="ev-dir">onchain ahead</span>
-            <time class="ev-t" datetime="2026-08-15T22:00:00.000Z">15 Aug, 22:00 UTC</time>
-            <span class="ev-bf" title="Found by replaying recorded history, not by a live poll at the time">replay</span>
-          </header>
-          <p class="ev-n">VVV's divergence is being driven by attention, not volume: social momentum fell sharply (log ratio -0.81, roughly a halving) while onchain activity climbed strongly (+1.91, nearly a septupling in interval volume), and that social drop sits in the bottom ~5% of this series' own history. Onchain's move ranks in the top ~12% of its history too, so both series moved unusually, just in opposite directions, producing a divergence score near the extreme end of the -2 to 2 range. Worth watching over the next few hours whether social volume and galaxy score stabilize or keep sliding, and whether the onchain surge holds or was a single-interval spike.</p>
-          <div class="ev-m">
-            <span>social rank <b>-0.95</b></span>
-            <span>onchain rank <b>0.88</b></span>
-            
+        <article class="ev up" data-token="VELVET" data-score="+1.84" data-dir="onchain-falling">
+          <button class="ev-top" type="button" aria-expanded="false">
+            <span>
+              <span class="ev-tk">VELVET</span>
+              <span class="ev-dir">onchain falling</span>
+            </span>
+            <span class="ev-bars" aria-hidden="true">
+              <div class="ev-bar a"><span class="l" style="width:0.0%"></span><span class="r" style="width:88.5%"></span></div>
+              <div class="ev-bar b"><span class="l" style="width:95.6%"></span><span class="r" style="width:0.0%"></span></div>
+            </span>
+            <span>
+              <span class="ev-score">+1.84</span>
+              <time class="ev-time" datetime="2026-08-16T09:00:00.000Z">16 Aug, 09:00 UTC</time>
+            </span>
+          </button>
+          <div class="ev-body">
+            <p class="ev-n">VELVET's onchain volume fell sharply hour-over-hour (log ratio -1.03, roughly a two-thirds drop), landing in the bottom of its own history at the 96th percentile of downside moves for this series. Social activity moved the opposite way, up 0.79 in log terms and in the top ~12% of its own upside moves, which is what's producing the 1.84 divergence score. Worth watching over the next few hours whether onchain volume stabilizes or extends its decline, and whether the elevated social attention (sentiment 84, galaxy score 70.4) persists or fades alongside it.</p>
+            <div class="ev-m">
+              <span>social <b>0.88</b></span>
+              <span>onchain <b>-0.96</b></span>
+              
+              <span class="ev-badge" title="Found by replaying recorded history, not by a live poll at the time">replay</span>
+            </div>
           </div>
         </article>
-        <article class="ev">
-          <header class="ev-h">
-            <span class="ev-tok">MORPHO</span>
-            <span class="ev-score d-onchain">-1.88</span>
-            <span class="ev-dir">onchain ahead</span>
-            <time class="ev-t" datetime="2026-08-15T18:00:00.000Z">15 Aug, 18:00 UTC</time>
-            <span class="ev-bf" title="Found by replaying recorded history, not by a live poll at the time">replay</span>
-          </header>
-          <p class="ev-n">MORPHO's social attention dropped sharply (log ratio -1.31, roughly a 73% pullback in hourly social volume) while onchain activity surged (log ratio +2.67, close to a 14x jump in interval volume) — a divergence score of -1.88 out of a possible 2. Social sits at the bottom 4.5% of its own historical moves and onchain near the top 8%, so both readings are extreme relative to this token's own history, with social-falling named as the driver. Worth watching over the next few hours whether social volume and sentiment stabilize or continue declining, and whether the onchain surge persists at this pace or was a one-off spike in interval volume.</p>
-          <div class="ev-m">
-            <span>social rank <b>-0.96</b></span>
-            <span>onchain rank <b>0.92</b></span>
-            
+        <article class="ev dn" data-token="VVV" data-score="-1.83" data-dir="social-falling">
+          <button class="ev-top" type="button" aria-expanded="false">
+            <span>
+              <span class="ev-tk">VVV</span>
+              <span class="ev-dir">social falling</span>
+            </span>
+            <span class="ev-bars" aria-hidden="true">
+              <div class="ev-bar a"><span class="l" style="width:95.4%"></span><span class="r" style="width:0.0%"></span></div>
+              <div class="ev-bar b"><span class="l" style="width:0.0%"></span><span class="r" style="width:87.6%"></span></div>
+            </span>
+            <span>
+              <span class="ev-score">-1.83</span>
+              <time class="ev-time" datetime="2026-08-15T22:00:00.000Z">15 Aug, 22:00 UTC</time>
+            </span>
+          </button>
+          <div class="ev-body">
+            <p class="ev-n">VVV's social attention dropped sharply this hour—a log ratio of -0.81, roughly halving—landing in the bottom 4.6% of the token's own history for that series. Onchain volume moved the opposite way, up a log ratio of 1.91 (a near-tripling) and in the top 87.6% of its own range, so the -1.83 divergence score reflects attention falling while activity climbed. Worth watching over the next few hours whether social volume and sentiment stabilize or continue to slide, and whether the onchain volume surge holds or was a single-interval spike.</p>
+            <div class="ev-m">
+              <span>social <b>-0.95</b></span>
+              <span>onchain <b>0.88</b></span>
+              
+              <span class="ev-badge" title="Found by replaying recorded history, not by a live poll at the time">replay</span>
+            </div>
           </div>
         </article>
-        <article class="ev">
-          <header class="ev-h">
-            <span class="ev-tok">VELVET</span>
-            <span class="ev-score d-social">+1.76</span>
-            <span class="ev-dir">social ahead</span>
-            <time class="ev-t" datetime="2026-08-15T16:00:00.000Z">15 Aug, 16:00 UTC</time>
-            <span class="ev-bf" title="Found by replaying recorded history, not by a live poll at the time">replay</span>
-          </header>
-          <p class="ev-n">VELVET's onchain volume dropped sharply this hour (log ratio -1.15, roughly a halving-plus), landing in the bottom ~97% of its own historical moves for this series, while social activity rose (log ratio +0.51) and sits in the top ~79% of its own history — a divergence score of 1.76. Onchain is the clear driver here, per the direction flag: volume fell faster than attention. Worth checking over the next few hours whether interval volume stabilizes or continues to fade, and whether the elevated social chatter (galaxy score 45.9, sentiment 83) persists or cools off in step.</p>
-          <div class="ev-m">
-            <span>social rank <b>0.79</b></span>
-            <span>onchain rank <b>-0.97</b></span>
-            
+        <article class="ev dn" data-token="MORPHO" data-score="-1.88" data-dir="social-falling">
+          <button class="ev-top" type="button" aria-expanded="false">
+            <span>
+              <span class="ev-tk">MORPHO</span>
+              <span class="ev-dir">social falling</span>
+            </span>
+            <span class="ev-bars" aria-hidden="true">
+              <div class="ev-bar a"><span class="l" style="width:95.5%"></span><span class="r" style="width:0.0%"></span></div>
+              <div class="ev-bar b"><span class="l" style="width:0.0%"></span><span class="r" style="width:92.3%"></span></div>
+            </span>
+            <span>
+              <span class="ev-score">-1.88</span>
+              <time class="ev-time" datetime="2026-08-15T18:00:00.000Z">15 Aug, 18:00 UTC</time>
+            </span>
+          </button>
+          <div class="ev-body">
+            <p class="ev-n">MORPHO's attention dropped sharply this hour (social momentum log ratio -1.31, roughly a 73% pullback) while onchain volume surged (log ratio +2.67, near a fourfold jump), a combination that's near-extreme for both series individually — social sits in the bottom 4-5% of its own history and onchain in the top 8%. The divergence score of -1.88 reflects that split: attention falling faster than volume is rising. Worth watching over the next few hours whether social volume and sentiment stabilize or continue falling, and whether the onchain surge holds or was a single-interval spike.</p>
+            <div class="ev-m">
+              <span>social <b>-0.96</b></span>
+              <span>onchain <b>0.92</b></span>
+              
+              <span class="ev-badge" title="Found by replaying recorded history, not by a live poll at the time">replay</span>
+            </div>
           </div>
         </article>
-        <article class="ev">
-          <header class="ev-h">
-            <span class="ev-tok">VELVET</span>
-            <span class="ev-score d-onchain">-1.75</span>
-            <span class="ev-dir">onchain ahead</span>
-            <time class="ev-t" datetime="2026-08-15T15:00:00.000Z">15 Aug, 15:00 UTC</time>
-            <span class="ev-bf" title="Found by replaying recorded history, not by a live poll at the time">replay</span>
-          </header>
-          <p class="ev-n">VELVET's onchain volume jumped sharply between intervals (log ratio +1.77, roughly a 5-6x move) while social activity pulled back (-0.45 log ratio) over the same hour. That onchain move sits in the top 1% of this token's own history (percentile 0.99), against a social pullback that's still a fairly ordinary-sized move in the other direction (-0.75 percentile), giving a divergence score of -1.75. Worth checking over the next few hours whether social volume and sentiment start catching up to the onchain surge, or whether the elevated transaction pace itself fades back toward baseline.</p>
-          <div class="ev-m">
-            <span>social rank <b>-0.75</b></span>
-            <span>onchain rank <b>0.99</b></span>
-            
+        <article class="ev up" data-token="VELVET" data-score="+1.76" data-dir="onchain-falling">
+          <button class="ev-top" type="button" aria-expanded="false">
+            <span>
+              <span class="ev-tk">VELVET</span>
+              <span class="ev-dir">onchain falling</span>
+            </span>
+            <span class="ev-bars" aria-hidden="true">
+              <div class="ev-bar a"><span class="l" style="width:0.0%"></span><span class="r" style="width:78.6%"></span></div>
+              <div class="ev-bar b"><span class="l" style="width:96.9%"></span><span class="r" style="width:0.0%"></span></div>
+            </span>
+            <span>
+              <span class="ev-score">+1.76</span>
+              <time class="ev-time" datetime="2026-08-15T16:00:00.000Z">15 Aug, 16:00 UTC</time>
+            </span>
+          </button>
+          <div class="ev-body">
+            <p class="ev-n">VELVET's onchain volume dropped sharply hour-over-hour (log ratio -1.15, roughly a two-thirds decline), landing in the bottom ~3% of this token's own history of moves. Social attention moved the opposite way, up 0.51 log-ratio and in the top ~21% of its own range, so the divergence score of 1.76 is being driven by onchain activity falling out from under still-rising social interest. Worth checking over the next few hours whether the interval volume stabilizes or keeps decaying while social volume and sentiment hold — that's the gap to watch, not a signal either way.</p>
+            <div class="ev-m">
+              <span>social <b>0.79</b></span>
+              <span>onchain <b>-0.97</b></span>
+              
+              <span class="ev-badge" title="Found by replaying recorded history, not by a live poll at the time">replay</span>
+            </div>
           </div>
         </article>
-        <article class="ev">
-          <header class="ev-h">
-            <span class="ev-tok">VELVET</span>
-            <span class="ev-score d-social">+1.81</span>
-            <span class="ev-dir">social ahead</span>
-            <time class="ev-t" datetime="2026-08-15T10:00:00.000Z">15 Aug, 10:00 UTC</time>
-            <span class="ev-bf" title="Found by replaying recorded history, not by a live poll at the time">replay</span>
-          </header>
-          <p class="ev-n">VELVET's onchain volume fell sharply between the last two hourly intervals (log ratio -0.82, roughly a halving), a move in the bottom 8% of its own history, while social attention rose (+0.85 log ratio, top 11%). That split pushes the divergence score to 1.81, near the top of its possible range, with the drop in onchain activity driving the gap per the direction flag. Worth watching over the next few hours whether intervalVolumeUsd stabilizes or keeps falling, and whether social volume and sentiment hold or start to cool alongside it.</p>
-          <div class="ev-m">
-            <span>social rank <b>0.89</b></span>
-            <span>onchain rank <b>-0.92</b></span>
-            
+        <article class="ev up" data-token="POD" data-score="+1.83" data-dir="social-rising">
+          <button class="ev-top" type="button" aria-expanded="false">
+            <span>
+              <span class="ev-tk">POD</span>
+              <span class="ev-dir">social rising</span>
+            </span>
+            <span class="ev-bars" aria-hidden="true">
+              <div class="ev-bar a"><span class="l" style="width:0.0%"></span><span class="r" style="width:99.8%"></span></div>
+              <div class="ev-bar b"><span class="l" style="width:83.5%"></span><span class="r" style="width:0.0%"></span></div>
+            </span>
+            <span>
+              <span class="ev-score">+1.83</span>
+              <time class="ev-time" datetime="2026-08-15T16:00:00.000Z">15 Aug, 16:00 UTC</time>
+            </span>
+          </button>
+          <div class="ev-body">
+            <p class="ev-n">POD's social attention spiked hard: the hourly log-ratio of +3.97 (call it a ~53x jump in mentions) sits in the top 0.2% of this token's own social moves, while onchain volume over the same window fell sharply (log-ratio -4.15), landing in the bottom ~8% of its own history. That split — attention climbing near a record while onchain activity drops off — is what's driving the 1.83 divergence score, per the social-rising direction. Worth watching over the next few hours whether intervalVolumeUsd (currently just ~$79) picks back up alongside the social surge or stays flat, which would tell you whether the two series reconverge or keep pulling apart.</p>
+            <div class="ev-m">
+              <span>social <b>1.00</b></span>
+              <span>onchain <b>-0.83</b></span>
+              
+              <span class="ev-badge" title="Found by replaying recorded history, not by a live poll at the time">replay</span>
+            </div>
           </div>
         </article>
-        <article class="ev">
-          <header class="ev-h">
-            <span class="ev-tok">TIBBIR</span>
-            <span class="ev-score d-social">+1.80</span>
-            <span class="ev-dir">social ahead</span>
-            <time class="ev-t" datetime="2026-08-14T11:00:00.000Z">14 Aug, 11:00 UTC</time>
-            <span class="ev-bf" title="Found by replaying recorded history, not by a live poll at the time">replay</span>
-          </header>
-          <p class="ev-n">TIBBIR's social attention jumped sharply (log ratio +1.15, roughly a 3x hour-over-hour move) while onchain activity fell hard (log ratio -2.84, a steep drop), and the social move sits in the top 1% of this token's own history versus a bottom-20th-percentile onchain move. The divergence score of 1.80 reflects attention climbing while volume outpaced it in the opposite direction, per the social-rising classification. Worth watching over the next few hours whether intervalVolumeUsd picks back up toward levels consistent with the social spike, or whether social volume and galaxy score cool off as the attention burst fades.</p>
-          <div class="ev-m">
-            <span>social rank <b>0.99</b></span>
-            <span>onchain rank <b>-0.81</b></span>
-            
+        <article class="ev dn" data-token="VELVET" data-score="-1.75" data-dir="onchain-rising">
+          <button class="ev-top" type="button" aria-expanded="false">
+            <span>
+              <span class="ev-tk">VELVET</span>
+              <span class="ev-dir">onchain rising</span>
+            </span>
+            <span class="ev-bars" aria-hidden="true">
+              <div class="ev-bar a"><span class="l" style="width:75.5%"></span><span class="r" style="width:0.0%"></span></div>
+              <div class="ev-bar b"><span class="l" style="width:0.0%"></span><span class="r" style="width:99.2%"></span></div>
+            </span>
+            <span>
+              <span class="ev-score">-1.75</span>
+              <time class="ev-time" datetime="2026-08-15T15:00:00.000Z">15 Aug, 15:00 UTC</time>
+            </span>
+          </button>
+          <div class="ev-body">
+            <p class="ev-n">VELVET's onchain volume jumped sharply (log-ratio +1.77, a top-1% move for this token's own history) while social activity pulled back (-0.45 log-ratio, in the bottom quartile of its typical swings) — a wide onchain-rising divergence with a score of -1.75. The gap is driven almost entirely by the volume spike outrunning attention, not the other way around. Worth watching over the next few hours: whether social metrics (galaxy score, volume, sentiment) start catching up to the onchain surge, or whether the onchain volume cools back toward baseline, either of which would close the gap.</p>
+            <div class="ev-m">
+              <span>social <b>-0.75</b></span>
+              <span>onchain <b>0.99</b></span>
+              
+              <span class="ev-badge" title="Found by replaying recorded history, not by a live poll at the time">replay</span>
+            </div>
           </div>
         </article>
-        <article class="ev">
-          <header class="ev-h">
-            <span class="ev-tok">AERO</span>
-            <span class="ev-score d-social">+1.83</span>
-            <span class="ev-dir">social ahead</span>
-            <time class="ev-t" datetime="2026-08-14T07:00:00.000Z">14 Aug, 07:00 UTC</time>
-            <span class="ev-bf" title="Found by replaying recorded history, not by a live poll at the time">replay</span>
-          </header>
-          <p class="ev-n">AERO's social attention jumped hard — a log ratio of +1.16 hour-over-hour, which lands in the top 2-3% of this token's own history of social moves — while onchain activity fell sharply, a -2.09 log ratio that's itself among the largest drops in its own history. That combination puts the divergence score near the top of its possible range (1.83 of 2), with social-rising named as the driver: attention climbing while volume/liquidity activity moved the opposite way. Worth watching over the next few hours is whether intervalVolumeUsd starts climbing to meet the social spike or stays depressed, which would tell you whether the gap is closing or holding.</p>
-          <div class="ev-m">
-            <span>social rank <b>0.98</b></span>
-            <span>onchain rank <b>-0.86</b></span>
-            
+        <article class="ev up" data-token="VELVET" data-score="+1.81" data-dir="onchain-falling">
+          <button class="ev-top" type="button" aria-expanded="false">
+            <span>
+              <span class="ev-tk">VELVET</span>
+              <span class="ev-dir">onchain falling</span>
+            </span>
+            <span class="ev-bars" aria-hidden="true">
+              <div class="ev-bar a"><span class="l" style="width:0.0%"></span><span class="r" style="width:89.2%"></span></div>
+              <div class="ev-bar b"><span class="l" style="width:91.9%"></span><span class="r" style="width:0.0%"></span></div>
+            </span>
+            <span>
+              <span class="ev-score">+1.81</span>
+              <time class="ev-time" datetime="2026-08-15T10:00:00.000Z">15 Aug, 10:00 UTC</time>
+            </span>
+          </button>
+          <div class="ev-body">
+            <p class="ev-n">VELVET's onchain volume dropped sharply hour-over-hour (log ratio -0.82, roughly halving), a move in the bottom ~92% of this token's own history for onchain swings, while social attention rose (+0.85 log ratio, top ~89% of its own social history) — the divergence score of 1.81 reflects onchain falling faster than social, not the reverse. Galaxy score and sentiment remain elevated (76.8, 88), so chatter hasn't followed volume down yet. Worth watching over the next few hours whether intervalVolumeUsd stabilizes or continues to fall, and whether social metrics hold or start easing back toward the onchain move.</p>
+            <div class="ev-m">
+              <span>social <b>0.89</b></span>
+              <span>onchain <b>-0.92</b></span>
+              
+              <span class="ev-badge" title="Found by replaying recorded history, not by a live poll at the time">replay</span>
+            </div>
           </div>
         </article>
-        <article class="ev">
-          <header class="ev-h">
-            <span class="ev-tok">VELVET</span>
-            <span class="ev-score d-social">+1.94</span>
-            <span class="ev-dir">social ahead</span>
-            <time class="ev-t" datetime="2026-08-14T06:00:00.000Z">14 Aug, 06:00 UTC</time>
-            <span class="ev-bf" title="Found by replaying recorded history, not by a live poll at the time">replay</span>
-          </header>
-          <p class="ev-n">VELVET's social attention spiked hard — a log-ratio of +1.93 hour-over-hour, putting this move in the top 0.6% of the token's own history for social activity — while onchain volume moved the opposite way, down at a log-ratio of -0.92, itself a bottom-6% reading for this series. That combination pushes the divergence score to 1.94, near the ceiling of the [-2,2] range, confirming attention climbed sharply while onchain activity contracted rather than following. Worth watching over the next few hours whether intervalVolumeUsd starts climbing back toward the social move or whether the social spike cools off on its own — either would tell you more than the current snapshot does.</p>
-          <div class="ev-m">
-            <span>social rank <b>0.99</b></span>
-            <span>onchain rank <b>-0.94</b></span>
-            
+        <article class="ev up" data-token="TIBBIR" data-score="+1.80" data-dir="social-rising">
+          <button class="ev-top" type="button" aria-expanded="false">
+            <span>
+              <span class="ev-tk">TIBBIR</span>
+              <span class="ev-dir">social rising</span>
+            </span>
+            <span class="ev-bars" aria-hidden="true">
+              <div class="ev-bar a"><span class="l" style="width:0.0%"></span><span class="r" style="width:99.1%"></span></div>
+              <div class="ev-bar b"><span class="l" style="width:80.9%"></span><span class="r" style="width:0.0%"></span></div>
+            </span>
+            <span>
+              <span class="ev-score">+1.80</span>
+              <time class="ev-time" datetime="2026-08-14T11:00:00.000Z">14 Aug, 11:00 UTC</time>
+            </span>
+          </button>
+          <div class="ev-body">
+            <p class="ev-n">TIBBIR's social activity jumped sharply this hour (log ratio +1.15, roughly a 3x move) while onchain volume fell hard (-2.84 log ratio) over the same window — a divergence score of 1.80, near the top of the possible range. The social move sits in the top 1% of this token's own history, while the onchain drop ranks in the bottom ~19%, so attention climbed while trading activity thinned out. Worth watching over the next few hours whether intervalVolumeUsd picks back up to meet the attention spike or whether social interest cools off instead.</p>
+            <div class="ev-m">
+              <span>social <b>0.99</b></span>
+              <span>onchain <b>-0.81</b></span>
+              
+              <span class="ev-badge" title="Found by replaying recorded history, not by a live poll at the time">replay</span>
+            </div>
           </div>
         </article>
-        <article class="ev">
-          <header class="ev-h">
-            <span class="ev-tok">AERO</span>
-            <span class="ev-score d-social">+1.88</span>
-            <span class="ev-dir">social ahead</span>
-            <time class="ev-t" datetime="2026-08-12T22:00:00.000Z">12 Aug, 22:00 UTC</time>
-            <span class="ev-bf" title="Found by replaying recorded history, not by a live poll at the time">replay</span>
-          </header>
-          <p class="ev-n">AERO's social attention jumped sharply (log ratio +0.85, roughly a doubling in hourly mentions) while onchain activity collapsed (log ratio -3.35, a steep drop-off), a pairing that lands in the top ~6% and bottom ~6% of each series' own history respectively. That combination pushes the divergence score to 1.88, near the extreme end of the [-2, 2] range, with the direction field confirming social attention is the side driving the gap. Worth watching over the next few hours whether onchain volume picks back up to meet the attention spike, or whether the social surge cools off on its own.</p>
-          <div class="ev-m">
-            <span>social rank <b>0.94</b></span>
-            <span>onchain rank <b>-0.94</b></span>
-            
+        <article class="ev dn" data-token="DOGINME" data-score="-1.70" data-dir="social-falling">
+          <button class="ev-top" type="button" aria-expanded="false">
+            <span>
+              <span class="ev-tk">DOGINME</span>
+              <span class="ev-dir">social falling</span>
+            </span>
+            <span class="ev-bars" aria-hidden="true">
+              <div class="ev-bar a"><span class="l" style="width:86.4%"></span><span class="r" style="width:0.0%"></span></div>
+              <div class="ev-bar b"><span class="l" style="width:0.0%"></span><span class="r" style="width:83.6%"></span></div>
+            </span>
+            <span>
+              <span class="ev-score">-1.70</span>
+              <time class="ev-time" datetime="2026-08-14T08:00:00.000Z">14 Aug, 08:00 UTC</time>
+            </span>
+          </button>
+          <div class="ev-body">
+            <p class="ev-n">DOGINME's gap is driven by social attention dropping sharply: the hourly social signal fell to about 41% of its prior level (log ratio -0.89), a move in the bottom ~14% of this token's own history for social swings. Onchain activity moved the opposite way, up hard on the hour-over-hour measure (log ratio +4.55, a top-~92nd-percentile move for this series), which is why the divergence score sits near the extreme end at -1.7. Worth watching over the next few hours whether social volume stabilizes or keeps sliding, and whether the onchain surge shows up as sustained interval volume rather than a one-hour spike.</p>
+            <div class="ev-m">
+              <span>social <b>-0.86</b></span>
+              <span>onchain <b>0.84</b></span>
+              
+              <span class="ev-badge" title="Found by replaying recorded history, not by a live poll at the time">replay</span>
+            </div>
           </div>
         </article>
-        <article class="ev">
-          <header class="ev-h">
-            <span class="ev-tok">AERO</span>
-            <span class="ev-score d-social">+1.70</span>
-            <span class="ev-dir">social ahead</span>
-            <time class="ev-t" datetime="2026-08-12T13:00:00.000Z">12 Aug, 13:00 UTC</time>
-            <span class="ev-bf" title="Found by replaying recorded history, not by a live poll at the time">replay</span>
-          </header>
-          <p class="ev-n">AERO's social attention jumped sharply this hour (log ratio +0.88, roughly a doubling) while onchain volume fell hard (log ratio -1.40, more than halving), and the social move sits in the top 5% of this token's own history versus a bottom-quartile onchain print. That combination puts the divergence score near the top of its possible range at 1.70, with attention climbing and clearly outpacing volume. Worth watching over the next few hours whether intervalVolumeUsd starts recovering toward the level implied by the social spike, or whether the social surge cools off instead - either would close the gap from a different side.</p>
-          <div class="ev-m">
-            <span>social rank <b>0.95</b></span>
-            <span>onchain rank <b>-0.75</b></span>
-            
+        <article class="ev up" data-token="VELVET" data-score="+1.94" data-dir="social-rising">
+          <button class="ev-top" type="button" aria-expanded="false">
+            <span>
+              <span class="ev-tk">VELVET</span>
+              <span class="ev-dir">social rising</span>
+            </span>
+            <span class="ev-bars" aria-hidden="true">
+              <div class="ev-bar a"><span class="l" style="width:0.0%"></span><span class="r" style="width:99.4%"></span></div>
+              <div class="ev-bar b"><span class="l" style="width:94.4%"></span><span class="r" style="width:0.0%"></span></div>
+            </span>
+            <span>
+              <span class="ev-score">+1.94</span>
+              <time class="ev-time" datetime="2026-08-14T06:00:00.000Z">14 Aug, 06:00 UTC</time>
+            </span>
+          </button>
+          <div class="ev-body">
+            <p class="ev-n">VELVET's social attention spiked hard, roughly a 6.9x jump in hourly mentions (log ratio +1.93), landing in the top 1% of this token's own social moves. Onchain activity moved the opposite way, down roughly 60% on the hour (log ratio -0.92), itself an extreme low for this series at a -0.94 percentile. That combination — near-record attention surge against a near-record volume drop — produces the 1.94 divergence score, with social clearly the driver per the direction field. Worth watching over the next few hours whether intervalVolumeUsd picks back up to meet the social spike or whether the attention reading cools off on its own.</p>
+            <div class="ev-m">
+              <span>social <b>0.99</b></span>
+              <span>onchain <b>-0.94</b></span>
+              
+              <span class="ev-badge" title="Found by replaying recorded history, not by a live poll at the time">replay</span>
+            </div>
           </div>
         </article>
       </div>
       <!--FEED:END-->
-    </div>
   </section>
 
-  <section>
-    <div class="rail"><b>07</b><br />Coverage</div>
-    <div class="body">
-      <h2>What it watches</h2>
-      <p>
-        Five Base tokens, each screened on both axes: full hourly social coverage with
-        interactions that actually vary, and a pool with dense, gap-free history. A token that
-        fails either test produces no signal no matter how liquid it looks.
-      </p>
-      <div class="tbl-scroll">
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">Token</th>
-              <th scope="col">Pool</th>
-              <th scope="col">Liquidity</th>
-              <th scope="col">Hours</th>
-              <th scope="col">RPC check</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="sym">AERO</td><td>AERO / USDC</td><td class="n">$26.6M</td>
-              <td class="n">720</td><td><span class="pill yes">supported</span></td>
-            </tr>
-            <tr>
-              <td class="sym">VIRTUAL</td><td>VIRTUAL / WETH</td><td class="n">$4.2M</td>
-              <td class="n">574</td><td><span class="pill yes">supported</span></td>
-            </tr>
-            <tr>
-              <td class="sym">BNKR</td><td>BNKR / WETH</td><td class="n">$1.5M</td>
-              <td class="n">717</td><td><span class="pill no">v3 pool</span></td>
-            </tr>
-            <tr>
-              <td class="sym">MORPHO</td><td>MORPHO / WETH</td><td class="n">$1.4M</td>
-              <td class="n">720</td><td><span class="pill no">v3 pool</span></td>
-            </tr>
-            <tr>
-              <td class="sym">KEYCAT</td><td>KEYCAT / WETH</td><td class="n">$560K</td>
-              <td class="n">686</td><td><span class="pill yes">supported</span></td>
-            </tr>
-          </tbody>
-        </table>
+  <section class="rv">
+    <div class="shead"><span class="ix m">08</span><span class="lbl">Operation</span></div>
+    <div class="two">
+      <div><h2>Running continuously</h2></div>
+      <div>
+        <p>
+          A scheduled job polls every hour, rebuilding its baseline from the provider APIs rather than
+          trusting cached state — a stale cache could only ever feed the engine an older picture than
+          the source. A delayed or missed run costs nothing and repairs itself on the next pass.
+        </p>
+        <p>
+          Readings are keyed to the hourly bucket they describe, not the clock time they were taken,
+          so repeated runs cannot double-count an hour. Narration is deduplicated the same way.
+        </p>
       </div>
-      <p style="margin-top:1.2rem">
-        KEYCAT is in the set on purpose. It is the thinnest pool of the five, which makes it the
-        case where the log-ratio fix earns its place.
-      </p>
     </div>
   </section>
-
-  <section>
-    <div class="rail"><b>08</b><br />Operation</div>
-    <div class="body">
-      <h2>Running continuously</h2>
-      <p>
-        A scheduled job polls every hour, rebuilding its baseline from the provider APIs rather
-        than trusting cached state — a stale cache could only ever feed the engine an older
-        picture than the source. A delayed or missed run therefore costs nothing and repairs
-        itself on the next pass.
-      </p>
-      <p>
-        Readings are keyed to the hourly bucket they describe, not to the clock time they were
-        taken, so repeated runs cannot double-count an hour. Narration is deduplicated the same
-        way: an hour that has already been explained is never explained twice.
-      </p>
-    </div>
-  </section>
-
-  <footer>
-    <div class="rail"><b>Drift-d</b><br />Orion Builder<br />Hackathon 2026</div>
-    <div>
-      <div class="links">
-        <a href="https://github.com/0xileri/drift" rel="noopener">GitHub</a>
-        <a href="https://github.com/0xileri/drift/blob/main/data/feed.json" rel="noopener">Raw feed (JSON)</a>
-        <a href="https://x.com/drift_diverg" rel="noopener">X</a>
-        <a href="https://t.me/+Vx2_CS29IhEzNTY0" rel="noopener">Telegram</a>
-      </div>
-      <p class="fine">
-        Built for the Orion Builder Hackathon on Base by
-        <a href="https://x.com/0xileri" rel="noopener">@0xileri</a>.
-        Drift-d reports measurements, not advice — a divergence is an observation about two data
-        series, and nothing on this page is a recommendation to buy or sell anything.
-      </p>
-    </div>
-  </footer>
 </div>
 
+<footer>
+  <div class="wrap">
+    <div class="foot-mark">
+      <svg viewBox="340 175 575 850" role="img" aria-label="Drift-d">
+        <mask id="fm">
+          <rect x="340" y="175" width="575" height="850" fill="#fff" />
+          <circle cx="605" cy="645" r="140" fill="#000" />
+          <line x1="757" y1="170" x2="500" y2="1040" stroke="#000" stroke-width="52" />
+        </mask>
+        <g mask="url(#fm)" fill="#98a2ab"><circle cx="605" cy="645" r="250" /><path d="M765 268 L895 200 L895 700 L765 700 Z" /></g>
+        <g stroke="#e4622a" stroke-width="24"><line x1="737" y1="262" x2="667" y2="500" /><line x1="580" y1="792" x2="518" y2="1002" /></g>
+      </svg>
+      <span class="n">Drift-d</span>
+    </div>
+
+    <div class="foot-stats">
+      <span>DIVERGENCE AGENT <b>· BUILT ON BASE</b></span>
+      <span>TOKENS <b>12</b></span>
+      <span>EVENTS <b id="ftEv">—</b></span>
+      <span>MEASUREMENTS, <b>NOT ADVICE</b></span>
+    </div>
+
+    <div class="foot-links">
+      <a href="https://github.com/0xileri/drift" rel="noopener">GitHub</a>
+      <a href="https://github.com/0xileri/drift/blob/main/data/feed.json" rel="noopener">Raw feed</a>
+      <a href="https://x.com/drift_diverg" rel="noopener">X</a>
+      <a href="https://t.me/+Vx2_CS29IhEzNTY0" rel="noopener">Telegram</a>
+    </div>
+
+    <p class="foot-fine">
+      Built for the Orion Builder Hackathon by
+      <a href="https://x.com/0xileri" rel="noopener" style="color:var(--ink-dim)">@0xileri</a>.
+      A divergence is an observation about two data series. Nothing here is a recommendation to buy
+      or sell anything.
+    </p>
+
+    <svg class="foot-scope" id="footScope" viewBox="0 0 1000 56" preserveAspectRatio="none" aria-hidden="true"></svg>
+  </div>
+</footer>
+
 <script>
-  // Real engine output: [hourOffset, socialRank, onchainRank] for AERO, 8-15 Aug 2026.
-  const D = [[0,-4.03,0.93],[1,0.158,0.069],[2,0.575,-2.803],[3,0.108,3.258],[4,-0.644,-0.215],[5,-0.238,0.117],[6,-0.383,-0.255],[7,-0.934,0.655],[8,1.61,-1.723],[9,0.296,-1.359],[10,-1.551,0.293],[11,1.28,-0.493],[12,3.174,-2.04],[13,0.062,0.911],[14,4.656,0.557],[15,-2.807,2.353],[16,0.696,-3.074],[17,-2.128,0.545],[18,0.458,3.463],[19,-1.873,-2.324],[20,0.137,2.416],[21,0.563,-1.815],[22,0.013,1.899],[23,-0.528,-1.213],[24,-0.476,1.495],[25,0.123,0.19],[26,-0.242,-1.589],[27,1.195,1.093],[28,0.29,-1.5],[29,-0.5,1.349],[30,0.18,-3.172],[31,0.743,1.966],[32,-0.407,1.489],[33,-0.699,2.21],[34,1.661,-2.116],[35,-0.325,-3.143],[36,0.278,-1.133],[37,1.052,4.722],[38,1.501,-0.23],[39,1.194,-1.775],[40,0.381,1.229],[41,1.419,-0.771],[42,-1.187,2.411],[43,-1.55,-3.094],[44,1.099,-1.771],[45,-0.601,3.914],[46,4.379,1.28],[47,-2.876,-0.302],[48,1.038,0.257],[49,-1.425,-0.605],[50,0.964,0.242],[51,1.04,-0.126],[52,10,-1.291],[53,-0.749,0.336],[54,-8.935,-2.181],[55,-0.285,0.777],[56,0.464,0.789],[57,0.282,1.199],[58,0.842,-2.669],[59,0.745,3.976],[60,-0.673,0.431],[61,2.436,-0.482],[62,-1.916,-0.694],[63,-0.819,0.154],[64,0.243,-1.937],[65,0.328,-1.755],[66,0.477,-1.531],[67,-0.966,4.792],[68,-0.986,-1.445],[69,1.353,1.415],[70,5.558,-1.904],[71,0.014,-0.124],[72,-0.401,2.04],[73,1.88,-0.124],[74,0.144,-1.537],[75,0.198,-3.476],[76,0.287,2.632],[77,0.032,1.974],[78,-2.541,-3.269],[79,-0.2,2.869],[80,0.017,-0.511],[81,0.622,1.09],[82,0.802,1.258],[83,1.226,0.109],[84,5.13,-1.017],[85,-1.193,0.419],[86,0.149,0.851],[87,-2.797,-0.363],[88,1.601,-1.305],[89,-1.809,-0.272],[90,0.895,0.448],[91,-0.977,1.014],[92,-0.252,-0.883],[93,-0.368,-0.51],[94,0.288,1.183],[95,0.709,-4.464],[96,-2.504,2.291],[97,1.035,0.496],[98,0.291,0.119],[99,-0.319,-0.166],[100,-0.522,0.678],[101,-1.447,-3.187],[102,7.732,4.007],[103,-9.645,-4.856],[104,0.212,1.231],[105,-0.916,4.37],[106,0.858,-0.891],[107,-0.125,-4.804],[108,0.321,6.373],[109,4.026,-1.279],[110,0.479,0.904],[111,-0.162,-0.792],[112,-1.177,0.255],[113,-0.438,-2.962],[114,0.462,2.022],[115,-0.097,1.23],[116,-0.071,-4.019],[117,0.294,4.073],[118,3.917,-3.044],[119,-2.648,-1.894],[120,0.455,4.112],[121,0.642,-1.251],[122,-1.858,0.242],[123,1.251,0.105],[124,-0.822,1.735],[125,-0.514,0.324],[126,-0.144,-0.505],[127,-0.201,-2.09],[128,-0.822,2.151],[129,0.153,0.324],[130,1.53,-0.14],[131,-0.077,0.284],[132,-0.291,-0.208],[133,2.061,-0.155],[134,3.817,0.375],[135,-1.194,-0.034],[136,-0.831,0.264],[137,0.31,-1.462],[138,0.557,0.094],[139,1.824,-0.678],[140,2.166,1.04],[141,-1.063,-1.197],[142,-2.199,1.298],[143,0.52,-0.617],[144,-1.532,0.299],[145,1.122,-0.411],[146,-0.654,-4.783],[147,1.225,4.889],[148,-0.474,0.249],[149,0.563,-0.571],[150,-0.298,1.738],[151,5.327,-1.904],[152,-3.33,1.111],[153,-0.02,0.564],[154,0.32,-0.982],[155,-0.785,-3.325],[156,-0.339,4.182],[157,-0.633,-1.895],[158,1.78,1.226],[159,-0.586,0.98],[160,0.257,-0.322],[161,-0.143,-0.01],[162,0.153,-1.515],[163,-0.989,-1.878],[164,3.676,-0.708],[165,-2.962,1.223],[166,0.256,-1.967],[167,-0.839,4.516],[168,1.102,-0.765]];
+(() => {
+  "use strict";
+  const RM = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const $ = (id) => document.getElementById(id);
+  const NS = "http://www.w3.org/2000/svg";
+  const el = (t, a) => { const n = document.createElementNS(NS, t); for (const k in a) n.setAttribute(k, a[k]); return n; };
 
-  const THRESHOLD = 6;
-  const W = 900, H = 300, PAD_L = 34, PAD_R = 10, PAD_T = 14, PAD_B = 22;
-  const iw = W - PAD_L - PAD_R, ih = H - PAD_T - PAD_B;
+  /* ===================== hero scope: the product, animated =================
+     Two signals travel right to left. They wander independently, occasionally
+     separating far enough to cross the threshold, at which point the gap is
+     shaded and a marker stamped. Not decoration: it is the same shape the
+     engine looks for, drawn live. */
+  const cv = $("scope");
+  if (cv) {
+    const ctx = cv.getContext("2d");
+    const THRESH = 0.62;
+    const N = 190;
+    const a = new Array(N).fill(0);
+    const b = new Array(N).fill(0);
+    const marks = [];
+    let W = 0, H = 0, pa = 0, pb = 0, t = 0, held = -99;
 
-  const lim = 10.5;
-  const x = i => PAD_L + (i / (D.length - 1)) * iw;
-  const y = v => PAD_T + ih / 2 - (v / lim) * (ih / 2);
+    const size = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      W = cv.clientWidth; H = cv.clientHeight;
+      cv.width = Math.max(1, W * dpr); cv.height = Math.max(1, H * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+    size();
+    addEventListener("resize", size);
 
-  const el = (tag, attrs) => {
-    const n = document.createElementNS("http://www.w3.org/2000/svg", tag);
-    for (const k in attrs) n.setAttribute(k, attrs[k]);
-    return n;
-  };
+    // Mean-reverting random walks, so separations happen on their own rather
+    // than on a scripted timer.
+    const step = () => {
+      t++;
+      pa += (Math.random() - 0.5) * 0.17 - pa * 0.045;
+      pb += (Math.random() - 0.5) * 0.17 - pb * 0.045;
+      if (Math.random() < 0.012) pa += (Math.random() - 0.5) * 1.5;
+      if (Math.random() < 0.010) pb += (Math.random() - 0.5) * 1.3;
+      pa = Math.max(-1, Math.min(1, pa));
+      pb = Math.max(-1, Math.min(1, pb));
+      a.push(pa); a.shift(); b.push(pb); b.shift();
 
-  const svg = document.getElementById("chart");
+      const gap = pa - pb;
+      if (Math.abs(gap) >= THRESH && t - held > 26) {
+        held = t;
+        marks.push({ i: N - 1, v: gap, age: 0 });
+        const tag = $("scopeLive");
+        if (tag) {
+          tag.textContent = (gap > 0 ? "+" : "") + (gap * 2.1).toFixed(2) + " · " + (gap > 0 ? "SOCIAL AHEAD" : "ONCHAIN AHEAD");
+          tag.style.color = gap > 0 ? "var(--signal-a)" : "var(--signal-b)";
+        }
+      }
+      for (const m of marks) { m.i--; m.age++; }
+      while (marks.length && marks[0].i < 0) marks.shift();
+    };
 
-  // Horizontal grid at each 5 z-units, plus an emphasised zero line.
-  for (const v of [-10, -5, 0, 5, 10]) {
-    svg.appendChild(el("line", {
-      x1: PAD_L, x2: W - PAD_R, y1: y(v), y2: y(v),
-      stroke: v === 0 ? "var(--rule)" : "var(--grid)",
-      "stroke-width": v === 0 ? 1 : 1
-    }));
-    const t = el("text", {
-      x: PAD_L - 8, y: y(v) + 3.5, "text-anchor": "end",
-      fill: "var(--muted)", "font-size": "9",
-      "font-family": "var(--mono)"
-    });
-    t.textContent = v > 0 ? "+" + v : v;
-    svg.appendChild(t);
-  }
+    const X = (i) => (i / (N - 1)) * W;
+    const Y = (v) => H / 2 - v * (H / 2 - 26);
 
-  // Bands marking hours where the gap crossed the threshold. Drawn under the traces so
-  // the lines stay readable on top of them.
-  D.forEach((d, i) => {
-    if (Math.abs(d[1] - d[2]) < THRESHOLD) return;
-    const w = Math.max(3, iw / D.length);
-    svg.appendChild(el("rect", {
-      x: x(i) - w / 2, y: PAD_T, width: w, height: ih,
-      fill: "var(--alert)", opacity: "0.16"
-    }));
-  });
+    const draw = () => {
+      ctx.clearRect(0, 0, W, H);
+      ctx.strokeStyle = "#222a31"; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(0, H / 2); ctx.lineTo(W, H / 2); ctx.stroke();
 
-  const path = (idx) =>
-    D.map((d, i) => (i ? "L" : "M") + x(i).toFixed(1) + " " + y(d[idx]).toFixed(1)).join(" ");
+      for (let i = 1; i < N; i++) {
+        if (Math.abs(a[i] - b[i]) < THRESH) continue;
+        ctx.fillStyle = a[i] > b[i] ? "rgba(228,98,42,0.14)" : "rgba(47,189,189,0.13)";
+        ctx.fillRect(X(i - 1), Math.min(Y(a[i]), Y(b[i])), Math.max(1, X(i) - X(i - 1)) + 0.6, Math.abs(Y(a[i]) - Y(b[i])));
+      }
 
-  // Onchain first so the warmer social trace reads on top where they overlap.
-  svg.appendChild(el("path", {
-    d: path(2), fill: "none", stroke: "var(--onchain)",
-    "stroke-width": "1.5", "stroke-linejoin": "round"
-  }));
-  svg.appendChild(el("path", {
-    d: path(1), fill: "none", stroke: "var(--social)",
-    "stroke-width": "1.5", "stroke-linejoin": "round"
-  }));
-
-  // Emphasise the single largest divergence rather than every crossing.
-  let peak = 0;
-  D.forEach((d, i) => {
-    if (Math.abs(d[1] - d[2]) > Math.abs(D[peak][1] - D[peak][2])) peak = i;
-  });
-  svg.appendChild(el("line", {
-    x1: x(peak), x2: x(peak), y1: y(D[peak][1]), y2: y(D[peak][2]),
-    stroke: "var(--alert)", "stroke-width": "1.5"
-  }));
-  for (const v of [D[peak][1], D[peak][2]]) {
-    svg.appendChild(el("circle", { cx: x(peak), cy: y(v), r: "2.75", fill: "var(--alert)" }));
-  }
-  const lbl = el("text", {
-    x: x(peak) + 7, y: PAD_T + 12, fill: "var(--alert)",
-    "font-size": "10", "font-family": "var(--mono)", "font-weight": "600"
-  });
-  lbl.textContent = "11.29";
-  svg.appendChild(lbl);
-
-  /* ---- On-demand lookup -------------------------------------------------- */
-  (() => {
-    const form = document.getElementById("lookupForm");
-    const input = document.getElementById("tickerInput");
-    const btn = document.getElementById("lookupBtn");
-    const errBox = document.getElementById("lookupErr");
-    const result = document.getElementById("result");
-    const spark = document.getElementById("rSpark");
-
-    const $ = (id) => document.getElementById(id);
-    const fmtInt = (n) => Math.round(n).toLocaleString();
-
-    let inFlight = null;
-
-    function showError(msg) {
-      errBox.textContent = msg;
-      errBox.hidden = false;
-      result.hidden = true;
-    }
-
-    function drawSpark(series) {
-      spark.textContent = "";
-      if (!series || series.length < 2) return;
-
-      const W = 600, H = 90, pad = 6;
-      // Symmetric scale so zero sits on the centre line and the two traces stay comparable.
-      const peak = Math.max(2, ...series.flatMap(([, s, o]) => [Math.abs(s), Math.abs(o)]));
-      const x = (i) => pad + (i / (series.length - 1)) * (W - pad * 2);
-      const y = (v) => H / 2 - (v / peak) * (H / 2 - pad);
-
-      const line = (idx, colour) => {
-        const d = series.map((p, i) => (i ? "L" : "M") + x(i).toFixed(1) + " " + y(p[idx]).toFixed(1)).join(" ");
-        const node = el("path", {
-          d, fill: "none", stroke: colour, "stroke-width": "1.4", "stroke-linejoin": "round",
-        });
-        spark.appendChild(node);
+      const line = (arr, colour) => {
+        ctx.strokeStyle = colour; ctx.lineWidth = 1.6; ctx.lineJoin = "round";
+        ctx.beginPath();
+        for (let i = 0; i < N; i++) { const x = X(i), y = Y(arr[i]); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+        ctx.stroke();
       };
+      line(b, "#2fbdbd");
+      line(a, "#e4622a");
 
-      spark.appendChild(el("line", {
-        x1: pad, x2: W - pad, y1: H / 2, y2: H / 2, stroke: "var(--rule)", "stroke-width": "1",
-      }));
-      line(2, "var(--onchain)");
-      line(1, "var(--social)");
+      ctx.fillStyle = "#2fbdbd"; ctx.beginPath(); ctx.arc(X(N - 1), Y(b[N - 1]), 2.6, 0, 7); ctx.fill();
+      ctx.fillStyle = "#e4622a"; ctx.beginPath(); ctx.arc(X(N - 1), Y(a[N - 1]), 2.6, 0, 7); ctx.fill();
+
+      for (const m of marks) {
+        const x = X(m.i), o = Math.max(0, 1 - m.age / 190);
+        ctx.strokeStyle = m.v > 0 ? "rgba(228,98,42," + (0.75 * o) + ")" : "rgba(47,189,189," + (0.75 * o) + ")";
+        ctx.lineWidth = 1.2;
+        ctx.beginPath(); ctx.moveTo(x, Y(a[m.i] || 0)); ctx.lineTo(x, Y(b[m.i] || 0)); ctx.stroke();
+        ctx.fillStyle = m.v > 0 ? "rgba(228,98,42," + o + ")" : "rgba(47,189,189," + o + ")";
+        ctx.font = "600 10px ui-monospace, Menlo, monospace";
+        ctx.fillText((m.v > 0 ? "+" : "") + (m.v * 2.1).toFixed(2), x + 5, Y((a[m.i] + b[m.i]) / 2) - 6);
+      }
+    };
+
+    for (let i = 0; i < N; i++) step();
+
+    if (RM) draw();
+    else {
+      let last = 0;
+      const loop = (ts) => {
+        if (ts - last > 62) { step(); draw(); last = ts; }
+        requestAnimationFrame(loop);
+      };
+      requestAnimationFrame(loop);
     }
+  }
 
-    async function lookup(symbol) {
-      if (inFlight) inFlight.abort();
-      const ctrl = new AbortController();
-      inFlight = ctrl;
+  /* ===================== footer: signals converging ====================== */
+  const fs = $("footScope");
+  if (fs) {
+    const pts = 90;
+    const mk = (sign) => {
+      let d = "";
+      for (let i = 0; i < pts; i++) {
+        const x = (i / (pts - 1)) * 1000;
+        const conv = 1 - i / (pts - 1);
+        const y = 28 + sign * (Math.sin(i * 0.34) * 9 + 8) * conv;
+        d += (i ? "L" : "M") + x.toFixed(1) + " " + y.toFixed(1);
+      }
+      return d;
+    };
+    fs.appendChild(el("path", { d: mk(-1), fill: "none", stroke: "#e4622a", "stroke-width": "1.3" }));
+    fs.appendChild(el("path", { d: mk(1), fill: "none", stroke: "#2fbdbd", "stroke-width": "1.3" }));
+  }
 
-      btn.disabled = true;
-      btn.textContent = "Analysing…";
-      errBox.hidden = true;
+  /* ====================== reveal + measured bars ========================= */
+  const fillBars = (root) => root.querySelectorAll(".fill").forEach((f) => { f.style.width = (f.dataset.w || "0") + "%"; });
+
+  if ("IntersectionObserver" in window && !RM) {
+    const io = new IntersectionObserver((es) => {
+      for (const e of es) if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+    }, { rootMargin: "0px 0px -8% 0px", threshold: 0.06 });
+    document.querySelectorAll(".rv").forEach((n) => io.observe(n));
+
+    // Bars fill once on screen, so the motion reads as the measurement landing.
+    const bio = new IntersectionObserver((es) => {
+      for (const e of es) if (e.isIntersecting) { fillBars(e.target); bio.unobserve(e.target); }
+    }, { threshold: 0.3 });
+    document.querySelectorAll(".hbars").forEach((n) => bio.observe(n));
+  } else {
+    document.querySelectorAll(".rv").forEach((n) => n.classList.add("in"));
+    fillBars(document);
+  }
+
+  /* ==================== status counts + live ticker ====================== */
+  const evNodes = [...document.querySelectorAll(".ev")];
+  if (evNodes.length) {
+    const n = String(evNodes.length);
+    if ($("stEv")) $("stEv").textContent = n;
+    if ($("ftEv")) $("ftEv").textContent = n;
+
+    const items = evNodes.slice(0, 14).map((e) => ({
+      tok: e.dataset.token || "",
+      score: e.dataset.score || "",
+      dir: (e.dataset.dir || "").replace("-", " ").toUpperCase(),
+      up: e.classList.contains("up"),
+    }));
+    const box = $("tick");
+    if (box && items.length && !RM) {
+      let i = 0;
+      const show = () => {
+        const it = items[i % items.length];
+        box.innerHTML =
+          '<span class="tick-item"><b>' + it.tok + "</b>" +
+          '<span style="color:' + (it.up ? "var(--signal-a)" : "var(--signal-b)") + '">' + it.score + "</span>" +
+          '<span class="k hide-sm">' + it.dir + "</span></span>";
+        i++;
+      };
+      show();
+      setInterval(show, 3200);
+    }
+  }
+
+  /* ====================== feed: expandable events ======================== */
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest(".ev-top");
+    if (!btn) return;
+    const card = btn.closest(".ev");
+    const open = card.classList.toggle("open");
+    btn.setAttribute("aria-expanded", open ? "true" : "false");
+  });
+
+  /* ============================= on-demand =============================== */
+  const form = $("probe"), input = $("tk"), go = $("go"), err = $("err"), res = $("res"), steps = $("steps");
+  let inflight = null;
+
+  const setStep = (name, state) => {
+    if (!steps) return;
+    const n = steps.querySelector('[data-s="' + name + '"]');
+    if (n) { n.classList.remove("on", "done"); if (state) n.classList.add(state); }
+  };
+  const resetSteps = () => ["social", "onchain", "rank", "diverge", "narrate"].forEach((s) => setStep(s, null));
+  const fail = (html) => { err.innerHTML = html; err.hidden = false; res.hidden = true; if (steps) steps.hidden = true; };
+
+  function spark(series) {
+    const svg = $("rSpark");
+    svg.textContent = "";
+    if (!series || series.length < 2) return;
+    const W = 600, H = 74, p = 5;
+    const X = (i) => p + (i / (series.length - 1)) * (W - p * 2);
+    const Y = (v) => H / 2 - v * (H / 2 - p);
+    svg.appendChild(el("line", { x1: p, x2: W - p, y1: H / 2, y2: H / 2, stroke: "#222a31", "stroke-width": "1" }));
+    const path = (idx, c) => {
+      const d = series.map((s, i) => (i ? "L" : "M") + X(i).toFixed(1) + " " + Y(s[idx]).toFixed(1)).join(" ");
+      svg.appendChild(el("path", { d, fill: "none", stroke: c, "stroke-width": "1.5", "stroke-linejoin": "round" }));
+    };
+    path(2, "#2fbdbd");
+    path(1, "#e4622a");
+  }
+
+  async function run(sym) {
+    if (inflight) inflight.abort();
+    const ctrl = new AbortController();
+    inflight = ctrl;
+    go.disabled = true; go.textContent = "Running";
+    err.hidden = true;
+    if (steps) { steps.hidden = false; resetSteps(); setStep("social", "on"); setStep("onchain", "on"); }
+
+    try {
+      const r = await fetch("/api/analyze?symbol=" + encodeURIComponent(sym), { signal: ctrl.signal });
+      const d = await r.json();
+
+      if (!r.ok) {
+        if (d.code === "SOCIAL_PLAN_INACTIVE") {
+          fail('<strong>Live lookup is paused.</strong> The social data subscription behind it is not active right now, so the agent cannot read new hours. The <a href="#feed">recorded feed</a> below came from this same engine and is unaffected.');
+        } else {
+          fail(d.error || "Lookup failed.");
+        }
+        return;
+      }
+
+      setStep("social", "done"); setStep("onchain", "done");
+      setStep("rank", "done"); setStep("diverge", "done"); setStep("narrate", "on");
+
+      const v = d.divergence, sc = v.divergenceScore || 0, up = sc > 0;
+      $("rTk").textContent = d.symbol;
+      $("rDir").textContent = (v.direction || "").replace("-", " ");
+      $("rPl").textContent = d.pool.name + " · $" + Math.round(d.pool.liquidityUsd).toLocaleString();
+      const s = $("rSc");
+      s.textContent = (up ? "+" : "") + sc.toFixed(2);
+      s.style.color = up ? "var(--signal-a)" : "var(--signal-b)";
+
+      $("rM").innerHTML =
+        "<span>social <b>" + (v.socialRank || 0).toFixed(2) + "</b></span>" +
+        "<span>onchain <b>" + (v.onchainRank || 0).toFixed(2) + "</b></span>" +
+        "<span>hours <b>" + d.hoursJoined + "</b></span>" +
+        "<span>bucket <b>" + new Date(d.bucketMs).toISOString().slice(0, 16).replace("T", " ") + " UTC</b></span>" +
+        (v.suppressedReason ? '<span style="color:var(--warn)">suppressed &mdash; volume too thin</span>' : "");
+
+      $("rW").innerHTML =
+        "Pool matched by ticker and ranked by liquidity — that does not prove token identity. Verify on " +
+        '<a href="https://basescan.org/address/' + d.pool.address + '" rel="noopener">BaseScan</a>: ' + d.pool.address;
+
+      spark(d.series);
+      const nn = $("rN");
+      nn.textContent = "Writing the explanation…";
+      nn.classList.add("pending");
+      res.hidden = false;
 
       try {
-        const res = await fetch("/api/analyze?symbol=" + encodeURIComponent(symbol), {
+        const nr = await fetch("/api/narrate", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ token: d.token }),
           signal: ctrl.signal,
         });
-        const data = await res.json();
-
-        if (!res.ok) {
-          // A paused subscription is not a broken agent, and the page should not imply it is.
-          // Send the reader to the recorded feed, which the same engine produced.
-          if (data.code === "SOCIAL_PLAN_INACTIVE") {
-            errBox.innerHTML =
-              '<strong>Live lookup is paused.</strong> The social data subscription behind it ' +
-              'is not currently active, so the agent cannot read new hours right now. ' +
-              'The <a href="#feed">recorded feed</a> below came from this same engine and is ' +
-              "unaffected — 85 events across 8 tokens.";
-            errBox.hidden = false;
-            result.hidden = true;
-            return;
-          }
-          showError(data.error || "Lookup failed.");
-          return;
-        }
-
-        const d = data.divergence;
-        const score = d.divergenceScore ?? 0;
-        const positive = score > 0;
-
-        $("rSym").textContent = data.symbol;
-        $("rPool").textContent = data.pool.name + " · $" + fmtInt(data.pool.liquidityUsd) + " liquidity";
-
-        const scoreEl = $("rScore");
-        scoreEl.textContent = (positive ? "+" : "") + score.toFixed(2);
-        scoreEl.style.color = positive ? "var(--social)" : "var(--onchain)";
-
-        const verdict = $("rVerdict");
-        verdict.textContent = d.significant
-          ? (positive ? "social ahead" : "onchain ahead")
-          : "within normal range";
-        verdict.style.color = d.significant ? (positive ? "var(--social)" : "var(--onchain)") : "var(--muted)";
-
-        $("rMeta").innerHTML =
-          "<span>social rank <b>" + (d.socialRank ?? 0).toFixed(2) + "</b></span>" +
-          "<span>onchain rank <b>" + (d.onchainRank ?? 0).toFixed(2) + "</b></span>" +
-          "<span>hours joined <b>" + data.hoursJoined + "</b></span>" +
-          "<span>bucket <b>" + new Date(data.bucketMs).toISOString().slice(0, 16).replace("T", " ") + " UTC</b></span>";
-
-        $("rWarn").innerHTML =
-          "Pool matched by ticker and ranked by liquidity — that does not prove token identity. " +
-          'Verify on <a href="https://basescan.org/address/' + data.pool.address + '" rel="noopener">BaseScan</a>: <code>' +
-          data.pool.address + "</code>";
-
-        drawSpark(data.series);
-
-        const narr = $("rNarr");
-        narr.textContent = "Writing the explanation…";
-        narr.classList.add("pending");
-        result.hidden = false;
-
-        // Second phase. Scores are already on screen, so a slow or failed narration degrades
-        // the page rather than blocking it.
-        try {
-          const nres = await fetch("/api/narrate", {
-            method: "POST",
-            headers: { "content-type": "application/json" },
-            body: JSON.stringify({ token: data.token }),
-            signal: ctrl.signal,
-          });
-          const ndata = await nres.json();
-          narr.textContent = nres.ok
-            ? ndata.narration
-            : "Explanation unavailable (" + (ndata.error || nres.status) + "). The scores above are unaffected.";
-        } catch (e) {
-          if (e.name === "AbortError") return;
-          narr.textContent = "Explanation unavailable. The scores above are unaffected.";
-        }
-        narr.classList.remove("pending");
-      } catch (e) {
-        if (e.name === "AbortError") return;
-        showError("Could not reach the agent. Check your connection and try again.");
-      } finally {
-        if (inFlight === ctrl) inFlight = null;
-        btn.disabled = false;
-        btn.textContent = "Analyse";
+        const nd = await nr.json();
+        nn.textContent = nr.ok ? nd.narration : "Explanation unavailable. The scores above are unaffected.";
+      } catch (e2) {
+        if (e2.name === "AbortError") return;
+        nn.textContent = "Explanation unavailable. The scores above are unaffected.";
       }
+      nn.classList.remove("pending");
+      setStep("narrate", "done");
+    } catch (e3) {
+      if (e3.name === "AbortError") return;
+      fail("Could not reach the agent. Check your connection and try again.");
+    } finally {
+      if (inflight === ctrl) inflight = null;
+      go.disabled = false; go.textContent = "Analyse";
     }
+  }
 
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const v = input.value.trim();
-      if (v) lookup(v);
+  if (form) {
+    form.addEventListener("submit", (e) => { e.preventDefault(); const v = input.value.trim(); if (v) run(v); });
+    document.querySelectorAll(".chips button").forEach((b) => {
+      b.addEventListener("click", () => { input.value = b.dataset.t; run(b.dataset.t); });
     });
-
-    for (const b of document.querySelectorAll(".examples button")) {
-      b.addEventListener("click", () => {
-        input.value = b.dataset.ex;
-        lookup(b.dataset.ex);
-      });
-    }
-  })();
+  }
+})();
 </script>
