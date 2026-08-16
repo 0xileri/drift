@@ -25,8 +25,8 @@ try {
   console.log(`  hours      ${r.hoursJoined} joined`);
   console.log(`  bucket     ${new Date(r.bucketMs).toISOString()}`);
   console.log(
-    `  scores     social ${r.divergence.socialZ?.toFixed(2)}  ` +
-      `onchain ${r.divergence.onchainZ?.toFixed(2)}  ` +
+    `  scores     social ${r.divergence.socialRank?.toFixed(2)}  ` +
+      `onchain ${r.divergence.onchainRank?.toFixed(2)}  ` +
       `divergence ${r.divergence.divergenceScore?.toFixed(2)}` +
       `${r.divergence.significant ? "  [ALERT]" : ""}`
   );

@@ -9,9 +9,6 @@ import type { DivergenceResult, PollSnapshot } from "../types.js";
 /** Guards against divide-by-near-zero on quiet hours in thin pools. */
 const EPSILON = 1e-9;
 
-/** Robust z-scores are capped here; beyond this the exact value carries no extra meaning. */
-const MAX_Z = 10;
-
 /**
  * Log ratio rather than percent change.
  *
@@ -33,33 +30,6 @@ function median(values: number[]): number {
   return sorted.length % 2 === 0 ? (sorted[mid - 1] + sorted[mid]) / 2 : sorted[mid];
 }
 
-/** Median absolute deviation - the outlier-resistant analogue of standard deviation. */
-function medianAbsoluteDeviation(values: number[], med: number): number {
-  return median(values.map((v) => Math.abs(v - med)));
-}
-
-/**
- * Robust (modified) z-score, built on median/MAD instead of mean/stddev.
- *
- * The momentum distributions on real pools are heavily fat-tailed (median |z| ~0.1 against a p99
- * of ~3.4). With mean/stddev, a single spike inflates the baseline it is being measured against
- * and suppresses every subsequent real signal. Median/MAD keeps the baseline stable.
- * The 0.6745 factor rescales MAD so the result is comparable to a conventional z-score.
- */
-function robustZScore(value: number, baseline: number[]): number {
-  const med = median(baseline);
-  const mad = medianAbsoluteDeviation(baseline, med);
-
-  if (mad === 0) {
-    // A flat baseline gives no scale to measure against; report direction only.
-    if (Math.abs(value - med) < EPSILON) return 0;
-    return Math.sign(value - med) * MAX_Z;
-  }
-
-  const z = (0.6745 * (value - med)) / mad;
-  return Math.max(-MAX_Z, Math.min(MAX_Z, z));
-}
-
 /** Primary social momentum metric: social volume (falls back to galaxy score if unavailable). */
 function socialMetric(s: PollSnapshot): number | null {
   return s.social.socialVolume ?? s.social.galaxyScore;
@@ -77,37 +47,30 @@ function onchainMetric(s: PollSnapshot): number | null {
 }
 
 /**
- * Rescales an axis so a given z means the same rarity on both sides of the subtraction.
+ * Where this move sits in its own series' history, as a signed fraction of [-1, 1].
  *
- * Median/MAD normalisation equalises the BODY of the two distributions but not the tails. Over
- * 4,458 hours the raw p99 |z| was 6.46 social against 2.92 onchain, so a threshold placed in
- * that gap is reachable by one axis far more easily than the other.
+ * This replaces quantile scaling, which only matched the two axes at the single quantile it was
+ * tuned to. A percentile is uniform on [0,1] by construction, so BOTH axes now match at every
+ * quantile - +0.98 means "larger than 98% of this series' own moves" whether the series is dense
+ * social chatter or spiky pool volume. That is the comparison the subtraction always claimed to
+ * be making, and the first version that actually makes it.
  *
- * Dividing each axis by its own upper-decile |z| makes 1.0 mean "a p90 move for this series".
- * That works where it was aimed: scaled p90 is 1.10 social against 0.92 onchain.
- *
- * It does NOT fully equalise them, and the measured numbers should be read rather than the
- * intent. Scaled p99 is still 2.73 against 1.76, and the social axis crosses the 2.5 threshold
- * on 1.3% of hours against 0.1% for onchain. 79% of events remain social-driven. Normalising at
- * one quantile only matches the distributions at that quantile; social momentum has genuinely
- * fatter tails than pool volume, and the two are still not interchangeable out where the alerts
- * live.
- *
- * The fix that would actually settle it is a rank transform - replace each |z| with its
- * percentile inside its own baseline, which makes the two identical by construction at every
- * quantile rather than at one. That changes the score's units and needs recalibration, so it is
- * named here rather than half-done.
+ * Ties count as half, so a move equal to much of its baseline does not jump the whole block.
  */
-function tailScale(baseline: number[]): number {
-  if (baseline.length < 10) return 1;
-  const med = median(baseline);
-  const mad = medianAbsoluteDeviation(baseline, med);
-  if (mad === 0) return 1;
+function signedPercentile(value: number, baseline: number[]): number {
+  if (baseline.length === 0) return 0;
 
-  const zs = baseline.map((v) => Math.abs((0.6745 * (v - med)) / mad)).sort((a, b) => a - b);
-  const p90 = zs[Math.floor((zs.length - 1) * 0.9)];
-  // Guard against a degenerate baseline collapsing the scale and inflating every later score.
-  return p90 > 0.5 ? p90 : 1;
+  const magnitude = Math.abs(value);
+  let below = 0;
+  let equal = 0;
+  for (const b of baseline) {
+    const m = Math.abs(b);
+    if (m < magnitude) below++;
+    else if (m === magnitude) equal++;
+  }
+
+  const pct = (below + equal / 2) / baseline.length;
+  return Math.sign(value) * pct;
 }
 
 /**
@@ -119,12 +82,12 @@ function tailScale(baseline: number[]): number {
  * also declined.
  */
 function classify(
-  socialZ: number,
-  onchainZ: number,
+  socialRank: number,
+  onchainRank: number,
   socialLR: number,
   onchainLR: number
 ): NonNullable<DivergenceResult["direction"]> {
-  const socialDominant = Math.abs(socialZ) >= Math.abs(onchainZ);
+  const socialDominant = Math.abs(socialRank) >= Math.abs(onchainRank);
   const lr = socialDominant ? socialLR : onchainLR;
   const side = socialDominant ? "social" : "onchain";
   return `${side}-${lr >= 0 ? "rising" : "falling"}` as NonNullable<DivergenceResult["direction"]>;
@@ -169,8 +132,8 @@ export function computeDivergence(token: string, history: PollSnapshot[]): Diver
       sufficientHistory: false,
       socialMomentumLogRatio: null,
       onchainMomentumLogRatio: null,
-      socialZ: null,
-      onchainZ: null,
+      socialRank: null,
+      onchainRank: null,
       direction: null,
       suppressedReason: null,
       divergenceScore: null,
@@ -204,8 +167,8 @@ export function computeDivergence(token: string, history: PollSnapshot[]): Diver
       sufficientHistory: false,
       socialMomentumLogRatio: Number.isNaN(latestSocialMomentum) ? null : latestSocialMomentum,
       onchainMomentumLogRatio: Number.isNaN(latestOnchainMomentum) ? null : latestOnchainMomentum,
-      socialZ: null,
-      onchainZ: null,
+      socialRank: null,
+      onchainRank: null,
       direction: null,
       suppressedReason: null,
       divergenceScore: null,
@@ -213,19 +176,12 @@ export function computeDivergence(token: string, history: PollSnapshot[]): Diver
     };
   }
 
-  const rawSocialZ = robustZScore(latestSocialMomentum, priorSocial);
-  const rawOnchainZ = robustZScore(latestOnchainMomentum, priorOnchain);
-
-  // Subtracting raw z-scores compares two differently-tailed scales; see tailScale above.
-  const socialScale = tailScale(priorSocial);
-  const onchainScale = tailScale(priorOnchain);
-
-  // The SCALED values are what the score is built from, so they are what gets reported. Publishing
-  // the raw ones alongside a score computed from the scaled ones meant socialZ - onchainZ did not
-  // equal divergenceScore on any event - an inconsistency a reader can check in one subtraction.
-  const socialZ = rawSocialZ / socialScale;
-  const onchainZ = rawOnchainZ / onchainScale;
-  const divergenceScore = socialZ - onchainZ;
+  // Each side is ranked within its OWN history, so the two are directly comparable before they
+  // are subtracted. Reported as-is, which keeps socialRank - onchainRank === divergenceScore
+  // checkable in one subtraction.
+  const socialRank = signedPercentile(latestSocialMomentum, priorSocial);
+  const onchainRank = signedPercentile(latestOnchainMomentum, priorOnchain);
+  const divergenceScore = socialRank - onchainRank;
 
   // Volumes for the two hours this reading compares, plus the pool's own prior volumes as the
   // yardstick for "too thin".
@@ -242,9 +198,9 @@ export function computeDivergence(token: string, history: PollSnapshot[]): Diver
     sufficientHistory: true,
     socialMomentumLogRatio: latestSocialMomentum,
     onchainMomentumLogRatio: latestOnchainMomentum,
-    socialZ,
-    onchainZ,
-    direction: classify(socialZ, onchainZ, latestSocialMomentum, latestOnchainMomentum),
+    socialRank,
+    onchainRank,
+    direction: classify(socialRank, onchainRank, latestSocialMomentum, latestOnchainMomentum),
     suppressedReason,
     divergenceScore,
     // A suppressed reading keeps its score for continuity in the series, but never becomes an

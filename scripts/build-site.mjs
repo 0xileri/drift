@@ -66,8 +66,8 @@ if (sorted.length === 0) {
           </header>
           <p class="ev-n">${esc(e.narration)}</p>
           <div class="ev-m">
-            <span>social z <b>${(e.divergence.socialZ ?? 0).toFixed(2)}</b></span>
-            <span>onchain z <b>${(e.divergence.onchainZ ?? 0).toFixed(2)}</b></span>
+            <span>social rank <b>${(e.divergence.socialRank ?? 0).toFixed(2)}</b></span>
+            <span>onchain rank <b>${(e.divergence.onchainRank ?? 0).toFixed(2)}</b></span>
             ${e.rpcCrossCheck ? `<span>pool verified at block <b>${esc(e.rpcCrossCheck.blockNumber)}</b></span>` : ""}
           </div>
         </article>`;

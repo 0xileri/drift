@@ -65,8 +65,8 @@ export interface DivergenceResult {
    */
   socialMomentumLogRatio: number | null;
   onchainMomentumLogRatio: number | null;
-  socialZ: number | null;
-  onchainZ: number | null;
+  socialRank: number | null;
+  onchainRank: number | null;
   /**
    * Which series drove the gap and which way it moved.
    *
@@ -87,7 +87,7 @@ export interface DivergenceResult {
    * become events.
    */
   suppressedReason: string | null;
-  /** socialZ - onchainZ. Positive = social running hotter than onchain. Negative = onchain moving ahead of social. */
+  /** socialRank - onchainRank. Positive = social running hotter than onchain. Negative = onchain moving ahead of social. */
   divergenceScore: number | null;
   significant: boolean;
 }

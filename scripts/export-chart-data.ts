@@ -19,17 +19,17 @@ if (history.length === 0) {
 }
 
 // Replay incrementally so each point carries the z-scores the engine actually saw at that hour.
-const points: Array<{ t: number; socialZ: number; onchainZ: number; divergence: number }> = [];
+const points: Array<{ t: number; socialRank: number; onchainRank: number; divergence: number }> = [];
 const start = Math.max(2, history.length - WINDOW);
 
 for (let i = start; i <= history.length; i++) {
   const slice: PollSnapshot[] = history.slice(0, i);
   const d = computeDivergence(TOKEN, slice);
-  if (d.socialZ === null || d.onchainZ === null || d.divergenceScore === null) continue;
+  if (d.socialRank === null || d.onchainRank === null || d.divergenceScore === null) continue;
   points.push({
     t: slice[slice.length - 1].timestampMs,
-    socialZ: Number(d.socialZ.toFixed(3)),
-    onchainZ: Number(d.onchainZ.toFixed(3)),
+    socialRank: Number(d.socialRank.toFixed(3)),
+    onchainRank: Number(d.onchainRank.toFixed(3)),
     divergence: Number(d.divergenceScore.toFixed(3)),
   });
 }

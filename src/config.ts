@@ -119,32 +119,18 @@ export const MIN_HISTORY_FOR_ZSCORE = 24;
 /**
  * Absolute divergence gap above which an event is worth narrating.
  *
- * PROVISIONAL, and deliberately not described as "measured". It is a RATE target: at 2.5 the
- * feed runs ~1.6 events/day across the watchlist, which is readable. Nothing here establishes
- * that events above 2.5 are more often *right* - that requires knowing what followed them, which
- * is what `npm run scorecard` measures. Once enough outcomes have resolved, pick this on
- * precision and this comment can stop hedging.
+ * The score is now a difference of two percentiles, each in [-1, 1], so it spans [-2, 2] and this
+ * number is NOT comparable to the pre-rank-transform thresholds in the git history.
  *
- * The scale changed when the two axes were put on a common footing (see tailScale in
- * engine/divergence.ts). Scores now run median 0.58 / p90 1.72 / p99 3.55 / max 5.69, so the
- * previous 6.0 is unreachable by construction rather than merely strict.
+ * 1.7 was chosen from a replay of 4,458 hours across eight tokens: it yields ~3.9 events/day and,
+ * more usefully, an even 44:46 split between social-driven and onchain-driven events. The
+ * previous metric produced 3.78:1 in favour of social - a property of its scale rather than of
+ * the market. Nearby cutoffs skew again (1.60 gives 1.23:1, 1.80 gives 1.39:1), so the balance
+ * here is a real feature of this level, not an accident of rounding.
  *
- * Pooled rates over 3,297 scored hours, excluding volume-suppressed readings:
- *
- *   2.0 -> 98 events (~3.3/day)   14% onchain-driven
- *   2.5 -> 48 events (~1.6/day)   10% onchain-driven   <- chosen
- *   3.0 -> 26 events (~0.9/day)    8% onchain-driven
- *   4.0 ->  8 events (~0.3/day)    0% onchain-driven
- *
- * The onchain-driven share is worth watching as much as the count: before the axes were put on
- * a common scale it was 0% at every cutoff, which was an artifact of the metric rather than a
- * fact about Base tokens. A threshold that drives it back to zero has reintroduced the bug.
- *
- * KNOWN LIMITATION: one global threshold does not treat the tokens equally - a calmer token
- * stays quieter at any shared cutoff. Per-token thresholds from each token's own distribution
- * are the honest fix if the feed looks lopsided.
+ * This is still a rate-and-balance target, not an accuracy measurement. See the scorecard.
  */
-export const DIVERGENCE_THRESHOLD = 2.5;
+export const DIVERGENCE_THRESHOLD = 1.7;
 
 /**
  * Floor below which an hour's volume is too small for its ratio to mean anything.

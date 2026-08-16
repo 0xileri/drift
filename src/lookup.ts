@@ -176,11 +176,11 @@ export async function analyzeToken(
   const start = Math.max(2, history.length - SERIES_POINTS);
   for (let i = start; i <= history.length; i++) {
     const d = computeDivergence(symbol, history.slice(0, i));
-    if (d.socialZ === null || d.onchainZ === null) continue;
+    if (d.socialRank === null || d.onchainRank === null) continue;
     series.push([
       history[i - 1].timestampMs,
-      Number(d.socialZ.toFixed(3)),
-      Number(d.onchainZ.toFixed(3)),
+      Number(d.socialRank.toFixed(3)),
+      Number(d.onchainRank.toFixed(3)),
     ]);
   }
 

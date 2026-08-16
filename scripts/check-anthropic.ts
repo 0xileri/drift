@@ -48,8 +48,8 @@ const divergence = {
   sufficientHistory: true,
   socialMomentumLogRatio: 1.12, // ~3x jump in interactions
   onchainMomentumLogRatio: 0.04, // essentially flat volume
-  socialZ: 4.1,
-  onchainZ: 0.2,
+  socialRank: 4.1,
+  onchainRank: 0.2,
   divergenceScore: 3.9,
   significant: true,
   direction: "social-rising" as const,

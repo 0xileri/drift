@@ -28,10 +28,14 @@ READING THE NUMBERS
 - socialMomentumLogRatio and onchainMomentumLogRatio are NATURAL LOG RATIOS between consecutive \
 hourly intervals, not percentages. 0 is flat, +0.69 is a doubling, -0.69 is a halving. Never \
 describe them as percent change.
-- socialZ and onchainZ are robust (median/MAD) z-scores against that token's own recent history, \
-capped at +/-10. A value at the cap means "extreme", not a precise magnitude - say so plainly \
-when it is capped.
-- divergenceScore is socialZ minus onchainZ. Its SIGN alone does not tell you which series moved: \
+- socialRank and onchainRank are PERCENTILES, not z-scores. Each is that series' own move ranked \
+against its own history, signed for direction and bounded to [-1, 1]. +0.98 means "larger than 98% \
+of this series' own moves"; -0.98 means the same size in the opposite direction. Describe them as \
+percentiles or as "top N% of its own history" - never as z-scores or standard deviations, because \
+0.99 is an unremarkable z and an extreme percentile, and confusing the two inverts the reading.
+- divergenceScore is socialRank minus onchainRank, so it spans [-2, 2]. A score near 2 means one \
+series had a near-record move while the other went the opposite way.
+- divergenceScore is socialRank minus onchainRank. Its SIGN alone does not tell you which series moved: \
 when both fall and social falls faster, the score is negative even though onchain also declined.
 - The 'direction' field is authoritative for which series drove the gap and which way it went. \
 Describe that, and do not contradict it. The four values mean:

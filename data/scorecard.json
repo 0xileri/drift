@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-08-16T18:33:38.550Z",
-  "threshold": 2.5,
-  "events": 86,
+  "generatedAt": "2026-08-16T19:09:59.754Z",
+  "threshold": 1.7,
+  "events": 90,
   "tokens": [
     "AERO",
     "VIRTUAL",
@@ -13,32 +13,32 @@
     "TIBBIR"
   ],
   "directionMix": {
-    "social-rising": 48,
-    "social-falling": 20,
-    "onchain-falling": 5,
-    "onchain-rising": 13
+    "social-rising": 27,
+    "onchain-rising": 27,
+    "social-falling": 17,
+    "onchain-falling": 19
   },
   "horizons": {
     "t+3h": {
-      "judged": 86,
-      "followedPct": 39.5,
-      "noFollowPct": 60.5,
+      "judged": 90,
+      "followedPct": 34.4,
+      "noFollowPct": 65.6,
       "unknown": 0
     },
     "t+6h": {
-      "judged": 86,
-      "followedPct": 30.2,
-      "noFollowPct": 69.8,
+      "judged": 90,
+      "followedPct": 25.6,
+      "noFollowPct": 74.4,
       "unknown": 0
     },
     "t+12h": {
-      "judged": 86,
-      "followedPct": 37.2,
-      "noFollowPct": 62.8,
+      "judged": 90,
+      "followedPct": 31.1,
+      "noFollowPct": 68.9,
       "unknown": 0
     }
   },
   "baseRateT6Pct": 37.7,
-  "liftT6Points": -7.5,
+  "liftT6Points": -12.1,
   "note": "followed = the lagging series averaged at least 25% above its own pre-event baseline in the hours after the event. Measured on LEVELS, not z-scores: a z-score is mean-reverting by construction, so comparing scores before and after would report a fade for almost any event regardless of what the underlying series did. Replayed from recorded history, not a live forward test."
 }
