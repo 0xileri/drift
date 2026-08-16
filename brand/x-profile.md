@@ -42,7 +42,7 @@ An agent that flags when a Base token's social volume and its onchain volume sto
 
 **Option C — the evidence** (144 chars)
 ```
-I measure the gap between what people say about a Base token and what the money actually does. 92 events logged so far, each one explained.
+I measure the gap between what people say about a Base token and what the money actually does. 125 events logged, each one explained and checked.
 ```
 
 Recommendation: **A**. It states the insight rather than the implementation, and the insight is
@@ -58,44 +58,64 @@ https://drift-divergence.netlify.app
 
 ## Pinned post
 
-Leads with a real recorded event rather than a claim about capability. The whole project rests
-on figures tracing to real calls, so the launch post should be checkable too — the event below
-is in the public feed with its timestamp.
+Rewritten around the scorecard. The earlier draft led with "divergence -11.8", a figure that no
+longer exists: after the rank transform scores are bounded to +/-2, and the largest event in the
+current feed is -2.00. Posting it would have sent readers to a site showing a different scale.
 
-### Single post (preferred) — 277 chars
+Leading with the negative result is also the stronger post. Every entry in that gallery claims
+its agent works; none of them publish a miss rate.
 
-X counts any URL as 23 characters no matter its real length, so the link costs less than it
-looks. Under 280 without Premium, with the organiser tag included.
+All three fit without X Premium. X counts any URL as 23 characters regardless of its real length,
+so the link costs less than it looks.
+
+### Option C - 266 chars (recommended)
 
 ```
-Most token tools tell you what's getting loud.
+Every hackathon agent claims it works.
 
-24 Jul: VIRTUAL's onchain volume spiked as social engagement collapsed. Divergence -11.8 — money moving while nobody talked.
+Mine publishes its own miss rate.
 
-Drift-d watches that gap on Base. 92 events, 5 tokens.
+131 events across 12 Base tokens. Flagged hours follow through 27.5% of the time. Random hours: 38.5%.
 
-Built for @Orion_Agents
+-11 points of lift, printed at headline size.
+
 drift-divergence.netlify.app
 ```
 
-**Tighter variant — 267 chars**, if you want headroom to edit before posting:
+### Option A - 278 chars
 
 ```
-Most token tools tell you what's loud.
+Most crypto agents tell you they work.
 
-24 Jul: VIRTUAL's onchain volume spiked as social engagement collapsed. Divergence -11.8 — money moving while nobody talked.
+I measured mine.
 
-Drift-d finds that gap on Base. 92 events, 5 tokens.
+131 divergence events on Base. After one fires, the lagging signal follows through 27.5% of the time.
 
-@Orion_Agents hackathon
+Random hours: 38.5%.
+
+Worse than chance - and it's the headline on my site.
+
 drift-divergence.netlify.app
 ```
 
-Tagging costs about 25 characters once the line break is counted, which is why the sentences
-above are tighter than the untagged draft. The tag is worth it — entries are partly judged on
-community upvotes from registered builders, and the organiser account is how they find you.
+### Option B - 273 chars (explains the product first)
 
-Attach `brand/drift-d-lockup-dark-1600.png` or a screenshot of the feed section.
+Softer entry if you would rather not open on a negative result.
+
+```
+I built an agent that spots when a Base token's hype and its onchain volume stop agreeing.
+
+Then I checked whether the signal was worth anything.
+
+27.5% follow-through vs 38.5% for random hours.
+
+On the homepage, not in a footnote.
+
+drift-divergence.netlify.app
+```
+
+**Attach**: `brand/drift-d-lockup-dark-1600.png`, or a screenshot of the scorecard section - the
+three large numbers photograph well.
 
 ### Thread version
 
@@ -103,55 +123,60 @@ Attach `brand/drift-d-lockup-dark-1600.png` or a screenshot of the feed section.
 ```
 Most token tools tell you what's getting loud.
 
-Drift-d watches for something different: the hours when social attention and onchain money stop
-agreeing — in either direction.
+Drift-d watches for something else: the hours when social attention and onchain money stop
+agreeing - in either direction.
 
-92 events across 5 Base tokens over 4 weeks.
+125 events across 12 Base tokens.
 ```
 
 **2/**
 ```
 The gap runs both ways.
 
-61 events: social ahead of the money. Attention arriving before volume does — early signal, or
-a paid pump.
-
-31 events: money ahead of the attention. Volume moving while the timeline stays quiet.
+72 events: attention ahead of the money.
+53 events: money moving while the timeline stays quiet.
 
 The second kind is the one nobody watches for.
 ```
 
 **3/**
 ```
-Sharpest reading so far: VIRTUAL, 24 Jul, -11.8.
+Each axis is ranked against its own history before they're compared.
 
-Onchain interval volume spiked hard. Social engagement collapsed at the same hour.
-
-No one was talking. The money did not care.
+Subtracting raw scores measured the shape of the inputs instead of the gap - social chatter moves
+smoothly, pool volume is spiky, and the threshold sat where only one side could reach it.
 ```
 
 **4/**
 ```
-The score is deterministic — median/MAD z-scores on log-ratio momentum, no model involved.
+Thin pools were the other trap.
 
-The threshold was measured, not guessed: replayed against 3,292 real scored hours to land on a
-rate a person can actually read.
+A ratio between two tiny numbers is noise wearing a plausible score. One event scored 6.17 on
+volume going from $3,953 to a single cent.
 
-Claude explains the number. It never computes it.
+There's now a floor set per pool, not in dollars.
 ```
 
 **5/**
 ```
-Every figure traces to a real API call, and the event feed is a public file with timestamps —
-so you can check what it said and when, rather than trusting a demo.
+Then I checked whether any of it predicts anything.
 
-Built for the @Orion_Agents builder hackathon on Base.
+131 events. Flagged hours follow through 27.5% of the time. Random hours: 38.5%.
 
-Site: drift-divergence.netlify.app
-Code: github.com/0xileri/drift
+Worse than chance. It's on the homepage at headline size.
+
+An agent whose claims can't fail isn't making claims.
 ```
 
----
+**6/**
+```
+Site: drift-divergence.netlify.app
+Code: github.com/0xileri/drift
+
+Every event is in a public file with timestamps, so you can check what it said and when.
+
+Built for @Orion_Agents' builder hackathon on Base.
+```
 
 ## Notes before posting
 
@@ -161,6 +186,8 @@ Code: github.com/0xileri/drift
 - **Say nothing that reads as advice.** A divergence is an observation about two data series.
   Framing it as a buy or sell signal invites a category of reply you do not want, and is not
   what the agent does.
-- **The live lookup is paused** while the social data subscription is inactive. If you post
-  before renewing, expect someone to try it — the page says so plainly, but it is better to
-  renew first so the first impression is the working one.
+- **Check the live lookup right before posting.** The social data plan bills daily and has
+  lapsed twice already, each time returning a 402 that pauses the lookup. The page handles it
+  honestly, but the first thing a reader does is type a ticker, and that should work.
+- **Re-read the numbers against `data/scorecard.json`** on the day you post. The poller runs
+  hourly, so the event count moves and a quoted figure goes stale quietly.
