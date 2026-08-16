@@ -67,6 +67,26 @@ export interface DivergenceResult {
   onchainMomentumLogRatio: number | null;
   socialZ: number | null;
   onchainZ: number | null;
+  /**
+   * Which series drove the gap and which way it moved.
+   *
+   * The sign of divergenceScore cannot express this on its own: in 30% of recorded events both
+   * series moved the SAME direction and the gap was one falling faster than the other. A
+   * two-label scheme reported those as "onchain ahead" while the narration underneath described
+   * both contracting, which is a visible contradiction.
+   */
+  direction:
+    | "social-rising"
+    | "social-falling"
+    | "onchain-rising"
+    | "onchain-falling"
+    | null;
+  /**
+   * Set when the reading is arithmetically valid but not trustworthy - currently only when an
+   * interval's volume is too small for its ratio to carry information. Suppressed readings never
+   * become events.
+   */
+  suppressedReason: string | null;
   /** socialZ - onchainZ. Positive = social running hotter than onchain. Negative = onchain moving ahead of social. */
   divergenceScore: number | null;
   significant: boolean;

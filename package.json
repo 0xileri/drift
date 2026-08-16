@@ -20,7 +20,8 @@
     "typecheck": "tsc --noEmit",
     "try": "tsx scripts/try-lookup.ts",
     "test:fn": "tsx scripts/test-functions.ts",
-    "brand": "node scripts/build-brand.mjs"
+    "brand": "node scripts/build-brand.mjs",
+    "scorecard": "tsx scripts/scorecard.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.32.1",

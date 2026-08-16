@@ -52,6 +52,8 @@ const divergence = {
   onchainZ: 0.2,
   divergenceScore: 3.9,
   significant: true,
+  direction: "social-rising" as const,
+  suppressedReason: null,
 };
 
 try {
