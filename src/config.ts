@@ -73,6 +73,38 @@ export const watchlist: WatchedToken[] = [
     symbol: "BNKR",
     dexscreenerPairAddress: "0xaec085e5a5ce8d96a7bdd3eb3a62445d4f6ce703",
   },
+
+  // --- Added from the Base-ecosystem screen (npm run screen:base) ---------------------
+  //
+  // Selected on where the token actually trades, not on market cap. The social feed measures
+  // global attention, so pairing it with a Base pool only means something when a real share of
+  // the volume is on Base. Bridged majors fail that badly: SHIB, LINK and DOT all sit at
+  // 0.0-0.1% of global volume on Base, so their social spikes would be compared against a market
+  // that barely exists here.
+  //
+  // Share-of-volume is a heuristic, not proof. The stricter test is whether Base volume tracks
+  // global volume, which needs correlation analysis that has not been run - so these three were
+  // picked from the unambiguous end of the range rather than the borderline middle.
+  {
+    // 36% of global volume on Base, $9.4M pool - the deepest of the additions. v2 pair.
+    symbol: "VVV",
+    dexscreenerPairAddress: "0x01784ef301d79e4b2df3a21ad9a536d4cf09a5ce",
+    rpcPoolAddress: "0x01784ef301d79e4b2df3a21ad9a536d4cf09a5ce",
+  },
+  {
+    // 40% on Base, $6.2M pool, and the highest Base volume in the screen at $12.1M/24h.
+    // Concentrated-liquidity pool: no getReserves, so no cross-check.
+    symbol: "VELVET",
+    dexscreenerPairAddress: "0x6b0f53cbd9272d8117e9535fe25371dedf39a1be",
+  },
+  {
+    // 58% on Base, the most Base-native of the set. Quoted in VIRTUAL rather than WETH or USDC,
+    // which does not affect the engine - momentum is read from the pool's own USD volume.
+    // v2 pair.
+    symbol: "TIBBIR",
+    dexscreenerPairAddress: "0x0c3b466104545efa096b8f944c1e524e1d0d4888",
+    rpcPoolAddress: "0x0c3b466104545efa096b8f944c1e524e1d0d4888",
+  },
 ];
 
 /**
