@@ -16,7 +16,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "KEYCAT's onchain volume dropped sharply between intervals (log ratio -3.46, roughly a 97% collapse) while social attention held modestly positive (+0.35, sentiment still at 84 on 390 mentions), so the gap is being driven by onchain volume falling away rather than any surge in chatter. Neither rank is at the +/-10 cap, so this is a moderate, not extreme, reading for this token's own history. Worth watching whether the next interval's onchain volume stabilizes or keeps thinning while social interest holds — that would show whether the falloff was a one-off dip or a sustained pullback in activity.",
+    "narration": "KEYCAT's gap here is driven by onchain activity collapsing, not social: hourly onchain volume dropped by a log ratio of -3.46 (a move to roughly 3% of its prior level), a decline that ranks at the extreme bottom of this token's own history (-1 percentile). Social attention actually rose over the same interval (log ratio +0.35, a top-25% move for the series), but it's the onchain side that's driving the 1.75 divergence score. Worth watching over the next few hours whether interval onchain volume finds any floor or continues to fade, and whether the social uptick holds or was a brief spike.",
     "backfilled": true
   },
   {
@@ -36,7 +36,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "VVV's attention climbed sharply this hour while onchain activity moved the other way — social momentum logged +1.46 (roughly a fourfold increase) against an onchain log-ratio of -1.83 (activity cut by about six-sevenths), and the direction field confirms social-rising as the driver. Social rank sits at 1, near the high end of its recent range, while onchain rank at -0.97 shows volume running well below its usual pace. Worth checking over the next few hours whether interval volume picks back up toward the elevated social interest, or whether the social spike cools without onchain follow-through.",
+    "narration": "VVV's attention spiked hard: social volume momentum was +1.46 log-ratio (roughly a quadrupling hour-over-hour), landing at the top of its own history (socialRank 1, meaning this is the largest such move recorded for this series). Onchain volume moved the opposite way, down -1.83 log-ratio (an ~84% drop), which itself ranks as one of its most extreme declines (-0.97 percentile). That combination — attention at a record high while onchain activity collapses — produces the divergence score of 1.97, near the top of its [-2,2] range, and the direction field confirms social-rising as the driver. Worth watching over the next few hours whether intervalVolumeUsd starts recovering toward the elevated social interest, or whether the social spike itself fades back down.",
     "backfilled": true
   },
   {
@@ -56,7 +56,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "VVV's gap is driven by social attention dropping sharply: the log ratio of -1.57 implies social volume fell to roughly a fifth of the prior hour's level, while onchain activity rose over that same window (log ratio +1.13, more than a threefold increase). Against VVV's own recent history neither reading is extreme (social rank -1, onchain rank +0.82, well inside the +/-10 cap), so this looks like a normal-sized wobble rather than an outlier event. Worth watching over the next few hours whether social volume stabilizes or keeps sliding, and whether the onchain pickup persists into the next interval or was a one-off spike.",
+    "narration": "VVV's social attention dropped sharply this hour, a log-ratio of -1.57 (roughly an 80% pullback in mentions/activity) that ranks as the most extreme decline in this series' own history (socialRank -1). Onchain volume moved the opposite way, up with a log-ratio of 1.13, landing in the top 18% of its own historical moves. That split — attention collapsing while onchain activity climbs — puts the divergence score near the bottom of its range at -1.82. Worth watching over the next few hours whether social volume and galaxy score stabilize or continue falling, and whether the onchain volume pickup persists past this single interval.",
     "backfilled": true
   },
   {
@@ -76,7 +76,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "VELVET's onchain volume dropped faster than social attention this hour — the direction here is onchain-falling, with hourly volume down by a log ratio of -0.73 (roughly a halving) against a social momentum reading of +0.98 (near doubling in chatter). Neither rank is extreme (onchain at -1, social at 0.91 on the token's own recent history), so this looks like a moderate, not extreme, split rather than a capped outlier. Worth watching over the next few hours whether intervalVolumeUsd stabilizes or keeps falling while social volume holds — that would clarify whether the gap closes from the onchain side or the attention side.",
+    "narration": "VELVET's onchain volume dropped sharply (log ratio -0.73, roughly a 52% pullback hour-over-hour) and that move sits at the extreme low end of its own history, an onchain rank of -1. Social activity moved the opposite way, up 0.98 log-ratio and in the top 10% of its own history, but the direction field attributes this gap to onchain falling faster than attention. Worth checking over the next few hours whether the interval volume ($42.9k) stabilizes or keeps thinning, since that's the series that moved into record territory here.",
     "backfilled": true
   },
   {
@@ -96,7 +96,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "TIBBIR's gap is driven by onchain activity collapsing, not attention shifting: interval volume dropped sharply (log ratio -4.12, roughly a 98% fall between hours) while social momentum barely moved (+0.13). Both ranks sit well inside the +/-10 cap, so this is a moderate divergence for the token's own history rather than an extreme one. Worth checking over the next few hours whether onchain volume finds a floor or keeps thinning, since that will show whether the gap closes or widens further.",
+    "narration": "Onchain activity for TIBBIR collapsed hard, an hourly log-ratio of -4.12 (a drop of roughly 98%) that ranks in the bottom of this token's own history, while social attention only ticked up slightly (+0.13 log-ratio, top ~78% of its own moves). That combination gives a divergence score of 1.73, driven by the onchain side falling away rather than social surging. Worth watching over the next few hours whether interval volume finds a floor and starts recovering, or whether social attention rolls over too now that the onchain side has thinned out so sharply.",
     "backfilled": true
   },
   {
@@ -116,7 +116,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "VELVET's gap is driven by social attention dropping sharply—log ratio -1.46, roughly a 78% pullback hour-over-hour—while onchain activity actually rose, with the interval volume log ratio at +1.00 (about a 2.7x jump). Both rank scores sit at modest, uncapped levels (social -1, onchain +1), so this isn't an extreme reading by the token's own recent history, just a clear split in direction. Worth watching over the next few hours whether social volume stabilizes or keeps fading, and whether the onchain volume pickup persists or was a single-interval spike.",
+    "narration": "VELVET's gap is at the extreme: social attention logged its steepest single-hour drop in this token's own history (rank -1, a log ratio of -1.46, roughly a two-thirds decline in social volume), while onchain activity posted its largest hourly gain on record (rank +1, log ratio +1.00, a near-doubling), pinning the divergence score at -2. The direction field confirms attention is falling faster than volume is moving. Worth watching over the next few hours: whether the onchain surge keeps building on its own or was a single-interval spike, and whether social volume stabilizes or keeps sliding — either would tell you if this gap is closing or widening.",
     "backfilled": true
   },
   {
@@ -136,7 +136,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "MORPHO's gap is driven by social attention dropping faster than onchain activity: social volume roughly halved hour-over-hour (log ratio -0.88) while onchain activity more than doubled (+1.46), and both moves land within a normal, uncapped range for this token's own history (ranks under 1 in magnitude). Onchain interval volume came in around $29.8k, though there's no 24h volume, liquidity, or txn context to weigh that against. Worth watching over the next few hours whether social volume and sentiment (currently 87) stabilize or keep fading, and whether the onchain pickup continues or was a single-interval spike.",
+    "narration": "MORPHO's gap here is driven by social attention dropping sharply — the social log-ratio of -0.88 (roughly a halving hour-over-hour) ranks at -0.92, meaning this is a bigger pullback than about 92% of this series' own historical moves. Onchain activity actually rose over the same interval (log-ratio +1.46, in the top ~79% of its own history), so the divergence score of -1.70 reflects attention falling much faster than volume, not both declining together. Worth watching over the next few hours whether social volume and sentiment stabilize or continue to slide, and whether the onchain volume pickup holds or was a one-interval spike.",
     "backfilled": true
   },
   {
@@ -156,7 +156,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "KEYCAT's attention climbed sharply this hour — social volume up by a log ratio of 1.77 (roughly a 5-6x jump in interval-over-interval terms) — while onchain activity fell hard, a log ratio of -4.08, well outpacing the modest social rank of 1 versus onchain's -0.90. That's a clear social-rising divergence: chatter accelerating while the trading/volume side contracted over the same window. Worth watching over the next few hours whether intervalVolumeUsd and transaction counts pick back up to meet the social surge, or whether the attention spike fades on its own without onchain follow-through.",
+    "narration": "KEYCAT's social attention jumped hard this hour, up a log-ratio of 1.77 (roughly a 5.9x move) and landing at the top of its own history — a 100th-percentile social swing. Onchain activity moved the opposite way, with volume down a log-ratio of -4.08 (about a 98% drop), itself near the bottom of that series' own range (-0.90 percentile). That combination — attention spiking while volume collapses — puts the divergence score at 1.90 out of a possible 2, so watch over the next few hours whether intervalVolumeUsd picks back up toward the social spike or whether the social numbers cool off instead.",
     "backfilled": true
   },
   {
@@ -176,7 +176,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "KEYCAT's gap is driven by attention dropping faster than onchain activity: social momentum fell (log ratio -0.42, a meaningful pullback) while onchain volume actually jumped sharply (+3.16 log ratio, roughly a 24x hour-over-hour move), even though the divergence score's negative sign comes from social's rank sitting below onchain's, not from onchain weakness. Neither rank is at the +/-10 cap, so this reads as a real but not extreme move for KEYCAT's own history. Worth watching over the next few hours whether social volume and galaxy score stabilize or keep sliding, and whether that onchain volume spike persists into the next interval or was a one-off print.",
+    "narration": "KEYCAT's onchain volume jumped by a log-ratio of 3.16 (roughly a 24x hour-over-hour move) while social attention pulled back with a log-ratio of -0.42, a decline in the bottom ~14% of this token's own social history against an onchain move in the top ~1%. The direction field confirms it's social-falling driving the gap: attention faded faster than volume, even as onchain activity spiked hard. Worth watching over the next few hours is whether social volume and sentiment catch up to the onchain surge or whether the onchain spike itself cools off, since either would close the gap from a different side.",
     "backfilled": true
   },
   {
@@ -196,7 +196,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "AERO's social attention roughly doubled hour-over-hour (log ratio +0.69) while onchain volume fell sharply (log ratio -1.62, a drop of about 80%), with the gap driven by attention outpacing chain activity per the social-rising direction. Both readings sit at moderate, non-extreme levels against AERO's own recent history (social rank ~0.9, onchain rank ~-0.8), so this isn't a capped/extreme move either way. Worth watching over the next few hours whether intervalVolumeUsd recovers toward the social trend or the social spike itself fades back down — that's what would confirm or dissolve the gap.",
+    "narration": "AERO's social attention roughly doubled hour-over-hour (log ratio +0.69), a move in the top 9% of this token's own history for social swings, while onchain activity fell sharply (log ratio -1.62), itself an extreme drop for that series. That split — attention climbing hard while onchain volume retreats — is what's driving the divergence score of 1.74. Worth watching over the next few hours is whether onchain volume stabilizes or continues falling, and whether the social spike (galaxy score 50.8, sentiment 73) holds or was a brief flare.",
     "backfilled": true
   },
   {
@@ -216,7 +216,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "VELVET's attention climbed sharply this hour, with social volume roughly quintupling (log ratio +1.61) while onchain activity moved the other way, falling by more than half (log ratio -1.28). The social rank sits at 1, unremarkable in magnitude relative to its own recent history, while onchain rank near -1 shows a milder-than-usual pullback in volume — together producing the social-rising divergence. Worth watching over the next few hours whether interval volume picks back up to match the attention spike, or whether social volume cools back toward its recent baseline.",
+    "narration": "VELVET's social attention jumped hard between hourly intervals—a log ratio of +1.61, roughly a 5x move, which sits at the top of the token's own history (socialRank of 1, a record). Onchain volume moved the opposite way, down sharply (log ratio -1.28), itself in the bottom 1% of its own history (onchainRank -0.99), producing a near-maximal divergence score of 1.99. That's attention climbing while activity contracts, per the social-rising tag. Worth watching over the next few hours whether intervalVolumeUsd picks back up to meet the attention spike, or whether the social surge cools off on its own—either would close the gap, but right now the two series are pulling apart.",
     "backfilled": true
   },
   {
@@ -236,7 +236,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "VELVET's gap is driven by attention dropping sharply: social momentum fell by a log ratio of -2.0 (attention roughly an eighth of the prior hour) while onchain volume actually rose (log ratio +0.48), and social-falling is confirmed as the driver here. The social rank of -1 is unremarkable against this token's own recent history, so this isn't an extreme reading, just a real pullback in chatter against a modest onchain uptick. Worth checking over the next few hours whether social volume stabilizes or continues to fade, and whether the onchain volume increase persists or was a single-interval spike.",
+    "narration": "VELVET's social attention cratered this hour, a log-ratio of -2.0 (roughly an 86% drop in interval-over-interval terms), which sits at the extreme edge (-1) of this token's own history for social moves. Onchain activity moved the opposite way, up with a log-ratio of +0.48, itself in the top ~72% of its own historical range, so the gap is driven almost entirely by social falling off a cliff while volume kept climbing. Worth watching over the next few hours whether social volume and galaxy score stabilize or keep dropping, and whether the onchain volume pickup holds or was a single-interval spike.",
     "backfilled": true
   },
   {
@@ -256,7 +256,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "MORPHO's gap is onchain-driven: interval volume jumped hard (log ratio +2.19, roughly an 8-9x move hour-over-hour) while social chatter actually ticked down slightly (-0.33 log ratio). The onchain rank of +0.95 is elevated but not extreme relative to its own recent history, and social rank sits mildly negative — so this is volume outrunning attention rather than a dramatic outlier on either axis. Worth watching over the next few hours whether social volume and sentiment start catching up to the onchain surge, or whether this onchain spike fades back toward baseline on its own.",
+    "narration": "Onchain activity for MORPHO jumped sharply — an interval log-ratio of +2.19 (roughly an 8-9x move), ranking in the top 5% of this token's own onchain history — while social volume actually pulled back (-0.33 log-ratio, in the bottom ~23rd percentile of its social history). That gap between a near-record onchain surge and a mild social decline is what drives the -1.72 divergence score, per the onchain-rising direction. Worth watching over the next few hours: whether social attention (galaxy score, mentions) catches up to the onchain surge, or whether this onchain spike was a one-off interval that fades back toward its recent baseline.",
     "backfilled": true
   },
   {
@@ -276,7 +276,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "VELVET's attention climbed while onchain activity pulled back: social volume rose roughly 2.2x on the hour (log ratio +0.79) against a roughly halving in onchain activity (log ratio -0.57), a gap this token's own recent history flags as significant but not extreme (ranks near ±0.9, well inside the ±10 cap). Direction confirms social-rising — attention outpacing chain volume, not a case of both falling together. Worth checking over the next few hours whether intervalVolumeUsd firms back up toward the social move or whether the elevated social numbers (galaxy score, sentiment) start cooling to match the quieter chain activity.",
+    "narration": "VELVET's social attention jumped hard this hour, +0.79 log ratio (roughly a doubling in mentions/volume), landing in the top 12% of this token's own social moves. Onchain activity moved the opposite way, down 0.57 log ratio, itself an unusually large drop at the -82nd percentile of its history — so the gap is being driven by attention surging while trading activity fell, not the reverse. Worth watching over the next few hours whether intervalVolumeUsd starts climbing back toward the social move or stays depressed, which would tell you whether the two series reconnect or keep drifting apart.",
     "backfilled": true
   },
   {
@@ -296,7 +296,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "MORPHO's onchain activity spiked hard, with hourly volume up by a log ratio of 2.10 (call it roughly an 8x jump) against a modest social pullback of -0.57 in the same window. The onchain rank of 0.95 is only moderately unusual for this token's own history, so this isn't an extreme reading, but it's paired with social momentum actually fading rather than rising alongside it. Worth watching over the next few hours whether social volume and sentiment start catching up to the onchain surge, or whether the volume spike was a one-off interval that fades back to baseline.",
+    "narration": "MORPHO's onchain volume jumped sharply between intervals (log ratio +2.10, roughly an 8x move), landing in the top 5% of this token's own history for onchain moves, while social activity pulled back (-0.57 log ratio, near the bottom 12% of its own social history). That combination — a near-record onchain surge against a fading social signal — is what's driving the -1.83 divergence score, per the onchain-rising direction. Worth watching over the next few hours whether social volume and sentiment catch up to the onchain move or whether the onchain surge fades back toward baseline.",
     "backfilled": true
   },
   {
@@ -316,7 +316,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "VELVET's social attention climbed sharply this hour (log ratio +1.09, roughly a tripling) while onchain activity pulled back (-0.64, close to a halving), and this is the driver behind the direction reading of social-rising. Neither rank sits near the ±10 cap, so this is a moderate move for the token's own recent history rather than an extreme one. Worth watching over the next few hours whether the intervalVolumeUsd picks up to align with the social spike, or whether the attention surge fades on its own without onchain follow-through.",
+    "narration": "VELVET's social attention jumped sharply—roughly a tripling hour-over-hour (log ratio +1.09)—which sits in the top 4% of this token's own social moves. Onchain activity moved the opposite way, down by about half (log ratio -0.64), itself a large drop relative to its usual range, leaving the two series about as far apart as this metric can register (1.82 of 2). Worth watching over the next few hours whether intervalVolumeUsd picks up to match the attention spike or the social surge cools off on its own.",
     "backfilled": true
   },
   {
@@ -336,7 +336,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "VELVET's gap is being driven by onchain: interval volume jumped with a log ratio of +1.23 (roughly a 3.4x move) while social activity actually cooled, down -0.61 in log terms. Neither rank is extreme (onchain +0.99, social -0.83 against their own recent histories), so this is a real but moderate divergence rather than a spike. Worth watching over the next few hours whether social volume and galaxy score start catching up to the onchain surge, or whether the onchain activity cools back toward where attention already sits.",
+    "narration": "VELVET's onchain volume jumped sharply (log ratio +1.23, roughly a 3.4x move) while social attention pulled back (log ratio -0.61, about halving), with the onchain move sitting in the top 2% of its own history and the social drop in the bottom 17%. That combination puts the divergence score near the extreme end of its range at -1.82, driven by onchain activity climbing while attention faded rather than the reverse. Worth watching over the next few hours whether social volume and sentiment start catching up to the onchain surge, or whether the elevated intervalVolumeUsd fades back toward baseline.",
     "backfilled": true
   },
   {
@@ -356,7 +356,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "TIBBIR's gap is driven by attention pulling back faster than onchain activity: social momentum fell (log ratio -0.36, roughly a third down hour-over-hour) while onchain volume actually jumped sharply (+3.53 log ratio, several-fold increase), and the direction field confirms this as social-falling. Neither rank sits at an extreme relative to this token's own recent history (both under 1 in magnitude), so this is a real but moderate move rather than an outlier reading. Worth watching over the next few hours whether social volume and galaxy score stabilize or keep slipping, and whether the onchain volume surge is a one-off interval or continues, since that will show whether the two series reconverge or the gap widens.",
+    "narration": "TIBBIR's gap this hour was driven by attention pulling back rather than onchain activity: social momentum fell (log ratio -0.36), landing in the bottom ~9% of this series' own history of moves, while onchain volume surged (log ratio +3.53), a near-record jump ranking in the top ~9%. The divergence score of -1.83 reflects that mismatch between a fast-fading social signal and a spiking onchain one. Worth watching over the next few hours whether social volume and sentiment stabilize or continue slipping, and whether the onchain volume surge is sustained or was a single-interval spike.",
     "backfilled": true
   },
   {
@@ -376,7 +376,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "TIBBIR's gap is driven by attention climbing while onchain activity fell hard: social momentum is up (+0.37 log-ratio, a meaningful step) against onchain down sharply (-2.81 log-ratio, roughly an 94% drop in interval volume), with social rank modestly elevated (0.91) and onchain rank negative (-0.84) versus this token's own recent history — neither is near the +/-10 cap, so this is a notable but not extreme reading. Direction is social-rising: chatter is outpacing chain activity, not the other way around. Worth watching over the next few hours whether interval volume recovers toward prior levels or social volume/galaxy score cool off, since either would close the gap from a different side.",
+    "narration": "TIBBIR's social attention climbed (log-ratio +0.37, roughly a 45% step up in hourly terms) while onchain activity collapsed (log-ratio -2.81, a steep drop) over the same interval. Social's move ranks in the top ~9% of its own history and onchain's decline sits near the bottom ~16%, producing a divergence score of 1.75 — attention is what's driving this gap. Worth watching over the next few hours whether intervalVolumeUsd starts recovering toward levels consistent with the social pickup, or whether the social surge cools off instead, since right now the two series are pulling in opposite directions.",
     "backfilled": true
   },
   {
@@ -396,7 +396,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "MORPHO's gap is driven by attention climbing while onchain activity pulled back: social volume roughly doubled hour-over-hour (log ratio +1.63) against a drop in onchain activity (log ratio -1.75), and the direction field confirms social-rising as the driver. Both rank scores sit under 1 in magnitude, so relative to this token's own recent history neither move is extreme yet, just a clear split between the two series. Worth checking over the next few hours whether the interval onchain volume recovers toward the social move or whether social volume cools back down, since right now the two are pointing in opposite directions.",
+    "narration": "MORPHO's social attention jumped sharply (log ratio +1.63, roughly a fivefold hourly increase) while onchain volume moved the opposite way (-1.75, close to an 80% pullback), and this social spike sits in the top 2% of the token's own history against an onchain move in the bottom 9%. That combination puts the divergence score near the top of its possible range at 1.89, driven by attention outpacing volume rather than the reverse. Worth watching over the next few hours is whether intervalVolumeUsd starts climbing back toward the social move or whether the social spike cools off on its own, since right now the two series are pointing in clearly opposite directions.",
     "backfilled": true
   },
   {
@@ -416,7 +416,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "VVV's onchain volume jumped sharply this hour (log ratio +2.11, roughly an 8x move) while social activity ticked down slightly (-0.35), and the direction field confirms onchain trading outpaced attention. Neither rank is at an extreme relative to VVV's own recent history (onchain 0.94, social -0.79), so this is a real but not historically stretched move for the token. Worth checking over the next few hours whether social volume and galaxy score start catching up to the onchain surge, or whether the elevated onchain activity fades back toward its prior baseline.",
+    "narration": "Onchain volume for VVV jumped hard between intervals (log ratio +2.11, roughly an 8x move) while social activity slipped slightly (-0.35 log ratio) — that onchain move ranks in the top 6% of this token's own history, versus social's move landing in the bottom 21%. The gap (-1.73) is driven entirely by onchain outpacing attention, not the other way around. Worth checking over the next few hours whether social volume and sentiment start catching up to the onchain surge, or whether the elevated onchain activity was a one-interval spike that fades back toward baseline.",
     "backfilled": true
   },
   {
@@ -436,7 +436,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "Social attention on MORPHO climbed sharply this hour (log ratio +0.89, more than doubling) while onchain volume dropped hard (log ratio -1.45, more than a halving), and the direction field confirms attention is the side outpacing here. Both the social rank (+0.93) and onchain rank (-0.82) sit at moderate-to-elevated levels rather than the +/-10 cap, so this reads as a notable but not extreme divergence for this token's own recent history. Worth watching over the next few hours whether the interval volume figure ticks back up toward the pace of social volume, or whether social activity cools off instead — either shift would narrow the gap currently driving this score.",
+    "narration": "MORPHO's social attention jumped sharply—a log ratio of +0.89 (roughly a 2.4x hourly increase in social volume), landing in the top 7% of this token's own social-move history. Onchain volume moved the opposite way, down at a log ratio of -1.45 (a drop of about 77%), itself an extreme low for this series. The gap here is driven by attention climbing while volume fell away, per the direction field. Worth watching over the next few hours whether onchain activity picks back up to meet the social spike, or whether the elevated social numbers (galaxy score, sentiment) fade back toward baseline without any change in transaction flow.",
     "backfilled": true
   },
   {
@@ -456,7 +456,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "VVV's gap is being driven by attention dropping faster than onchain activity: social momentum fell by a log ratio of -1.10 (roughly a two-thirds cut in hourly volume) while onchain volume rose sharply, log ratio +2.22, more than a sevenfold jump between intervals. Neither rank is near the ±10 cap, so this reads as a moderate divergence rather than an extreme one, but the direction is clear: social-falling. Worth watching over the next few hours is whether onchain volume holds at this elevated level or fades back toward social's pace, and whether social volume stabilizes or continues its decline.",
+    "narration": "VVV's attention dropped sharply this hour (social log-ratio -1.10, roughly a two-thirds decline) while onchain activity surged (+2.22, more than an eightfold jump), a gap the direction field marks as social-falling — attention fell faster than volume rose. Both moves are extreme relative to VVV's own history: social sits at the -98th percentile of its typical swings and onchain at +95%, giving a divergence score of -1.93 near the -2 floor. Worth watching over the next few hours is whether social volume and sentiment stabilize or keep sliding, and whether the onchain surge holds or was a single-interval spike.",
     "backfilled": true
   },
   {
@@ -476,7 +476,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "MORPHO's social attention climbed sharply this hour while onchain volume moved the other way — social momentum logged +1.89 (roughly a sixfold increase interval-over-interval) against onchain's -1.56 (about a fifth of the prior level), and the direction field confirms attention is what's driving this gap, not volume. The social rank of 1 is unremarkable for this token's own recent history, so this isn't an extreme reading despite the sizeable jump. Worth checking over the next few hours whether intervalVolumeUsd (currently ~$144k) picks back up to match the attention spike, or whether the social surge cools off on its own — that's the gap to watch, not a signal to act on.",
+    "narration": "MORPHO's social attention spiked hard this hour, a log-ratio jump of +1.89 (roughly a 6.6x move in social volume) that ranks at the very top of the token's own history for this metric. Onchain activity moved the opposite way over the same interval, down a log-ratio of -1.56, itself in the bottom fraction of its own historical range. That split — social at a record high, onchain near a record low — produces the divergence score of 1.84 and is classified as social-rising: attention climbing while volume fails to follow. Worth watching over the next few hours is whether intervalVolumeUsd picks back up to meet the social spike, or whether the social numbers cool back toward the onchain trend.",
     "backfilled": true
   },
   {
@@ -496,7 +496,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "VELVET's attention spiked hard this hour — social volume momentum jumped by a log ratio of about 2.22 (roughly an 8x move interval-over-interval) while onchain activity fell by about 1.08 (roughly a two-thirds drop), pushing social-rank to 1 against onchain-rank near -0.96. That's the social-rising pattern: chatter outpacing chain activity, not the other way around. Worth checking over the next few hours whether intervalVolumeUsd starts climbing to meet the social spike, or whether the social number cools back down on its own.",
+    "narration": "VELVET's social attention spiked sharply this hour—the log ratio of +2.22 implies roughly a ninefold jump in social volume, and that move sits at the very top (100th percentile) of this token's own history of hourly swings. Onchain activity moved the opposite way, down at a log ratio of -1.08, itself an extreme reading near the bottom 3.5% of its own distribution. That combination—attention surging while volume contracts—produced a divergence score near the top of its possible range (1.96 of 2). Worth watching over the next few hours whether onchain volume picks up to meet the attention spike, or whether the social surge cools off on its own.",
     "backfilled": true
   },
   {
@@ -516,7 +516,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "AERO's onchain activity jumped hard while social attention slid: interval volume rose by a log-ratio of 3.01 (roughly a 20x hour-over-hour move) against a social momentum of -0.34, and the onchain rank of 0.97 sits well above its recent norm versus a social rank of -0.77. The direction field confirms this is onchain-rising — volume outpacing attention, not the reverse. Worth watching over the next few hours whether social volume and galaxy score start catching up to this onchain surge, or whether the elevated onchain pace itself fades back toward baseline.",
+    "narration": "AERO's onchain volume jumped sharply between intervals (log ratio +3.01, roughly a 20x move), landing in the top 3% of this token's own onchain history, while social activity ticked down slightly (-0.34 log ratio, in the bottom 23% of its social history). That combination — a near-record onchain surge against a mild pullback in attention — is what's driving the -1.74 divergence score, per the onchain-rising direction. Worth watching over the next few hours whether social volume and sentiment start catching up to the onchain move, or whether this burst of onchain activity fades back toward baseline.",
     "backfilled": true
   },
   {
@@ -536,7 +536,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "MORPHO's onchain activity jumped hard, up a log ratio of +3.11 (roughly 22x) hour-over-hour, while social volume mentions actually pulled back with a log ratio of -1.34 (about a 74% drop). That onchain move sits at a rank of +0.97 versus social's -0.96 against the token's own recent history—both moderate, not extreme, but pulling in opposite directions, which is what the \"onchain-rising\" divergence flags. Worth watching over the next few hours whether social attention picks back up to match the onchain surge, or whether the onchain spike itself fades on the next interval.",
+    "narration": "MORPHO's onchain volume jumped sharply between intervals (log ratio +3.11, roughly a 22x move) while social attention pulled back over the same window (log ratio -1.34), and that onchain move ranks in the top 3% of this token's own history. Social activity, by contrast, sits near the bottom 4% of its own range, so the divergence score of -1.93 is being driven almost entirely by an onchain surge against fading chatter. Worth watching over the next few hours whether social volume and sentiment catch up to the onchain activity or whether the elevated onchain pace itself cools back toward baseline.",
     "backfilled": true
   },
   {
@@ -556,7 +556,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "VVV's gap is being driven by onchain activity dropping sharply, not attention: the onchain interval log-ratio of -2.45 marks roughly an 88% hour-over-hour fall in volume, while social ticked up modestly (log-ratio 0.72, a rise but well under the score cap). Onchain rank sits near -0.96 and social rank near 0.93, both moderate rather than extreme readings for this token's own recent history. Worth watching over the next few hours is whether intervalVolumeUsd stabilizes or continues to thin out, since that would clarify whether this is a brief lull or a sustained pullback in onchain flow relative to the steadier social signal.",
+    "narration": "VVV's onchain volume dropped sharply between hourly intervals (log ratio -2.45, roughly a 92% cut), landing in the bottom ~4% of this token's own history for onchain moves, while social attention rose (log ratio +0.72, a top ~7% move for that series). That split pushes the divergence score to 1.89 of a possible 2, driven by the onchain collapse rather than the social gain. Worth watching over the next few hours whether onchain activity stabilizes or keeps falling, and whether the social interest shows up in renewed transaction volume.",
     "backfilled": true
   },
   {
@@ -576,7 +576,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "VVV's onchain activity climbed sharply, up a log ratio of 1.78 (roughly a 6x jump in interval volume) while social attention drifted down slightly (-0.45 log ratio), and volume outpaced attention enough to drive the divergence. Neither reading is at the extreme cap, but the onchain rank sits meaningfully above social's own recent baseline. Worth watching over the next few hours whether social volume and galaxy score pick up to catch up with the onchain move, or whether this burst of onchain activity fades back toward the token's typical interval volume.",
+    "narration": "VVV's onchain volume jumped sharply between intervals (log ratio +1.78, roughly a sixfold increase), landing in the top ~10% of this token's own onchain moves, while social attention slipped (-0.45 log ratio), in the bottom ~16% of its social history. That combination puts the divergence score near the extreme end of its range, driven by onchain activity outpacing a quieting social feed rather than the other way around. Worth watching over the next few hours whether social volume and sentiment pick back up to catch up with the onchain move, or whether the elevated onchain activity itself fades back toward baseline.",
     "backfilled": true
   },
   {
@@ -596,7 +596,27 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "VELVET's gap is driven by onchain volume falling faster than social attention: onchain activity roughly halved hour-over-hour (log ratio -0.78) while social momentum actually rose (+0.56), and neither rank is at the extreme cap, putting both moves in a moderate-but-real range for this token's recent history. Sentiment and social volume are elevated, but that's context, not confirmation. Worth watching over the next few hours whether intervalVolumeUsd stabilizes or continues to slide, since that would tell you whether this is a brief lull or a sustained pullback in onchain activity relative to the attention it's getting.",
+    "narration": "VELVET's onchain volume dropped sharply (log ratio -0.78, roughly a halving) while social attention kept climbing (+0.56 log ratio) — a divergence score of 1.74 driven by onchain falling faster than social, not by social spiking alone. That onchain move sits in the bottom ~92% of this token's own history for size, an unusually large drop, while the social gain ranks in the top ~18% of its own moves. Worth watching over the next few hours whether onchain volume stabilizes or continues to fall while social interest holds, since that would clarify whether the gap closes or widens.",
+    "backfilled": true
+  },
+  {
+    "token": "VVV",
+    "timestampMs": 1785254400000,
+    "divergence": {
+      "token": "VVV",
+      "timestampMs": 1785254400000,
+      "sufficientHistory": true,
+      "socialMomentumLogRatio": 1.0891361865433247,
+      "onchainMomentumLogRatio": -1.3449482539958058,
+      "socialRank": 0.978494623655914,
+      "onchainRank": -0.7634408602150538,
+      "direction": "social-rising",
+      "suppressedReason": null,
+      "divergenceScore": 1.7419354838709677,
+      "significant": true
+    },
+    "rpcCrossCheck": null,
+    "narration": "VVV's social attention jumped sharply—roughly a tripling in hourly volume (log ratio +1.09), landing in the top 2% of this token's own social moves—while onchain activity fell hard over the same window (log ratio -1.34), itself a notably large drop for this series. That split, attention climbing while volume contracts, is what's pushing the divergence score to 1.74. Worth watching over the next few hours whether intervalVolumeUsd starts recovering toward where social activity would imply, or whether the elevated social readings (galaxy score, sentiment) cool back down without onchain follow-through.",
     "backfilled": true
   },
   {
@@ -616,7 +636,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "VVV's onchain volume jumped sharply between intervals (log ratio +2.70, roughly a 15x move) while social attention actually ticked down slightly (-0.35), and that's the pull behind this divergence — onchain activity is outpacing chatter, not the other way around. Neither rank is at the extreme cap, so this is a real but moderate move relative to VVV's own recent history, not an unprecedented spike. Worth watching over the next few hours whether social metrics (galaxy score, social volume) start catching up to the onchain surge, or whether the elevated onchain volume itself fades back toward baseline.",
+    "narration": "Onchain volume for VVV spiked hard, up a log-ratio of 2.70 (roughly a 15x jump in interval volume) between hours, landing in the top ~2.5% of this token's own onchain moves. Social attention moved the opposite way, dipping (log-ratio -0.35) and sitting in the bottom quartile of its own history, so the gap is being driven almost entirely by onchain acceleration rather than any burst in chatter. Worth watching over the next few hours whether social volume and sentiment start catching up to the onchain move or whether the onchain spike fades back toward baseline — either shift would tell you if the two series are converging again.",
     "backfilled": true
   },
   {
@@ -636,7 +656,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "VELVET's social attention jumped sharply this hour, with the log ratio of 1.41 pointing to roughly a fourfold increase in social volume, while onchain activity actually pulled back (log ratio -0.52, roughly a 40% drop). Both moves are moderate relative to the token's own recent history (social rank 0.98, onchain rank -0.76), not extreme readings. The direction here is social-rising: attention outpaced onchain activity, not the other way around. Worth watching over the next few hours is whether the interval volume of ~$39.4K starts climbing to match the social spike, or whether the social surge fades back toward the onchain trend.",
+    "narration": "VELVET's social attention spiked hard this hour, up a log ratio of 1.41 (social volume roughly quadrupling), which lands in the top 2% of this token's own history of hourly moves. Onchain activity moved the opposite way, down a log ratio of 0.52, itself a notably large drop for this series (bottom ~24th percentile territory in signed terms). That combination — attention surging while volume contracts — is what's driving the divergence score. Worth watching over the next few hours whether intervalVolumeUsd starts picking up to match the social spike, or whether the social numbers cool back down without onchain ever following.",
     "backfilled": true
   },
   {
@@ -656,7 +676,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "VVV's onchain volume dropped sharply (log ratio -2.03, roughly an 85% cut hour-over-hour) while social activity kept climbing (log ratio +0.58), which is what's driving the gap per the onchain-falling direction. Neither rank is anywhere near the ±10 cap, so this reads as a moderate deviation from VVV's recent norm rather than an extreme one. Worth watching over the next few hours whether onchain volume stabilizes or continues to fall while social engagement (galaxy score, social volume) holds up, since that would clarify whether the two series are set to reconverge or keep separating.",
+    "narration": "VVV's onchain volume dropped sharply between hourly intervals (log ratio -2.03, roughly an 87% falloff), a move that ranks in the bottom ~90% of this token's own history — a rare drop for it. Social attention, meanwhile, rose (log ratio +0.58, top ~87% of its own history), so the gap here is driven by onchain activity falling away while chatter kept climbing. Worth checking over the next few hours whether onchain volume stabilizes or keeps thinning, and whether the social volume/sentiment holds or was just a brief spike.",
     "backfilled": true
   },
   {
@@ -676,7 +696,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "Onchain volume for VVV jumped sharply between intervals (log ratio +3.35, roughly a 28x move), while social attention ticked down slightly (log ratio -0.62, about a 46% pullback), and the direction field confirms this was onchain-driven activity outpacing social. On this token's own recent history, the onchain move sits under 1 z-score (0.98) so it's elevated but not extreme, while social's -0.91 is a mild dip, not a capped reading. Worth watching over the next few hours whether social volume and sentiment catch up to the onchain surge or whether the onchain spike was a one-off interval that fades back toward baseline.",
+    "narration": "VVV's onchain volume jumped sharply (log ratio +3.35, roughly a 28x move interval-over-interval) while social activity pulled back (-0.62 log ratio), putting onchain in the top ~2% of its own historical moves against social in the bottom ~9%. That combination drove the -1.89 divergence score, with onchain-rising as the confirmed direction — volume climbing well ahead of attention. Worth watching over the next few hours whether social metrics (galaxy score, social volume) start catching up to this onchain surge, or whether the elevated onchain activity cools back toward its recent baseline.",
     "backfilled": true
   },
   {
@@ -696,7 +716,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "TIBBIR's gap is being driven by onchain volume, which jumped sharply between hourly intervals (log ratio +5.87, roughly a 350x move) while social activity ticked down slightly (-0.34 log ratio). The onchain rank of 0.97 shows this pickup is moderately elevated versus its own recent history, but not extreme, while social sits mildly below its norm at -0.88. Worth watching over the next few hours whether social volume or galaxy score starts to catch up to this onchain surge, or whether the interval volume spike was a one-off that fades back toward baseline.",
+    "narration": "TIBBIR's onchain volume jumped sharply between intervals (a log ratio of +5.87, effectively multiple doublings), landing in the top 3% of this token's own onchain moves, while social activity actually ticked down slightly (-0.34 log ratio, in the bottom 12% of its social history). That combination drove the divergence score to -1.85, with onchain rising as the dominant force and attention not confirming it. Worth watching over the next few hours whether social volume and galaxy score start catching up to the onchain spike, or whether the onchain surge fades back toward baseline.",
     "backfilled": true
   },
   {
@@ -716,7 +736,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "MORPHO's onchain volume jumped sharply between intervals (log ratio +1.85, roughly a 6x move) while social attention edged down (-0.48), and the onchain rank of 0.92 shows this pulls it modestly above its own recent norm rather than into extreme territory. Social volume and sentiment stayed unremarkable, meaning the gap here is being driven by a real acceleration in onchain activity that chatter hasn't caught up to yet. Worth watching over the next few hours whether social volume or galaxy score starts climbing to close the gap, or whether this onchain surge cools back toward baseline on its own.",
+    "narration": "MORPHO's onchain volume jumped sharply hour-over-hour (log ratio +1.85, roughly a 6x move) while social activity pulled back (-0.48 log ratio), and that onchain move sits in the top 8% of this token's own history versus a social move in the bottom 21%. The direction field confirms this is onchain-rising: volume outpaced attention rather than the other way around. Worth watching over the next few hours whether social volume and sentiment start catching up to the onchain surge, or whether the elevated interval volume itself fades back toward baseline.",
     "backfilled": true
   },
   {
@@ -736,7 +756,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "VVV's gap is driven by onchain activity dropping sharply: the interval volume fell by a log ratio of -4.11 (roughly a 98% collapse hour-over-hour) while social attention actually ticked up modestly (+0.38 log ratio, a moderate rise). The onchain rank of -0.997 is a mild-to-moderate deviation for this token's own recent history, not an extreme reading, while social's +0.77 rank is similarly unremarkable in magnitude despite the direction being clear. Worth watching over the next few hours is whether onchain volume stabilizes or continues to thin out, and whether social volume/sentiment holds or was just a brief spike — those next readings will show whether this gap closes or widens.",
+    "narration": "VVV's onchain volume collapsed roughly 60-fold hour over hour (log ratio -4.11), a drop that's larger than 99% of this token's own historical moves. Social activity kept climbing over the same window, up about 46% (log ratio 0.38), landing in the top ~23% of its own range — mild by comparison, so the gap is driven almost entirely by onchain falling off a cliff rather than social surging. Worth watching over the next few hours whether interval volume finds a floor or keeps thinning out, since that would clarify whether this was a brief lull or a real pullback in trading beneath continued social chatter.",
     "backfilled": true
   },
   {
@@ -756,7 +776,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "VELVET's onchain activity climbed sharply this hour (log ratio +1.33, roughly a 3.8x jump in interval volume) while social attention slipped (-0.60, about a 45% pullback), with volume outpacing attention as the driver. Neither rank is extreme against VELVET's own recent history (onchain +0.99, social -0.82), so this looks like a real but not historic move for the token. Worth watching whether social volume and sentiment pick back up in the next few hours to catch up with the onchain surge, or whether the elevated interval volume was a one-off spike that fades.",
+    "narration": "VELVET's onchain volume jumped sharply, up by a log ratio of 1.33 (roughly 2.8x on an hourly basis), landing in the top 1% of this token's own onchain moves. Social attention moved the opposite way, down a log ratio of 0.60, itself an unusually large drop at the 82nd percentile of its own history — so the -1.81 divergence score reflects onchain surging while social pulled back. Worth watching over the next few hours whether social volume and galaxy score catch up to the onchain spike or whether the onchain activity cools back toward baseline.",
     "backfilled": true
   },
   {
@@ -776,7 +796,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "TIBBIR's attention spiked hard this hour — social volume roughly an 11x jump on a log-ratio basis — while onchain activity fell by a similar magnitude, and the gap is confirmed as social-rising. The social rank sits at a full standard-score of 1 against its own recent history (not capped, but still a sharp move), against an onchain rank that's only mildly below normal. Worth watching over the next few hours whether interval volume and transaction counts pick up to match the social surge, or whether the chatter cools back down without onchain follow-through.",
+    "narration": "TIBBIR's social attention spiked hard this hour — the log ratio of 2.39 is roughly an 11x jump in social volume, and it ranks at the very top (100th percentile) of this token's own history for social moves. Onchain activity moved the opposite way, down sharply (log ratio -2.34, around a 90th-percentile-sized drop for this series), which is what pushes the divergence score to 1.73. Worth watching over the next few hours whether onchain volume picks up to meet the attention surge or whether the social spike fades on its own, since right now the two series are pointing in opposite directions.",
     "backfilled": true
   },
   {
@@ -796,7 +816,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "MORPHO's onchain volume jumped sharply between intervals (log ratio +2.41, roughly a ninefold increase) while social activity pulled back (-1.07), and volume outpaced attention enough to drive this divergence, per the direction field. Both readings sit under one standard deviation on this token's own recent history (onchain rank +0.94, social rank -0.94), so neither is at an extreme yet. Worth checking over the next few hours whether social volume and sentiment start catching up to the onchain surge, or whether the elevated transaction pace itself fades back toward baseline.",
+    "narration": "MORPHO's onchain volume jumped sharply between intervals (log ratio +2.41, roughly an 11x move), ranking in the top 1% of its own history, while social attention pulled back at the same time (log ratio -1.07, also an extreme in the opposite direction). That split between a near-record volume surge and a fading social signal produced the -1.88 divergence score. Worth watching over the next few hours whether social volume and sentiment catch up to the onchain move or whether the volume spike proves to be a one-off interval.",
     "backfilled": true
   },
   {
@@ -816,7 +836,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "Onchain activity for AERO jumped hard this hour, roughly a fivefold rise in interval volume (log ratio +2.14), while social attention edged down slightly (log ratio -0.32). The onchain rank (+0.93) is only modestly elevated against AERO's own recent history, not extreme, so this reads as a real but not unprecedented spike for this token. Worth checking over the next few hours whether social volume and sentiment start catching up to the onchain move or whether the volume surge fades back toward baseline on its own.",
+    "narration": "AERO's onchain volume jumped sharply between intervals (log ratio +2.14, roughly a 8.5x move) while social attention pulled back slightly (-0.32), a combination that lands onchain in the top 7% of its own historical moves against a social move in the bottom 23%. That split drives the divergence score to -1.70, with onchain doing essentially all the work here. Worth watching over the next few hours whether social volume and sentiment catch up to the onchain surge, or whether this interval's onchain spike proves to be a one-off against otherwise flat attention.",
     "backfilled": true
   },
   {
@@ -836,7 +856,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "MORPHO's attention climbed faster than its onchain activity this hour: social volume roughly doubled (log ratio +0.96) while onchain activity roughly quartered (-1.87), and the direction field confirms social-rising as the driver. Neither rank is extreme relative to MORPHO's own recent history (social 0.93, onchain -0.92), so this is a moderate, not extreme, split. Worth watching over the next few hours whether the onchain interval volume (currently just ~$2.1k) picks back up toward levels that match the social spike, or whether social attention cools instead.",
+    "narration": "MORPHO's social attention jumped sharply this hour (log ratio +0.96, roughly a 2.6x increase in activity) while onchain volume fell hard (log ratio -1.87, more than an 80% drop). The social move sits in the top 7% of this token's own history (percentile 0.93) and the onchain drop is similarly extreme at the bottom of its range (-0.92), producing a near-max divergence score of 1.85. Direction is social-rising, meaning attention is climbing and outpacing chain activity. Worth watching over the next few hours whether interval volume picks back up to meet the social spike, or whether the elevated sentiment (92) and social volume (1,422) fade back toward baseline.",
     "backfilled": true
   },
   {
@@ -856,7 +876,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "MORPHO's gap here is driven by attention dropping faster than onchain activity: social momentum fell by a log ratio of -1.00 (attention roughly halved between intervals) while onchain volume rose by a log ratio of 1.76 (more than a fivefold jump in interval volume). Neither rank is extreme relative to this token's own history (social at -0.93, onchain at 0.89, both well inside the +/-10 cap), so this reads as a moderate, not extreme, divergence. Worth watching over the next few hours: whether social volume and sentiment stabilize or keep sliding, and whether the onchain volume spike is a one-off print or continues into the next interval.",
+    "narration": "MORPHO's social attention dropped sharply this hour (log ratio -1.00, roughly a halving) while onchain volume surged (+1.76 log ratio, more than a fivefold jump) — attention falling faster than volume moved, per the direction reading. Both moves are extreme relative to their own histories: social sits in the bottom ~7% of its past swings, onchain in the top ~89%, producing a wide -1.83 divergence score. Worth watching over the next few hours whether social volume and sentiment stabilize or keep declining, and whether the onchain volume spike sustains or was a single-interval event.",
     "backfilled": true
   },
   {
@@ -876,7 +896,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "TIBBIR's gap is driven by attention outpacing volume: social activity rose (log-ratio +0.38, roughly a 46% step up) while onchain volume dropped sharply (log-ratio -3.28, a steep fall), against a social rank of 0.90 and onchain rank of -0.84 — both modest relative to this token's own recent history, not extreme readings. Social volume sits at 5,082 with sentiment at 86, but that's context, not confirmation of the momentum shift. Worth watching over the next few hours whether onchain intervalVolumeUsd (currently just ~$84) picks back up toward levels consistent with the social interest, or whether social activity cools back down — either would close the gap.",
+    "narration": "TIBBIR's social attention climbed sharply this hour (log ratio +0.38, a top-10% move for this series' own history) while onchain volume collapsed (log ratio -3.28, in the bottom ~16%), pulling the divergence score to 1.74. The direction field confirms attention is driving this gap, outpacing a steep pullback in onchain activity rather than the reverse. Worth watching over the next few hours whether intervalVolumeUsd recovers toward the social trend or whether the elevated social metrics (galaxy score, socialVolume) fade back toward the quieter onchain pace.",
     "backfilled": true
   },
   {
@@ -896,7 +916,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "VELVET's gap this hour was driven by onchain volume dropping sharply—roughly a halving (log ratio -0.77)—while social activity actually rose (log ratio +0.53, a jump of about 70%). Neither rank is at the extreme cap, so this reads as a moderate, not extreme, divergence for the token's recent history. Worth watching over the next few hours whether interval volume stabilizes or continues falling, and whether the social pickup (sentiment at 94, elevated volume) holds or fades in tandem.",
+    "narration": "VELVET's gap is being driven by onchain activity dropping sharply: the hourly onchain volume fell (log ratio -0.77, roughly a 54% decline) and that move ranks in the bottom ~91% of this token's own onchain history, while social volume actually rose (log ratio +0.53) and sits in the top 20% of its own history. That combination pushes the divergence score to 1.71, a near-record split between the two series. Worth watching over the next few hours whether onchain volume stabilizes or keeps falling, and whether the current elevated social chatter (sentiment reading 94) persists or fades alongside it.",
     "backfilled": true
   },
   {
@@ -916,7 +936,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "AERO's gap here is driven by attention pulling back, not onchain fading: social momentum fell sharply (log ratio -0.93, roughly a 60% drop hour-over-hour) while onchain volume actually jumped (+1.51, better than a doubling), and the direction field confirms attention dropped faster than volume. Neither rank is at the extreme cap (-0.96 and 0.83), so this is a moderate move for AERO rather than an outlier. Worth watching over the next few hours whether onchain volume holds up while social interest stays quiet, or whether social volume rebounds to close the gap.",
+    "narration": "AERO's social attention dropped sharply this hour (log ratio -0.93, roughly a halving) while onchain volume jumped (log ratio +1.51, more than a fourfold rise) — a divergence score of -1.79. The social decline sits in the bottom ~4% of this series' own history, and the onchain surge sits in the top ~17%, so the social side is the more unusual move here. Worth watching over the next few hours whether onchain volume holds up without social volume recovering, or whether social attention simply catches back up.",
     "backfilled": true
   },
   {
@@ -936,7 +956,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "MORPHO's gap is onchain-driven: hourly onchain volume roughly quintupled (log ratio +2.11) while social chatter dropped by more than half (log ratio -0.84), pushing volume ahead of attention. Neither rank is extreme on this token's own history (onchain +0.92, social -0.91, both well inside the ±10 cap), so this is a moderate, not extreme, dislocation. Worth watching over the next few hours whether social volume and sentiment catch up to the onchain move or whether the onchain surge cools back toward baseline — either would close the gap, and that's the thing to check rather than assume.",
+    "narration": "MORPHO's onchain volume jumped sharply between intervals (log ratio +2.11, roughly an 8x move) while social activity pulled back (-0.84 log ratio), putting onchain in the top ~8% of its own historical moves and social in the bottom ~9% of its own — a near-record split, per the -1.83 divergence score. Direction is onchain-rising: volume outpaced attention here, not the reverse. Worth watching over the next few hours whether social volume and sentiment catch up to the onchain surge or whether the volume spike itself fades back toward baseline.",
     "backfilled": true
   },
   {
@@ -956,7 +976,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "VELVET's gap is being driven by onchain volume dropping sharply — the interval log-ratio of -1.26 works out to roughly a 72% pullback hour-over-hour, while social activity actually rose (log-ratio +0.50, close to a 65% increase). Neither rank is near the ±10 cap, so this reads as a moderate, not extreme, divergence for this token's own recent history. Worth watching over the next few hours whether onchain volume stabilizes or continues to fall while social attention holds, since that would clarify whether the two series are reconverging or drifting further apart.",
+    "narration": "VELVET's onchain volume dropped sharply hour-over-hour (log ratio -1.26, roughly a 72% pullback), landing in the bottom fraction of a percent of this series' own history at -0.98. Social attention, meanwhile, rose (log ratio +0.50) and sits in the top ~21% of its own moves, so the gap here is driven by onchain activity falling away rather than social spiking. Worth watching over the next few hours whether intervalVolumeUsd stabilizes or keeps decaying while social_volume and sentiment hold near current levels — that would show whether the two series are converging back or drifting further apart.",
     "backfilled": true
   },
   {
@@ -976,7 +996,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "VELVET's onchain activity outpaced social attention this hour: interval volume roughly doubled (log ratio +0.73) while social volume roughly halved (-0.73), and onchain's rank (+0.88) sits well above social's (-0.87), though neither is near the ±10 cap so this isn't an extreme reading yet. The divergence score of -1.74 reflects that gap, per the direction field: onchain-rising. Worth watching over the next few hours whether social volume and sentiment stabilize or keep declining, and whether the pickup in onchain volume persists or was a single-interval spike.",
+    "narration": "VELVET's onchain volume roughly doubled hour-over-hour (log ratio +0.73), a move landing in the top ~12% of this series' own history, while social attention roughly halved (log ratio -0.73), similarly extreme in the opposite direction—together producing a divergence score of -1.74. Onchain activity is what's driving this gap, per the direction field, even as social volume and sentiment readings stay elevated on the surface. Worth watching over the next few hours: whether the onchain volume surge continues or was a one-off spike, and whether social metrics stabilize or keep falling alongside it.",
     "backfilled": true
   },
   {
@@ -996,7 +1016,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "VVV's attention climbed while onchain volume pulled back over the same hour: social momentum logged +0.78 (roughly a doubling in mentions/volume) against onchain momentum of -2.01 (a sharp drop, more than an 85% pullback in interval volume), and social's rank of 0.95 versus onchain's -0.89 confirms attention is running well above its recent norm while trading activity sits below it. Neither rank is near the +/-10 cap, so this is a moderate reading rather than an extreme one. Worth checking over the next few hours whether intervalVolumeUsd recovers toward the social move or whether the social spike cools off on its own, since right now the two series are simply pulling apart rather than confirming each other.",
+    "narration": "VVV's attention climbed sharply this hour — social activity roughly doubled (log ratio +0.78), a move that's larger than 95% of this token's own history of hourly swings — while onchain volume dropped hard (log ratio -2.01), itself an extreme low for this series at the -89th percentile. That combination puts the divergence score near the top of its possible range (1.84 of 2), with attention rising as trading activity fades. Worth watching over the next few hours whether onchain volume picks back up to meet the social spike or whether the social surge cools off on its own; either resolution would close this gap.",
     "backfilled": true
   },
   {
@@ -1016,7 +1036,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "VVV's gap here is driven by attention dropping faster than onchain activity: social momentum fell by a log ratio of -0.85 (roughly halving) while onchain momentum rose 1.90 (better than a sixfold jump) over the same hour. The social rank of -0.97 is unremarkable for this token's own history, so this isn't an extreme reading, just a clear divergence in direction. Worth watching over the next few hours whether social volume and galaxy score stabilize or continue to slide while the onchain pace holds, which would clarify whether the two series are converging or drifting further apart.",
+    "narration": "VVV's social attention dropped sharply this interval (log ratio -0.85, roughly a halving) while onchain volume surged (log ratio +1.90, more than a sixfold jump) — a near-record combination, with social falling in the bottom ~3% and onchain rising in the top ~11% of each series' own history. The direction field confirms attention pulled back faster than onchain activity, not the other way around. Worth watching over the next few hours whether social volume and sentiment stabilize or keep sliding even as onchain activity stays elevated, which would tell you whether the two series are reconverging or drifting further apart.",
     "backfilled": true
   },
   {
@@ -1036,7 +1056,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "TIBBIR's gap is driven by attention pulling back: social momentum fell (log ratio -0.54, roughly a third off the prior hour) while onchain activity actually rose sharply (+2.53 log ratio, a jump of that hour's volume several times over). Neither rank sits near the ±10 cap, so this is a moderate, not extreme, divergence for the token's own recent history. Worth watching over the next few hours whether social volume and sentiment stabilize or keep declining while onchain volume holds — that would show whether the gap is closing or widening, without implying which way price should go.",
+    "narration": "TIBBIR's social attention dropped sharply (log ratio -0.54, roughly a 42% pullback in hourly mentions) while onchain activity surged (log ratio +2.53, a jump of that magnitude) — the social decline sits in the bottom ~5% of this token's own history for social moves, making it the unusual side of the pair even though onchain also ranks high at the 77th percentile. That combination puts the divergence score at -1.72, driven by the social-falling side per the labeled direction. Worth watching over the next few hours whether social volume and sentiment stabilize or keep fading, and whether the onchain surge (interval volume near $7.5k) continues or was a one-off spike — that will show whether the two series reconverge or the gap persists.",
     "backfilled": true
   },
   {
@@ -1056,7 +1076,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "TIBBIR's gap is driven by onchain activity falling sharply: interval volume dropped by a log ratio of -4.16 (roughly a 98% collapse between hourly reads) while social momentum actually rose (+0.39 log ratio, about a 48% increase). Neither rank is at the extreme cap — onchain sits at -0.90 and social at +0.90 on this token's own recent history, so both moves are moderate, not off-the-charts. Worth watching over the next few hours whether onchain volume stabilizes or keeps thinning while social attention (galaxy score 60.6, sentiment 83) holds up, since that would show whether the two series reconverge or keep pulling apart.",
+    "narration": "TIBBIR's gap is being driven by onchain activity dropping sharply, not attention: onchain volume fell by a log ratio of -4.16 (roughly a 98% decline hour over hour), landing in the bottom ~90th percentile of this token's own onchain moves, while social momentum rose modestly (+0.39 log ratio, top ~90th percentile of its own history). That combination produced a divergence score of 1.80, near the top of its range. Worth watching over the next few hours is whether onchain volume stabilizes or continues to thin out, and whether the elevated social activity holds or fades in step.",
     "backfilled": true
   },
   {
@@ -1076,7 +1096,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "VVV's onchain volume jumped sharply between intervals (a log ratio of +2.62, roughly a 14x move) while social attention ticked down slightly (-0.39 log ratio), and the gap is flagged significant. The onchain rank of about +0.95 is only modestly elevated against its own recent history, not extreme, so this looks like a real but not unprecedented volume spike outpacing chatter rather than a capped-out reading. Worth checking over the next few hours whether social volume and galaxy score start catching up to the onchain move, or whether this interval's transaction burst was a one-off that fades back toward baseline.",
+    "narration": "VVV's onchain volume jumped sharply between intervals (log ratio +2.62, roughly a 14x move), ranking in the top 5% of this token's own history, while social activity ticked down (-0.39 log ratio, in the bottom 21% of its own range). That split drove the divergence score to -1.74, with onchain doing the outsized moving here. Worth watching over the next few hours whether social volume and sentiment catch up to the onchain surge or whether the volume spike proves to be a single-interval outlier.",
     "backfilled": true
   },
   {
@@ -1096,7 +1116,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "VVV's gap is being driven by attention pulling back, not onchain: social momentum logged -0.63 (roughly a halving in mentions/interval) against a socialRank of -0.92, a moderate pullback for this token's own recent history, while onchain momentum rose 1.68 (better than a fourfold jump) with an onchainRank of 0.85. That combination — social-falling as the authoritative read — means the attention drop is outpacing what's happening onchain, even though onchain activity itself is climbing. Worth watching over the next few hours whether social volume and galaxy score stabilize or keep sliding, since that's what would confirm the falling-attention side of this gap rather than the onchain-rising side.",
+    "narration": "VVV's social attention dropped sharply this hour (log ratio -0.63, roughly halving) while onchain volume surged (log ratio +1.68, more than a fivefold jump), pulling the two series apart with a divergence score of -1.77. The social decline sits in the bottom ~92% of this token's own history for that metric, while the onchain jump ranks in the top ~85% of its own history, so both moves are unusual but the social side is driving the gap per the direction field. Worth watching over the next few hours whether social volume and sentiment stabilize or continue falling, and whether the elevated onchain activity persists or was a single-interval spike.",
     "backfilled": true
   },
   {
@@ -1116,7 +1136,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "VVV's onchain volume dropped sharply between intervals (log ratio -2.56, roughly an 85-90% pullback) while social attention actually rose (log ratio +0.72, close to a doubling), driving the gap between the two series. The onchain rank of -0.95 is a moderate deficit for this token's own recent history, not an extreme reading, so this isn't a cap-level anomaly. Worth watching over the next few hours whether onchain activity stabilizes or continues to fall away from the still-elevated social volume and sentiment (85) — that would show whether the two series reconverge or keep splitting.",
+    "narration": "VVV's gap is being driven by onchain volume collapsing, not attention: interval volume fell sharply (log ratio -2.56, roughly a 92% drop) which sits in the bottom ~5% of this token's own history for onchain moves, while social activity rose (log ratio +0.72, a top ~6% move for its own history) alongside a high sentiment reading of 85. That combination puts the divergence score near the top of its range at 1.88. Worth watching over the next few hours is whether onchain volume stabilizes or keeps thinning, and whether the elevated social chatter is accompanied by any pickup in transactions once that data is available.",
     "backfilled": true
   },
   {
@@ -1136,7 +1156,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "VVV's onchain volume jumped hard between intervals (log ratio +2.57, roughly a 13x move) while social attention actually cooled slightly (-0.48 log ratio), and the onchain rank of +0.95 sits well above its recent norm even though it's nowhere near the +/-10 cap. That's the onchain-rising signature: transaction activity is outpacing what the social chatter would suggest, with galaxy score and alt rank both unremarkable in this window. Worth watching over the next few hours whether social volume or sentiment picks up to catch up with the onchain move, or whether this interval volume spike fades back toward baseline on its own.",
+    "narration": "VVV's onchain volume jumped sharply between intervals (log ratio +2.57, roughly a 13x move) while social activity ticked down (-0.48 log ratio) — a rare combination, with onchain volume ranking in the top 5% of its own history and social sitting near the bottom 16%. The direction confirms this is an onchain-rising divergence: trading activity outpaced attention rather than the reverse. Worth watching over the next few hours whether social volume and sentiment catch up to the onchain surge or whether the volume spike proves to be a single-interval outlier that fades on its own.",
     "backfilled": true
   },
   {
@@ -1156,7 +1176,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "AERO's gap is driven by social attention dropping sharply—roughly halved hour-over-hour (log ratio -0.85)—while onchain volume jumped hard in the same window (log ratio +1.50, more than a fourfold rise). Neither reading is extreme against AERO's own recent history (social rank -0.95, onchain rank 0.82, well inside the ±10 cap), so this looks like a moderate, not historic, split. Worth watching over the next few hours whether social volume and sentiment stabilize or keep sliding while that onchain volume surge holds, which would show whether the two series are converging back or pulling further apart.",
+    "narration": "AERO's attention dropped sharply this hour — social momentum fell by a log ratio of -0.85 (roughly halving), landing in the bottom 5% of its own historical moves — while onchain activity climbed by a log ratio of 1.50, a top-18% swing for that series. That split drove the divergence score to -1.77, with the direction confirmed as social-falling: chatter pulled back faster than volume did. Worth watching over the next few hours is whether onchain volume holds up on its own or fades back toward the social read, and whether social volume/sentiment stabilize or continue to slide.",
     "backfilled": true
   },
   {
@@ -1176,7 +1196,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "Onchain activity for VVV outpaced social attention this hour: interval volume jumped sharply (log ratio +2.19, roughly an 8-9x move) while social chatter actually eased (log ratio -0.44, about a third lower). Against VVV's own recent history, the onchain reading sits a bit above typical (rank +0.92) and social sits a bit below (rank -0.81), neither at the extreme cap, so this is a moderate rather than a violent divergence. Worth watching over the next few hours whether social volume and galaxy score start picking up to catch up with the onchain move, or whether this burst of onchain activity fades back toward baseline without any attention follow-through.",
+    "narration": "VVV's onchain volume jumped sharply between intervals (log ratio +2.19, roughly an 8-9x move) while social attention actually pulled back (log ratio -0.44, a mild decline), a combination that lands onchain activity in the top 9% of its own history for this token even as social sits near the bottom 19%. That gap between a near-record volume spike and cooling chatter is what's driving the divergence score. Worth watching over the next few hours whether social volume and sentiment catch up to the onchain move or whether the volume spike fades on its own, which would tell you if this was a one-off transaction event or the start of a broader shift in attention.",
     "backfilled": true
   },
   {
@@ -1196,7 +1216,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "AERO's onchain volume jumped sharply, up by a log ratio of 1.78 (roughly a fivefold increase hour-over-hour), while social activity ticked down slightly with a log ratio of -0.45. The onchain rank of 0.86 is only modestly elevated against this token's recent history, not extreme, while social rank sits mildly negative at -0.86 — so this is a real but not dramatic divergence, driven by the onchain side climbing faster than attention followed. Worth watching over the next few hours whether social volume and sentiment catch up to the onchain surge or whether the interval volume spike normalizes back down.",
+    "narration": "AERO's onchain volume jumped sharply (log ratio +1.78, roughly a 6x move) while social activity pulled back (-0.45), a combination that lands in the top ~86% of this token's own onchain moves against the bottom ~86% of its social moves. The divergence score of -1.71 reflects that gap, with onchain activity clearly outpacing attention here per the direction field. Worth watching over the next few hours whether social volume and sentiment catch up to the onchain surge or whether the elevated transaction activity fades back toward baseline.",
     "backfilled": true
   },
   {
@@ -1216,7 +1236,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "VVV's onchain volume jumped sharply between intervals (log ratio +3.21, roughly a 25x move) while social attention actually eased off (-0.63 log ratio, a moderate pullback), and onchain rank sits modestly above its own recent norm at +0.97 versus social at -0.91. So the gap here is onchain-driven: activity surged well ahead of any matching lift in social chatter. Worth watching whether social volume and sentiment pick up to catch up with the onchain move, or whether this burst of activity fades back toward the token's typical interval volume.",
+    "narration": "VVV's onchain volume jumped sharply between intervals (log ratio +3.21, roughly a 25x move) while social attention pulled back (log ratio -0.63, about half), a combination that puts onchain activity in the top ~2.5% of its own historical moves and social in the bottom ~9%. That gap between a near-record onchain surge and a fading social signal is what drives the divergence score. Worth watching over the next few hours whether social volume and sentiment catch up to the onchain move or whether the elevated onchain activity itself cools back down.",
     "backfilled": true
   },
   {
@@ -1236,7 +1256,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "TIBBIR's attention climbed sharply while onchain activity moved the other way: social momentum logged +1.10 (roughly a 3x jump in hourly mentions) against an onchain drop of -3.08 (volume collapsing to a fraction of the prior interval). The direction field confirms this as social-rising - attention outpacing chain activity - though both rank scores sit under 1 in magnitude, so relative to this token's own recent history neither move is extreme yet. Worth watching over the next few hours whether intervalVolumeUsd picks back up to meet the social spike, or whether the social surge cools off on its own.",
+    "narration": "TIBBIR's social activity roughly tripled hour-over-hour (log ratio +1.10), landing in the top 1% of this token's own social moves, while onchain volume collapsed over the same window (log ratio -3.08), an unusually large drop for this series. That split pushes the divergence score to 1.81 out of a possible 2, with attention the clear driver here per the direction reading. Worth watching over the next few hours whether onchain activity picks back up toward where social attention now sits, or whether the social spike itself fades back down.",
     "backfilled": true
   },
   {
@@ -1256,7 +1276,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "VVV's gap was driven by onchain volume dropping sharply between hourly intervals (log ratio -1.86, roughly a 5x pullback), while social attention actually ticked up modestly (+0.57 log ratio) rather than staying flat. Neither rank sits near the ±10 cap, so this reads as a real but not extreme move for the token's recent history. Worth checking whether the next interval's onchain volume stabilizes or extends the decline, since that will determine if the gap closes or widens further.",
+    "narration": "VVV's onchain volume dropped sharply between hourly intervals (log ratio -1.86, roughly an 84% decline), a move that sits in the bottom fringe of this token's own history at a -0.88 percentile. Social attention moved the other way, up 0.57 in log terms and ranking in the top 13% of its own history (+0.87 percentile), so the gap here is driven by onchain activity falling away rather than social spiking. Worth watching over the next few hours whether onchain volume stabilizes or continues to thin out while social interest holds, since that would clarify whether the two series are reconverging or the split is widening.",
     "backfilled": true
   },
   {
@@ -1276,7 +1296,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "MORPHO's onchain volume jumped sharply this hour (log ratio +1.81, roughly a 6x move interval-over-interval) while social activity actually pulled back (-0.71), so the gap here is being driven by onchain outpacing attention. Neither rank is near the +/-10 cap, so this is a moderate deviation from the token's own recent history rather than an extreme one. Worth checking over the next few hours whether that onchain surge holds up or fades, and whether social volume/sentiment picks back up to close the gap.",
+    "narration": "MORPHO's onchain volume jumped roughly sixfold hour-over-hour (log ratio +1.81), a move that lands in the top 12% of this token's own history, while social attention fell by about half over the same interval, itself a bottom-15% reading for its own series. That split drove the divergence score to -1.74, with onchain activity clearly doing the driving here. Worth watching over the next few hours whether social volume and sentiment catch up to the onchain surge or whether the elevated transaction activity cools back toward its recent baseline.",
     "backfilled": true
   },
   {
@@ -1296,7 +1316,27 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "VVV's onchain volume climbed sharply this hour (log ratio +2.60, roughly a fourfold jump in interval volume) while social attention actually eased slightly (-0.40), so the gap here is being driven by onchain outpacing social, not the other way around. Neither rank reading is at the extreme cap, putting this jump at a moderate but real deviation from VVV's own recent baseline. Worth watching over the next few hours whether social volume and galaxy score start catching up to this onchain surge, or whether the elevated intervalVolumeUsd fades back toward prior levels.",
+    "narration": "VVV's onchain volume jumped sharply between intervals (log ratio +2.60, roughly a 13x move), ranking in the top ~95% of this token's own history, while social activity ticked down (log ratio -0.40) and sits in the lower ~78% of its typical range. That combination — onchain volume surging while attention pulled back — is what's driving the divergence score here. Worth watching over the next few hours whether social volume or sentiment starts catching up to this onchain move, or whether the volume spike fades on its own.",
+    "backfilled": true
+  },
+  {
+    "token": "VELVET",
+    "timestampMs": 1786208400000,
+    "divergence": {
+      "token": "VELVET",
+      "timestampMs": 1786208400000,
+      "sufficientHistory": true,
+      "socialMomentumLogRatio": -0.7852976105150737,
+      "onchainMomentumLogRatio": 0.6617744651904013,
+      "socialRank": -0.8694852941176471,
+      "onchainRank": 0.8455882352941176,
+      "direction": "social-falling",
+      "suppressedReason": null,
+      "divergenceScore": -1.7150735294117647,
+      "significant": true
+    },
+    "rpcCrossCheck": null,
+    "narration": "VELVET's social attention dropped sharply (log ratio -0.79, roughly a halving) while onchain volume nearly doubled (log ratio +0.66) in the same window — attention falling faster than volume is what drove this gap. Both moves are extreme relative to the token's own history: the social decline sits in the bottom ~13% and the onchain gain in the top ~85% of each series' past moves, giving a divergence score of -1.72. Worth watching over the next few hours whether social volume/sentiment stabilizes or continues down, and whether the onchain volume pace holds or was a one-interval spike.",
     "backfilled": true
   },
   {
@@ -1316,7 +1356,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "VELVET's gap here is driven by onchain activity dropping faster than social attention: interval onchain volume fell sharply (log ratio -0.97, roughly a halving) while social volume ticked up (log ratio +0.59), against a modest onchain z-score of -0.95 that isn't extreme for this token's own history. Social sentiment and volume remain elevated (galaxyScore 58.3, sentiment 85, 15.9k social volume), but that's just colour, not confirmation of the onchain move. Worth watching over the next few hours whether onchain volume stabilizes or keeps falling, and whether social attention holds or fades to match it.",
+    "narration": "VELVET's onchain volume dropped sharply (log ratio -0.97, roughly a halving) while social attention rose (log ratio +0.59, near a doubling) — the divergence score of 1.76 is driven mainly by that onchain collapse, which sits in the bottom ~5% of this token's own history for such moves, versus social activity that's in the top ~20% of its history. Direction confirms onchain-falling: volume outpacing attention to the downside, not the reverse. Worth watching over the next few hours whether onchain volume stabilizes or keeps falling while social interest holds, since that would show whether the two series are converging or the gap is widening further.",
     "backfilled": true
   },
   {
@@ -1336,7 +1376,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "VVV's gap here is driven by onchain volume dropping sharply, not attention rising — the interval volume log ratio of -1.91 implies onchain activity fell to roughly a seventh of the prior hour, while social momentum only ticked up modestly (+0.47 log ratio). The onchain rank of -0.88 shows this decline is moderate relative to VVV's own recent history, not extreme, while the social rank of 0.83 is similarly unremarkable in scale. Worth checking over the next few hours whether interval onchain volume stabilizes or continues to fade, since that would clarify whether this is a brief lull or a sustained pullback in trading against steady social interest.",
+    "narration": "VVV's onchain volume dropped sharply — a log ratio of -1.91, roughly an 85% pullback in interval volume — which lands in the bottom of this token's own history (onchain percentile -0.88), while social attention rose (+0.47 log ratio, 83rd percentile of its own moves). That split drove the divergence score to 1.71, with onchain-falling as the confirmed direction: this is a volume drop outpacing a social climb, not the reverse. Worth watching over the next few hours is whether interval volume stabilizes or keeps sliding while social volume and sentiment (currently 91) hold up, since that would show whether the two series reconverge or keep pulling apart.",
     "backfilled": true
   },
   {
@@ -1356,7 +1396,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "MORPHO's onchain volume jumped sharply between intervals (log ratio +1.84, roughly a 6x increase) while social attention actually pulled back a bit (-0.73 log ratio), and the direction field confirms this is onchain-rising — volume outpacing attention. Neither rank is at the extreme cap, so this is a moderate move relative to the token's own recent history, not an outlier. Worth watching over the next few hours whether social volume or sentiment picks up to catch up with the onchain activity, or whether the volume spike itself fades back toward baseline.",
+    "narration": "MORPHO's onchain volume jumped hard this hour (log ratio +1.84, roughly a 6x move) while social attention pulled back (log ratio -0.73, about half the prior level) — a divergence score of -1.75. Both moves sit near the extremes of their own history: onchain volume is in the top ~1% of its own moves and social is in the bottom ~13%, so this pairing is unusual for this token specifically. Worth watching over the next few hours whether social volume and sentiment catch up to the onchain surge or whether the elevated intervalVolumeUsd fades back toward baseline.",
     "backfilled": true
   },
   {
@@ -1376,7 +1416,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "VELVET's onchain volume dropped faster than social attention this hour, with the interval log-ratio at -1.03 (roughly a two-thirds pullback) against social's +1.02 log-ratio (roughly a doubling) — both moves are moderate relative to this token's recent history (onchain rank -0.96, social rank 0.92, neither near the ±10 cap). Sentiment and galaxy score remain elevated (92 sentiment, 68.3 galaxy score) even as onchain flow thins out. Worth checking over the next few hours whether intervalVolumeUsd recovers toward its prior pace or whether the social chatter cools off in turn — either would close the gap from a different side.",
+    "narration": "VELVET's onchain volume dropped sharply between intervals (log ratio ≈ -1.03, near a 65% cut) while social attention roughly doubled (log ratio ≈ +1.02) over the same window — a divergence score of 1.88 out of a possible 2. That onchain move sits in the bottom ~4% of this token's own history, against a social move in the top ~8%, so both series are moving in unusual territory for VELVET specifically. Worth watching over the next few hours whether onchain volume stabilizes or keeps falling, and whether the social spike holds or fades, since right now the two series are telling different stories about the same token.",
     "backfilled": true
   },
   {
@@ -1396,7 +1436,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "Attention on AERO jumped sharply between intervals (social log-ratio +2.28, roughly a ninefold increase) while onchain volume moved the other way (-1.38, more than a 75% pullback), and the resulting divergence score of 1.77 puts social clearly ahead of chain activity. The social rank sits at 1, which is unremarkable in z-score terms even though the raw jump was large, while onchain rank at -0.77 shows only a mild pullback relative to its own recent history. Worth checking over the next few hours whether intervalVolumeUsd starts climbing back toward where social activity would imply, or whether the elevated social numbers cool off instead.",
+    "narration": "AERO's social attention spiked hard this hour — a log ratio of +2.28 (roughly a 9x jump in mentions) that ranks as the largest move in this series' own history (100th percentile), while onchain volume moved the other way, down sharply (log ratio -1.38) and sitting near the bottom 23% of its typical swings. That split — social climbing and outpacing onchain — is what drives the divergence score to 1.77. Worth watching over the next few hours whether the interval volume picks back up to meet the attention spike, or whether social volume cools off on its own.",
     "backfilled": true
   },
   {
@@ -1416,7 +1456,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "MORPHO's attention spiked hard this hour — social volume roughly 10x'd (log ratio +2.34) while onchain activity fell by more than half (-1.20) over the same interval, a gap the divergence score of 1.71 confirms as social outpacing onchain. Social rank sits just under 1 (moderately elevated, not extreme) against an onchain rank of -0.71, so this looks like a real attention surge against comparatively quiet chain activity rather than a maxed-out reading. Worth watching over the next few hours whether intervalVolumeUsd picks back up to meet the social spike, or whether the social numbers cool off on their own.",
+    "narration": "MORPHO's social attention spiked hard, roughly a 10x jump hour-over-hour, landing in the top 0.2% of this token's own social moves on record. Onchain volume moved the opposite way over the same window, down to about 30% of its prior level, itself a fairly large decline for this series (bottom ~29th percentile of its own history). That combination — a near-record social surge against a real onchain pullback — is what's driving the 1.71 divergence score. Worth watching over the next few hours whether intervalVolumeUsd starts climbing to catch up with the attention spike, or whether the social numbers cool back down.",
     "backfilled": true
   },
   {
@@ -1436,7 +1476,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "VVV's gap is driven by social attention dropping sharply, falling by a log ratio of -1.94 (roughly a fifth of its prior hourly level) while onchain volume climbed by a log ratio of +2.10 over the same window. Against its own recent history, that social pullback is moderate (rank -1.0) while the onchain surge is more unusual (rank +0.90), so the divergence score of -1.90 reflects attention retreating faster than volume is building. Worth watching over the next few hours whether social metrics (galaxy score, social volume) stabilize or continue to fall, and whether the elevated onchain activity persists or was a one-off spike.",
+    "narration": "VVV's social attention dropped sharply this hour, a log-ratio move of about -1.94 (roughly an 86% pullback in mentions/interval), which sits in the bottom 0.2% of this token's own history for social swings. Onchain volume moved the opposite way, up a log-ratio of about 2.10 hour-over-hour, itself a top-11% move for that series, so the gap is being driven by attention falling faster than volume rose. Worth watching over the next few hours whether social volume stabilizes or keeps fading while onchain activity holds, which would show whether the two series are reconverging or the gap is widening further.",
     "backfilled": true
   },
   {
@@ -1456,7 +1496,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "MORPHO's attention climbed while onchain activity pulled back: social momentum rose sharply (log ratio +2.19, roughly an 8-9x jump interval-over-interval) while onchain volume fell (-3.09, a steep drop) over the same hour. Against the token's own recent history neither reading is at the extreme cap, sitting under 1 in absolute rank, so this is a real but not historically outsized move for MORPHO. Worth watching over the next few hours is whether intervalVolumeUsd starts to recover in step with the social spike, or whether social volume and sentiment cool back down — either would tell you whether the gap is closing or persisting.",
+    "narration": "MORPHO's social attention spiked hard this hour—up roughly 9x on a log-ratio basis (+2.19), landing in the top 1% of this token's own social moves—while onchain volume fell sharply in the same window (-3.09 log-ratio, near the bottom of its own historical range). That combination puts the divergence score near the top of its possible range at 1.94, with the direction field confirming social-rising as the driver: attention climbed and outpaced onchain activity. Worth watching over the next few hours whether the follow-through in interval volume picks up to match the social surge, or whether the social spike cools back toward baseline.",
     "backfilled": true
   },
   {
@@ -1476,7 +1516,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "AERO's social attention jumped sharply this hour (log ratio +1.20, roughly a 3.3x move) while onchain interval volume dropped hard (-2.06, roughly an 87% pullback), and the direction field confirms social climbing outpaced onchain. Neither rank is extreme relative to AERO's own recent history (social 0.98, onchain -0.87), so this looks like a moderate divergence rather than a historic outlier for this token. Worth watching over the next few hours whether the intervalVolumeUsd rebounds toward levels consistent with the social spike, or whether social volume (currently 8,989) cools back down — that's the gap to check, not a signal to act on either way.",
+    "narration": "AERO's social attention jumped sharply, up by a log ratio of 1.20 (roughly a 3.3x move) hour-over-hour, which sits in the top 2% of this token's own social swings. Onchain activity moved the opposite way over the same window, down by a log ratio of -2.06, an unusually large drop for this series. That combination pushed the divergence score to 1.85, near the top of its range, with attention clearly driving the gap per the social-rising tag. Worth watching over the next few hours is whether onchain volume picks back up toward the pace of the social spike, or whether the elevated social numbers ease back toward recent norms.",
     "backfilled": true
   },
   {
@@ -1496,7 +1536,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "Onchain activity for MORPHO jumped sharply between intervals (log ratio +3.65, roughly a 38x move in interval volume) while social attention actually pulled back (log ratio -0.84, close to a halving), and that's the pairing driving this divergence — onchain-rising. Neither rank is anywhere near the ±10 cap, so this is a real but not extreme move relative to MORPHO's recent history (onchain z ~0.97, social z ~-0.89). Worth watching over the next few hours whether social volume and sentiment start catching up to the onchain surge, or whether the elevated onchain flow itself fades back toward baseline.",
+    "narration": "MORPHO's onchain volume jumped roughly 39x hour-over-hour (log ratio +3.65), a move in the top 3% of this token's own history, while social activity pulled back by about half (log ratio -0.84), landing in the bottom 11% of its typical swings. That split drove the divergence score to -1.86, with the direction flagged as onchain-rising: volume outpacing attention rather than the reverse. Worth watching over the next few hours whether social volume and galaxy score start catching up to the onchain surge, or whether this interval of activity proves to be a one-off spike that fades on its own.",
     "backfilled": true
   },
   {
@@ -1516,7 +1556,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "VELVET's gap is being driven by onchain volume falling faster than social attention: hourly onchain activity dropped sharply (log ratio -0.91, roughly a 60% pullback) while social engagement actually rose (log ratio +0.60), a moderate but not extreme move for this token on both ranks. Social volume stays elevated with sentiment at 82 and an alt rank of 8, so chatter hasn't cooled even as trading activity thinned out. Worth watching over the next few hours whether onchain volume stabilizes or keeps falling, and whether the social interest shows up in intervalVolumeUsd again.",
+    "narration": "VELVET's onchain volume dropped sharply this hour (log ratio -0.91, roughly a halving) while social attention kept climbing (log ratio +0.60, near a doubling) — the onchain move sits in the bottom ~6% of this token's own history, the social move in the top ~18%. That combination drives the divergence score to 1.76, with the direction confirming volume falling faster than attention rather than both moving together. Worth watching over the next few hours whether interval volume stabilizes or extends its decline, since that's the series that broke from the pattern.",
     "backfilled": true
   },
   {
@@ -1536,7 +1576,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "AERO's social attention climbed sharply this hour (log ratio +0.88, roughly a doubling) while onchain volume dropped hard (-1.40, more than halving), a gap the direction field flags as social-rising. Neither reading is extreme against AERO's own recent history — social rank sits under 1 and onchain rank under -1, both well inside the +/-10 cap range. Worth watching over the next few hours whether that onchain volume decline continues or reverses, since that's the series that would need to catch up for this gap to close.",
+    "narration": "AERO's social attention jumped sharply this hour (log ratio +0.88, roughly a doubling) while onchain volume fell hard (log ratio -1.40, more than halving), and the social move sits in the top 5% of this token's own history versus a bottom-quartile onchain print. That combination puts the divergence score near the top of its possible range at 1.70, with attention climbing and clearly outpacing volume. Worth watching over the next few hours whether intervalVolumeUsd starts recovering toward the level implied by the social spike, or whether the social surge cools off instead - either would close the gap from a different side.",
     "backfilled": true
   },
   {
@@ -1556,7 +1596,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "Social attention for AERO climbed noticeably this hour (log ratio +0.85, roughly a 2.3x jump) while onchain activity fell sharply (log ratio -3.35, a steep drop), and social-rank at +0.94 against onchain-rank at -0.94 shows the two series sitting on opposite sides of AERO's recent normal range, though neither is at the extreme cap. The direction field confirms attention is outpacing volume here, not the other way around. Worth watching over the next few hours whether the interval volume figure recovers toward its recent baseline or whether the social spike itself fades, since either would close the gap from a different side.",
+    "narration": "AERO's social attention jumped sharply (log ratio +0.85, roughly a doubling in hourly mentions) while onchain activity collapsed (log ratio -3.35, a steep drop-off), a pairing that lands in the top ~6% and bottom ~6% of each series' own history respectively. That combination pushes the divergence score to 1.88, near the extreme end of the [-2, 2] range, with the direction field confirming social attention is the side driving the gap. Worth watching over the next few hours whether onchain volume picks back up to meet the attention spike, or whether the social surge cools off on its own.",
     "backfilled": true
   },
   {
@@ -1576,7 +1616,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "VELVET's social attention jumped sharply this hour, with social volume up roughly 6.9x on a log basis (log-ratio +1.93) while onchain activity fell by more than half (log-ratio -0.92) over the same window. That's an unusual pull apart, though neither rank reading is at the extreme cap, so call it notable rather than off-the-charts. Worth checking over the next few hours whether the intervalVolumeUsd starts climbing to match the attention spike, or whether social volume cools back down — either would tell you something about how real this gap is.",
+    "narration": "VELVET's social attention spiked hard — a log-ratio of +1.93 hour-over-hour, putting this move in the top 0.6% of the token's own history for social activity — while onchain volume moved the opposite way, down at a log-ratio of -0.92, itself a bottom-6% reading for this series. That combination pushes the divergence score to 1.94, near the ceiling of the [-2,2] range, confirming attention climbed sharply while onchain activity contracted rather than following. Worth watching over the next few hours whether intervalVolumeUsd starts climbing back toward the social move or whether the social spike cools off on its own — either would tell you more than the current snapshot does.",
     "backfilled": true
   },
   {
@@ -1596,7 +1636,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "AERO's gap is being driven by attention: social activity roughly tripled hour-over-hour (log ratio +1.16), while onchain volume fell sharply (log ratio -2.09) over the same window. Neither reading is extreme against AERO's own recent history (social rank ~1.0, onchain rank ~-0.9, both well inside the ±10 cap), so this looks like a moderate, not extreme, split. Worth watching over the next few hours whether onchain volume stabilizes or keeps declining alongside the elevated social interest, since that would clarify whether the two series are converging or drifting further apart.",
+    "narration": "AERO's social attention jumped hard — a log ratio of +1.16 hour-over-hour, which lands in the top 2-3% of this token's own history of social moves — while onchain activity fell sharply, a -2.09 log ratio that's itself among the largest drops in its own history. That combination puts the divergence score near the top of its possible range (1.83 of 2), with social-rising named as the driver: attention climbing while volume/liquidity activity moved the opposite way. Worth watching over the next few hours is whether intervalVolumeUsd starts climbing to meet the social spike or stays depressed, which would tell you whether the gap is closing or holding.",
     "backfilled": true
   },
   {
@@ -1616,7 +1656,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "TIBBIR's gap is driven by attention: social activity roughly tripled hour-over-hour (log ratio +1.15) while onchain volume dropped sharply (log ratio -2.84), a combination that lands social at a robust z-score near +1 against its own recent history and onchain a bit below its median. The direction field confirms this as social-rising — chatter outpacing actual trading rather than volume surging alongside it. Worth watching over the next few hours whether the intervalVolumeUsd picks up to match the social spike, or whether social volume cools back down without onchain ever confirming it.",
+    "narration": "TIBBIR's social attention jumped sharply (log ratio +1.15, roughly a 3x hour-over-hour move) while onchain activity fell hard (log ratio -2.84, a steep drop), and the social move sits in the top 1% of this token's own history versus a bottom-20th-percentile onchain move. The divergence score of 1.80 reflects attention climbing while volume outpaced it in the opposite direction, per the social-rising classification. Worth watching over the next few hours whether intervalVolumeUsd picks back up toward levels consistent with the social spike, or whether social volume and galaxy score cool off as the attention burst fades.",
     "backfilled": true
   },
   {
@@ -1636,7 +1676,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "VELVET's gap is being driven by onchain activity dropping off: hourly volume fell sharply (log ratio -0.82, roughly a halving) while social attention actually rose (log ratio +0.85, roughly a doubling) over the same interval. Both moves sit under a full standard deviation on this token's own recent history (ranks of -0.92 and +0.89), so this is a moderate shift rather than an extreme one. Worth watching over the next few hours whether intervalVolumeUsd stabilizes or keeps declining, and whether the elevated social volume/sentiment (88) is accompanied by any pickup in onchain transactions.",
+    "narration": "VELVET's onchain volume fell sharply between the last two hourly intervals (log ratio -0.82, roughly a halving), a move in the bottom 8% of its own history, while social attention rose (+0.85 log ratio, top 11%). That split pushes the divergence score to 1.81, near the top of its possible range, with the drop in onchain activity driving the gap per the direction flag. Worth watching over the next few hours whether intervalVolumeUsd stabilizes or keeps falling, and whether social volume and sentiment hold or start to cool alongside it.",
     "backfilled": true
   },
   {
@@ -1656,7 +1696,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "VELVET's onchain volume jumped sharply between intervals (log ratio +1.77, roughly a 5-6x move) while social attention actually slipped (log ratio -0.45), and that's what's driving the gap here — onchain-rising, not social. Both ranks are modest relative to this token's own history (onchain z ~0.99, social z ~-0.75), so this isn't an extreme reading in either direction, just a clear split between the two series. Worth watching over the next few hours whether social volume and galaxy score start catching up to the onchain surge, or whether the elevated onchain activity cools back toward the social trend.",
+    "narration": "VELVET's onchain volume jumped sharply between intervals (log ratio +1.77, roughly a 5-6x move) while social activity pulled back (-0.45 log ratio) over the same hour. That onchain move sits in the top 1% of this token's own history (percentile 0.99), against a social pullback that's still a fairly ordinary-sized move in the other direction (-0.75 percentile), giving a divergence score of -1.75. Worth checking over the next few hours whether social volume and sentiment start catching up to the onchain surge, or whether the elevated transaction pace itself fades back toward baseline.",
     "backfilled": true
   },
   {
@@ -1676,7 +1716,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "VELVET's gap is driven by onchain volume dropping sharply: the hourly interval log-ratio of -1.15 marks roughly a two-thirds pull-back, while social activity actually ticked up a bit (log-ratio +0.51). Neither rank is at the +/-10 cap, so this reads as a moderate divergence for the token rather than an extreme one - onchain sits about one MAD below its recent norm, social a bit above. Worth watching over the next few hours whether the interval volume stabilizes or keeps thinning, and whether elevated sentiment/social volume carries into the next reading or fades back toward baseline.",
+    "narration": "VELVET's onchain volume dropped sharply this hour (log ratio -1.15, roughly a halving-plus), landing in the bottom ~97% of its own historical moves for this series, while social activity rose (log ratio +0.51) and sits in the top ~79% of its own history — a divergence score of 1.76. Onchain is the clear driver here, per the direction flag: volume fell faster than attention. Worth checking over the next few hours whether interval volume stabilizes or continues to fade, and whether the elevated social chatter (galaxy score 45.9, sentiment 83) persists or cools off in step.",
     "backfilled": true
   },
   {
@@ -1696,7 +1736,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "MORPHO's gap is driven by attention dropping faster than onchain activity: social momentum fell by a log ratio of -1.31 (roughly a 73% pullback in interval terms) while onchain momentum rose 2.67 (a jump of more than 14x) over the same hour. Neither rank is at the extreme cap, so this is a real but moderate move against MORPHO's own recent history rather than an outlier reading. Worth watching over the next few hours whether social volume and galaxy score stabilize or keep declining, and whether the onchain volume spike sustains or was a single large print.",
+    "narration": "MORPHO's social attention dropped sharply (log ratio -1.31, roughly a 73% pullback in hourly social volume) while onchain activity surged (log ratio +2.67, close to a 14x jump in interval volume) — a divergence score of -1.88 out of a possible 2. Social sits at the bottom 4.5% of its own historical moves and onchain near the top 8%, so both readings are extreme relative to this token's own history, with social-falling named as the driver. Worth watching over the next few hours whether social volume and sentiment stabilize or continue declining, and whether the onchain surge persists at this pace or was a one-off spike in interval volume.",
     "backfilled": true
   },
   {
@@ -1716,7 +1756,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "VVV's gap is driven by social attention dropping faster than onchain activity: the social momentum log-ratio of -0.81 marks roughly a halving in hourly social volume, while onchain volume actually rose (log-ratio +1.91, more than a sixfold increase hour-over-hour). Against VVV's own recent history, neither rank is extreme (social -0.95, onchain +0.88 on the z-score scale), so this is a moderate, not extreme, divergence. Worth watching over the next few hours whether social volume and galaxy score stabilize or keep sliding, and whether the onchain volume pickup persists or was a single-interval spike.",
+    "narration": "VVV's divergence is being driven by attention, not volume: social momentum fell sharply (log ratio -0.81, roughly a halving) while onchain activity climbed strongly (+1.91, nearly a septupling in interval volume), and that social drop sits in the bottom ~5% of this series' own history. Onchain's move ranks in the top ~12% of its history too, so both series moved unusually, just in opposite directions, producing a divergence score near the extreme end of the -2 to 2 range. Worth watching over the next few hours whether social volume and galaxy score stabilize or keep sliding, and whether the onchain surge holds or was a single-interval spike.",
     "backfilled": true
   },
   {
@@ -1736,7 +1776,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "VELVET's gap is driven by onchain volume dropping faster than attention: the hourly onchain flow fell by a log ratio of -1.03 (roughly a two-thirds cut), while social activity actually rose (+0.79 log ratio, more than doubling), a pattern that lands social at rank 0.88 and onchain at -0.96 against this token's recent history — both moderate, not extreme readings. Social volume sits at 21,427 with sentiment at 84, but that's colour on the current chatter, not confirmation of the momentum shift. Worth watching over the next few hours whether onchain activity stabilizes or continues to fall away from the social level, since that would clarify whether this is a brief lull or a sustained pullback in trading against steady-to-rising attention.",
+    "narration": "VELVET's onchain volume dropped sharply between intervals (a log ratio of -1.03, roughly a two-thirds decline) while social activity kept climbing (+0.79 log ratio) — a divergence score of 1.84 out of a possible 2. The onchain move sits in the bottom ~4% of this token's own history and the social move in the top ~12%, so both are unusually large in opposite directions. Worth watching over the next few hours whether interval volume stabilizes or extends the decline, and whether social attention (galaxy score 70.4, sentiment 84) holds or fades back toward the onchain trend.",
     "backfilled": true
   },
   {
@@ -1756,7 +1796,7 @@
       "significant": true
     },
     "rpcCrossCheck": null,
-    "narration": "VELVET's onchain volume climbed sharply (log ratio +0.87, roughly a 2.4x hourly jump) while social attention pulled back (-0.84 log ratio, near a halving), and the direction field confirms onchain-rising as the driver. Both rank scores sit under 1 in magnitude, so this isn't an extreme reading against VELVET's own recent history despite the size of the swing. Worth watching over the next few hours whether social volume and sentiment catch up to the onchain activity or whether the volume surge fades back toward the prior pace.",
+    "narration": "VELVET's onchain volume jumped sharply this hour (log ratio +0.87, roughly a doubling), landing in the top ~7% of its own history for this token, while social attention pulled back at a similar magnitude, ranking in the bottom ~11% of its own history. That combination puts the divergence score near the extreme end of its range, with onchain activity clearly driving the gap rather than attention. Worth watching over the next few hours whether social volume and sentiment catch up to the onchain move or whether the volume surge itself fades, which would tell you if this was a one-off print or the start of a sustained shift.",
     "backfilled": true
   }
 ]
