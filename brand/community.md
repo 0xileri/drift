@@ -3,7 +3,7 @@
 Drafts for the Telegram channel copy.
 
 **Live links**
-- Telegram: https://t.me/+Vx2_CS29IhEzNTY0
+- Telegram: https://t.me/drift_diverg
 - Project X: https://x.com/drift_diverg
 - Builder: @0xileri (X) · @oxileri (Telegram)
 - Orion organisers: @Orion_Agents
