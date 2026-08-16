@@ -180,3 +180,54 @@ if (sc) {
     console.warn("Scorecard markers not found in the page.");
   }
 }
+
+// ---- Coverage --------------------------------------------------------------
+// Generated, not typed. These were hand-written once and drifted within a day:
+// the page claimed 739 hours for pools that actually had 558 and 711. A page
+// whose whole argument is "check the numbers" cannot carry numbers nobody checks.
+const COV_START = "<!--COVERAGE:START-->";
+const COV_END = "<!--COVERAGE:END-->";
+
+{
+  const cfg = await readFile("src/config.ts", "utf8");
+
+  // Each watchlist entry, in declaration order, with whether it carries an RPC pool.
+  const entries = [...cfg.matchAll(/\{\s*(?:\/\/[^\n]*\n\s*)*symbol:\s*"([A-Z0-9]+)"([\s\S]*?)\n  \}/g)]
+    .map((m) => ({ symbol: m[1], hasRpc: /rpcPoolAddress:/.test(m[2]) }));
+
+  const cards = [];
+  for (const e of entries) {
+    let hours = 0;
+    try {
+      const raw = await readFile(`data/history/${e.symbol}.jsonl`, "utf8");
+      hours = raw.trim() ? raw.trim().split("\n").length : 0;
+    } catch { /* no history yet */ }
+
+    const events = feed.filter((f) => f.token === e.symbol).length;
+
+    cards.push(
+      [
+        '      <div class="card">',
+        `        <div class="tk">${esc(e.symbol)}</div>`,
+        `        <div class="pl">${hours} hours recorded</div>`,
+        '        <div class="rows">',
+        `          <div><span>events</span><span>${events}</span></div>`,
+        `          <div><span>rpc check</span><span class="${e.hasRpc ? "rpc-y" : "rpc-n"}">${e.hasRpc ? "supported" : "not available"}</span></div>`,
+        "        </div>",
+        "      </div>",
+      ].join("\n")
+    );
+  }
+
+  const block = "\n" + '    <div class="cards">' + "\n" + cards.join("\n") + "\n    </div>\n    ";
+
+  const page2 = await readFile(HTML, "utf8");
+  const a = page2.indexOf(COV_START);
+  const b = page2.indexOf(COV_END);
+  if (a !== -1 && b !== -1) {
+    await writeFile(HTML, page2.slice(0, a + COV_START.length) + block + page2.slice(b), "utf8");
+    console.log(`Injected coverage: ${cards.length} tokens.`);
+  } else {
+    console.warn("Coverage markers not found in the page.");
+  }
+}
