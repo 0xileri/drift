@@ -12,7 +12,10 @@ import { readFile, writeFile } from "node:fs/promises";
 
 const HTML = "site/index.html";
 const FEED = "data/feed.json";
+const SCORECARD = "data/scorecard.json";
 const START = "<!--FEED:START-->";
+const SC_START = "<!--SCORECARD:START-->";
+const SC_END = "<!--SCORECARD:END-->";
 const END = "<!--FEED:END-->";
 
 const SHOW = 12;
@@ -89,3 +92,74 @@ const out = src.slice(0, i + START.length) + html + "\n      " + src.slice(j);
 await writeFile(HTML, out, "utf8");
 
 console.log(`Injected ${shown.length} of ${sorted.length} event(s) into ${HTML}`);
+
+// ---- Scorecard -------------------------------------------------------------
+// Injected rather than fetched at runtime, for the same reason as the feed: a page that fetches
+// its own evidence can render empty and still look fine.
+let sc = null;
+try {
+  sc = JSON.parse(await readFile(SCORECARD, "utf8"));
+} catch {
+  console.warn(`No ${SCORECARD} found - skipping scorecard block.`);
+}
+
+if (sc) {
+  const h6 = sc.horizons["t+6h"];
+  const rows = ["t+3h", "t+6h", "t+12h"]
+    .map((k) => {
+      const h = sc.horizons[k];
+      return [
+        "            <tr>",
+        `              <td class="sym">${k}</td>`,
+        `              <td class="n">${h.judged}</td>`,
+        `              <td class="n">${h.followedPct.toFixed(0)}%</td>`,
+        `              <td class="n">${h.noFollowPct.toFixed(0)}%</td>`,
+        "            </tr>",
+      ].join("\n");
+    })
+    .join("\n");
+
+  const sign = sc.liftT6Points > 0 ? "+" : "";
+  const block = [
+    "",
+    '      <div class="stats">',
+    `        <div class="stat"><span class="v">${h6.followedPct.toFixed(0)}%</span><span class="k">events followed</span></div>`,
+    `        <div class="stat"><span class="v">${sc.baseRateT6Pct.toFixed(0)}%</span><span class="k">base rate, any hour</span></div>`,
+    `        <div class="stat"><span class="v">${sign}${sc.liftT6Points.toFixed(1)}</span><span class="k">lift (points)</span></div>`,
+    `        <div class="stat"><span class="v">${sc.events}</span><span class="k">events tested</span></div>`,
+    "      </div>",
+    '      <div class="tbl-scroll">',
+    "        <table>",
+    "          <thead>",
+    "            <tr>",
+    '              <th scope="col">Horizon</th>',
+    '              <th scope="col">Tested</th>',
+    '              <th scope="col">Laggard followed</th>',
+    '              <th scope="col">Did not</th>',
+    "            </tr>",
+    "          </thead>",
+    "          <tbody>",
+    rows,
+    "          </tbody>",
+    "        </table>",
+    "      </div>",
+    '      <p class="fine" style="margin-top:0.9rem">',
+    "        &ldquo;Followed&rdquo; means the lagging series averaged at least 25% above its own",
+    `        pre-event baseline in the hours afterwards. Threshold ${sc.threshold}, ${sc.tokens.length} tokens,`,
+    "        replayed from recorded history. Regenerate with <code>npm run scorecard</code>.",
+    "      </p>",
+    "      ",
+  ].join("\n");
+
+  // Re-read: `html` above is the feed fragment, not the page, and the feed injection has
+  // already written to disk by this point.
+  const page = await readFile(HTML, "utf8");
+  const a = page.indexOf(SC_START);
+  const b = page.indexOf(SC_END);
+  if (a !== -1 && b !== -1) {
+    await writeFile(HTML, page.slice(0, a + SC_START.length) + block + page.slice(b), "utf8");
+    console.log(`Injected scorecard: ${sc.events} events, lift ${sc.liftT6Points} pts.`);
+  } else {
+    console.warn("Scorecard markers not found in the page.");
+  }
+}

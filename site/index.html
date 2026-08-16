@@ -741,7 +741,7 @@
         <div class="stat"><span class="v">3,417</span><span class="k">snapshots</span></div>
         <div class="stat"><span class="v">30</span><span class="k">days history</span></div>
         <div class="stat"><span class="v">5</span><span class="k">tokens watched</span></div>
-        <div class="stat"><span class="v">6.0</span><span class="k">alert threshold</span></div>
+        <div class="stat"><span class="v">&minus;7.8</span><span class="k">measured lift (pts)</span></div>
       </div>
     </div>
   </section>
@@ -888,31 +888,133 @@
           <span class="num">0.08</span>
         </p>
         <p>
-          <strong>After:</strong> max |z| <span class="num">6.2</span> · median
-          <span class="num">0.74</span> · nothing clipped
+          <strong>After:</strong> median <span class="num">0.75</span> ·
+          p99 <span class="num">7.16</span> · the ±10 cap binds on
+          <span class="num">0.2%</span> of hours
         </p>
       </div>
 
-      <h3>Scoring uses median and MAD, not mean and standard deviation</h3>
+      <h3>But bounding an artifact is not removing it</h3>
       <p>
-        Momentum on real pools is heavily fat-tailed. With a mean-based baseline, a single spike
-        inflates the very thing later spikes are measured against, so the engine goes quiet
-        exactly when it should be loudest. A median-based baseline doesn't move under one
-        outlier.
+        The log ratio stopped the blow-ups without fixing what caused them. A ratio between two
+        tiny numbers is still noise wearing a plausible score, and
+        <strong>62% of the first 92 events</strong> had an hour under $1,000 — one of them scored
+        6.17 on volume going from $3,953 to a single cent.
+      </p>
+      <p>
+        There is now a floor, set relative to each pool's own median rather than in dollars.
+        Median hourly volume runs $43,214 for AERO and $347 for BNKR, so a flat cut would have
+        dropped 3% of MORPHO's hours and 68% of KEYCAT's — deleting exactly the thin-liquidity
+        tokens this is built to watch.
       </p>
 
-      <h3>The threshold was measured, not chosen</h3>
+      <h3>The two axes were not on the same scale</h3>
       <p>
-        Every candidate cutoff was replayed against <strong>3,292 real scored hours</strong>
-        across all five tokens. At 3.5 the agent fires on 13.5% of hours — roughly 16 alerts a
-        day, which nobody reads. At 6.0 it fires on 2.8%, about three a day. That is the number
-        in the config, and the script that produced it ships in the repo.
+        Median/MAD equalises the middle of both distributions — median |z| of
+        <span class="num">0.75</span> social against <span class="num">0.74</span> onchain. The
+        tails do not match: <span class="num">7.16</span> against <span class="num">4.82</span> at
+        p99. The alert threshold sat inside that gap, so <strong>only the social side could ever
+        reach it</strong>.
+      </p>
+      <p>
+        That went unnoticed until each event was labelled by which series drove it, at which point
+        every single one came back social-driven and none onchain-driven. The 2:1 skew toward
+        "attention ahead of money" was a property of the metric, not of Base tokens. Each axis is
+        now divided by its own upper-decile move, so a given score means the same rarity on both.
+      </p>
+
+      <h3>The threshold is a rate target, not an accuracy measurement</h3>
+      <p>
+        Replayed across <strong>3,297 real scored hours</strong>, a cutoff of 2.5 produces about
+        1.6 events a day, which is readable. That is the entire justification. Nothing about it
+        establishes that events above the line are more often <em>right</em> — and the scorecard
+        below shows they are not.
+      </p>
+    </div>
+  </section>
+
+  <section id="scorecard">
+    <div class="rail"><b>04</b><br />The scorecard<br />Measured</div>
+    <div class="body">
+      <h2>What actually happened next</h2>
+      <p>
+        The agent used to publish readings and never check them. Every explanation ended with
+        "watch the next few intervals" and nobody watched. The hourly series was already on disk,
+        so the test cost nothing — it just had never been run.
+      </p>
+      <p>
+        The claim being tested is the narrow one this agent implies: after the two series come
+        apart, the <strong>lagging</strong> one moves. Measured on levels, not on scores — a
+        z-score falls after a spike by construction, so comparing scores would report a fade for
+        almost any event regardless of what the market did.
+      </p>
+      <!--SCORECARD:START-->
+      <div class="stats">
+        <div class="stat"><span class="v">31%</span><span class="k">events followed</span></div>
+        <div class="stat"><span class="v">39%</span><span class="k">base rate, any hour</span></div>
+        <div class="stat"><span class="v">-7.8</span><span class="k">lift (points)</span></div>
+        <div class="stat"><span class="v">48</span><span class="k">events tested</span></div>
+      </div>
+      <div class="tbl-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Horizon</th>
+              <th scope="col">Tested</th>
+              <th scope="col">Laggard followed</th>
+              <th scope="col">Did not</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="sym">t+3h</td>
+              <td class="n">48</td>
+              <td class="n">40%</td>
+              <td class="n">60%</td>
+            </tr>
+            <tr>
+              <td class="sym">t+6h</td>
+              <td class="n">48</td>
+              <td class="n">31%</td>
+              <td class="n">69%</td>
+            </tr>
+            <tr>
+              <td class="sym">t+12h</td>
+              <td class="n">48</td>
+              <td class="n">38%</td>
+              <td class="n">63%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="fine" style="margin-top:0.9rem">
+        &ldquo;Followed&rdquo; means the lagging series averaged at least 25% above its own
+        pre-event baseline in the hours afterwards. Threshold 2.5, 5 tokens,
+        replayed from recorded history. Regenerate with <code>npm run scorecard</code>.
+      </p>
+      <!--SCORECARD:END-->
+      <p style="margin-top:1.3rem">
+        Read that honestly: <strong>flagged hours do worse than hours picked at random</strong>,
+        and the gap does not close at any threshold between 1.5 and 4.0. On this month of data,
+        across these tokens, the score does not identify hours where money is more likely to
+        follow attention.
+      </p>
+      <p>
+        The engine still measures what it says it measures, and the divergences are real
+        disagreements between two real series. What is not established is that they lead
+        anywhere. Publishing that is the point — a claim that cannot fail is not a claim, and
+        the scorecard is the part of this project that can.
+      </p>
+      <p>
+        The most likely defect is on the input side rather than in the scoring: attention is
+        measured globally while volume is measured in a single Base pool, so the two describe
+        different markets. Scoping both sides to the same one is the next thing to try.
       </p>
     </div>
   </section>
 
   <section>
-    <div class="rail"><b>04</b><br />Verification</div>
+    <div class="rail"><b>05</b><br />Verification</div>
     <div class="body">
       <h2>Every figure traces to a real call</h2>
       <p>
@@ -936,7 +1038,7 @@
   </section>
 
   <section id="feed">
-    <div class="rail"><b>05</b><br />The feed<br />Live output</div>
+    <div class="rail"><b>06</b><br />The feed<br />Recorded output</div>
     <div class="body">
       <h2>What the agent has found</h2>
       <p>
@@ -1135,7 +1237,7 @@
   </section>
 
   <section>
-    <div class="rail"><b>06</b><br />Coverage</div>
+    <div class="rail"><b>07</b><br />Coverage</div>
     <div class="body">
       <h2>What it watches</h2>
       <p>
@@ -1186,7 +1288,7 @@
   </section>
 
   <section>
-    <div class="rail"><b>07</b><br />Operation</div>
+    <div class="rail"><b>08</b><br />Operation</div>
     <div class="body">
       <h2>Running continuously</h2>
       <p>
