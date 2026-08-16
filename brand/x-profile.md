@@ -62,34 +62,38 @@ Leads with a real recorded event rather than a claim about capability. The whole
 on figures tracing to real calls, so the launch post should be checkable too — the event below
 is in the public feed with its timestamp.
 
-### Single post (preferred) — 274 chars
+### Single post (preferred) — 277 chars
 
 X counts any URL as 23 characters no matter its real length, so the link costs less than it
-looks. Still under 280 without Premium.
+looks. Under 280 without Premium, with the organiser tag included.
 
 ```
 Most token tools tell you what's getting loud.
 
-24 Jul: VIRTUAL's onchain volume spiked while social engagement collapsed. Divergence -11.8.
+24 Jul: VIRTUAL's onchain volume spiked as social engagement collapsed. Divergence -11.8 — money moving while nobody talked.
 
-Money moving while nobody was talking about it.
+Drift-d watches that gap on Base. 92 events, 5 tokens.
 
-Drift-d watches for that gap on Base. 92 events, 5 tokens.
-
+Built for @Orion_Agents
 drift-divergence.netlify.app
 ```
 
-**Tighter variant — 252 chars**, if you want room to quote-tweet it later:
+**Tighter variant — 267 chars**, if you want headroom to edit before posting:
 
 ```
 Most token tools tell you what's loud.
 
 24 Jul: VIRTUAL's onchain volume spiked as social engagement collapsed. Divergence -11.8 — money moving while nobody talked.
 
-Drift-d finds that gap on Base. 92 events, 5 tokens, 4 weeks.
+Drift-d finds that gap on Base. 92 events, 5 tokens.
 
+@Orion_Agents hackathon
 drift-divergence.netlify.app
 ```
+
+Tagging costs about 25 characters once the line break is counted, which is why the sentences
+above are tighter than the untagged draft. The tag is worth it — entries are partly judged on
+community upvotes from registered builders, and the organiser account is how they find you.
 
 Attach `brand/drift-d-lockup-dark-1600.png` or a screenshot of the feed section.
 
@@ -141,6 +145,8 @@ Claude explains the number. It never computes it.
 Every figure traces to a real API call, and the event feed is a public file with timestamps —
 so you can check what it said and when, rather than trusting a demo.
 
+Built for the @Orion_Agents builder hackathon on Base.
+
 Site: drift-divergence.netlify.app
 Code: github.com/0xileri/drift
 ```
@@ -149,9 +155,9 @@ Code: github.com/0xileri/drift
 
 ## Notes before posting
 
-- **Tagging the organisers**: confirm the correct handle on orionagents.org before tagging. I
-  have not put one in these drafts — guessing a handle risks tagging an unrelated account, and
-  a wrong tag on a launch post is hard to undo.
+- **Organiser handle is `@Orion_Agents`**, confirmed by the builder rather than guessed. Worth a
+  glance at the profile before posting anyway — a launch post is the worst place to discover a
+  typo'd tag pointing at an unrelated account.
 - **Say nothing that reads as advice.** A divergence is an observation about two data series.
   Framing it as a buy or sell signal invites a category of reply you do not want, and is not
   what the agent does.
