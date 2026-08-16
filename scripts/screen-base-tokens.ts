@@ -16,11 +16,27 @@
  */
 import { fetchPoolHistory } from "../src/sources/geckoterminal.js";
 
-const CANDIDATES = [
+const DEFAULT_CANDIDATES = [
   "LINK", "SHIB", "DOT", "MORPHO", "VVV", "CAKE", "VELVET", "AERO", "CRV", "VIRTUAL", "SPX",
   "ZRO", "BONK", "SYRUP", "TRAC", "AWE", "1INCH", "SAND", "FLUID", "KAITO", "ZEN",
   "RSR", "BDX", "TIBBIR", "SOSO", "CYS", "VCNT", "DRV", "COW", "RIF", "RAVE", "BEAM",
 ];
+
+/**
+ * Tickers may be passed as arguments so a rate-limited subset can be rerun on its own. The
+ * previous full run lost 14 tokens to 429s, and re-measuring the ones that already resolved
+ * only spends the rate limit that caused the problem.
+ */
+const args = process.argv.slice(2).filter((a) => !a.startsWith("--"));
+const CANDIDATES = args.length ? args.map((a) => a.toUpperCase()) : DEFAULT_CANDIDATES;
+
+/**
+ * Request spacing. GeckoTerminal's free tier allows ~30/min, and each token costs 2-3 calls, so
+ * the default sits close to the ceiling and a burst of searches trips it. --slow doubles every
+ * gap, which is the difference between losing half the list and finishing.
+ */
+const SLOW = process.argv.includes("--slow");
+const PACE = SLOW ? 2 : 1;
 
 const MIN_BASE_SHARE = 0.15;
 const MIN_LIQUIDITY = 150_000;
@@ -73,7 +89,7 @@ async function globalVolumes(): Promise<Map<string, number>> {
       const k = c.symbol.toUpperCase();
       if (!map.has(k)) map.set(k, c.total_volume);
     }
-    await sleep(3000);
+    await sleep(3000 * PACE);
   }
   return map;
 }
@@ -86,7 +102,7 @@ const rows: Record<string, unknown>[] = [];
 const good: Array<{ symbol: string; address: string; name: string }> = [];
 
 for (const [i, symbol] of CANDIDATES.entries()) {
-  if (i > 0) await sleep(2200);
+  if (i > 0) await sleep(2200 * PACE);
 
   try {
     const pools = await basePools(symbol);
@@ -102,7 +118,7 @@ for (const [i, symbol] of CANDIDATES.entries()) {
     )[0];
     const liq = Number(top.reserve_in_usd ?? 0);
 
-    await sleep(2200);
+    await sleep(2200 * PACE);
     let bars = 0;
     try {
       bars = (await fetchPoolHistory(top.address!, 1000)).length;
