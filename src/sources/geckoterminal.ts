@@ -17,6 +17,12 @@ import { createThrottle, fetchWithRetry } from "./http.js";
  */
 const throttle = createThrottle(Number(process.env.GECKOTERMINAL_MIN_INTERVAL_MS ?? 2000));
 
+/**
+ * The chain used when a caller does not name one. Base, because the watchlist, the feed and the
+ * scorecard are all Base-only by design - only the on-demand lookup reaches other chains.
+ */
+export const DEFAULT_NETWORK = "base";
+
 export interface PoolBar {
   timestampMs: number;
   open: number;
@@ -39,9 +45,13 @@ interface OhlcvResponse {
  * Returns hourly bars for a Base pool, oldest-first.
  * `limit` maxes out at 1000 per GeckoTerminal.
  */
-export async function fetchPoolHistory(poolAddress: string, limit = 1000): Promise<PoolBar[]> {
+export async function fetchPoolHistory(
+  poolAddress: string,
+  limit = 1000,
+  network: string = DEFAULT_NETWORK
+): Promise<PoolBar[]> {
   const url = new URL(
-    `https://api.geckoterminal.com/api/v2/networks/base/pools/${poolAddress}/ohlcv/hour`
+    `https://api.geckoterminal.com/api/v2/networks/${network}/pools/${poolAddress}/ohlcv/hour`
   );
   url.searchParams.set("aggregate", "1");
   url.searchParams.set("limit", String(Math.min(limit, 1000)));
@@ -78,10 +88,14 @@ export interface PoolMatch {
   name: string;
   liquidityUsd: number;
   volume24hUsd: number;
+  /** GeckoTerminal network id, e.g. "base", "eth", "solana". */
+  network: string;
 }
 
 interface SearchResponse {
   data?: Array<{
+    /** Prefixed with the network: "base_0x6cdc...", "solana_...". The only place it appears. */
+    id?: string;
     attributes?: {
       address?: string;
       name?: string;
@@ -92,17 +106,26 @@ interface SearchResponse {
 }
 
 /**
- * Finds the deepest Base pool whose name matches a ticker.
+ * Finds the deepest pool whose name matches a ticker.
+ *
+ * `network` restricts the search to one chain; passing null searches every chain GeckoTerminal
+ * indexes and returns whichever pool is deepest. The scheduled poller always passes "base" - its
+ * watchlist addresses are human-verified and must not drift to another chain between runs. Only
+ * the on-demand lookup searches everywhere.
  *
  * IMPORTANT: matching is by symbol, which does NOT establish token identity - anyone can deploy a
- * token with any ticker. Liquidity is used as the ranking heuristic because an impostor rarely
- * outweighs the real market, but callers must surface the chosen pool address so a reader can
- * verify it themselves rather than trusting the match.
+ * token with any ticker, on any chain. Liquidity is the ranking heuristic because an impostor
+ * rarely outweighs the real market, but callers must surface the chosen pool and network so a
+ * reader can verify it themselves rather than trusting the match. Searching every chain widens
+ * the impostor surface, which is exactly why the result carries its network.
  */
-export async function findTopPool(symbol: string): Promise<PoolMatch | null> {
+export async function findTopPool(
+  symbol: string,
+  network: string | null = DEFAULT_NETWORK
+): Promise<PoolMatch | null> {
   const url = new URL("https://api.geckoterminal.com/api/v2/search/pools");
   url.searchParams.set("query", symbol);
-  url.searchParams.set("network", "base");
+  if (network) url.searchParams.set("network", network);
 
   const res = await throttle(() =>
     fetchWithRetry(url, { init: { headers: { Accept: "application/json" } } })
@@ -112,28 +135,55 @@ export async function findTopPool(symbol: string): Promise<PoolMatch | null> {
   const body = (await res.json()) as SearchResponse;
   const upper = symbol.toUpperCase();
 
-  const pools = (body.data ?? [])
-    .map((p) => p.attributes)
-    .filter((a): a is NonNullable<typeof a> => Boolean(a?.address && a?.name))
+  interface Candidate {
+    id: string;
+    address: string;
+    name: string;
+    reserveUsd: number;
+    volume24hUsd: number;
+  }
+
+  const pools: Candidate[] = [];
+  for (const p of body.data ?? []) {
+    const a = p.attributes;
+    if (!p.id || !a?.address || !a?.name) continue;
+    pools.push({
+      id: p.id,
+      address: a.address,
+      name: a.name,
+      reserveUsd: Number(a.reserve_in_usd ?? 0),
+      volume24hUsd: Number(a.volume_usd?.h24 ?? 0),
+    });
+  }
+
+  const matched = pools
     // The API returns loose matches ("AERODROME-X / WETH" for "AERO"), so require the ticker to
     // appear as a whole token in the pair name rather than as a substring of a longer symbol.
-    .filter((a) =>
-      a
-        .name!.split("/")
+    .filter((p) =>
+      p.name
+        .split("/")
         .map((side) => side.trim().split(/\s+/)[0].toUpperCase())
         .includes(upper)
     )
-    .sort((a, b) => Number(b.reserve_in_usd ?? 0) - Number(a.reserve_in_usd ?? 0));
+    .sort((a, b) => b.reserveUsd - a.reserveUsd);
 
-  const best = pools[0];
+  const best = matched[0];
   if (!best) return null;
 
   return {
-    address: best.address!,
-    name: best.name!,
-    liquidityUsd: Number(best.reserve_in_usd ?? 0),
-    volume24hUsd: Number(best.volume_usd?.h24 ?? 0),
+    address: best.address,
+    name: best.name,
+    liquidityUsd: best.reserveUsd,
+    volume24hUsd: best.volume24hUsd,
+    // The network appears nowhere else in the payload - only as the id prefix.
+    network: networkFromPoolId(best.id, network ?? DEFAULT_NETWORK),
   };
+}
+
+/** Pool ids look like "base_0x6cdc..." or "solana_9WzD...". Everything before the first _. */
+function networkFromPoolId(id: string, fallback: string): string {
+  const i = id.indexOf("_");
+  return i > 0 ? id.slice(0, i) : fallback;
 }
 
 /**

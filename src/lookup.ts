@@ -10,7 +10,12 @@ import { MIN_HISTORY_FOR_ZSCORE } from "./config.js";
 import { computeDivergence } from "./engine/divergence.js";
 import { narrateDivergence } from "./narration/narrate.js";
 import { fetchSocialHistory, dropIncompleteBucket } from "./sources/lunarcrush.js";
-import { fetchPoolHistory, findTopPool, type PoolMatch } from "./sources/geckoterminal.js";
+import {
+  DEFAULT_NETWORK,
+  fetchPoolHistory,
+  findTopPool,
+  type PoolMatch,
+} from "./sources/geckoterminal.js";
 import type { DivergenceResult, PollSnapshot } from "./types.js";
 
 const HOUR_MS = 3_600_000;
@@ -77,7 +82,7 @@ export function normaliseSymbol(raw: string): string {
 
 export async function analyzeToken(
   rawSymbol: string,
-  opts: { narrate?: boolean } = {}
+  opts: { narrate?: boolean; network?: string | null } = {}
 ): Promise<LookupResult> {
   const symbol = normaliseSymbol(rawSymbol);
 
@@ -104,16 +109,26 @@ export async function analyzeToken(
   // Prevents an unhandled rejection if the pool search throws first and we never await this.
   socialPromise.catch(() => {});
 
-  const pool = await findTopPool(symbol).catch((err) => {
+  // `network: null` searches every chain GeckoTerminal indexes. Defaults to Base so the
+  // scheduled poller and the watchlist keep behaving exactly as before.
+  const network = opts.network === undefined ? DEFAULT_NETWORK : opts.network;
+
+  const pool = await findTopPool(symbol, network).catch((err) => {
     throw new LookupError(`Could not reach the pool index: ${err.message}`, "UPSTREAM", 502);
   });
   if (!pool) {
-    throw new LookupError(`No Base pool found trading ${symbol}.`, "NO_POOL", 404);
+    throw new LookupError(
+      network
+        ? `No ${network} pool found trading ${symbol}.`
+        : `No pool found trading ${symbol} on any indexed chain.`,
+      "NO_POOL",
+      404
+    );
   }
 
   const [socialRaw, barsRaw] = await Promise.all([
     socialPromise,
-    fetchPoolHistory(pool.address, POOL_BARS).catch((err) => {
+    fetchPoolHistory(pool.address, POOL_BARS, pool.network).catch((err) => {
       throw new LookupError(`Pool history unavailable: ${err.message}`, "UPSTREAM", 502);
     }),
   ]);

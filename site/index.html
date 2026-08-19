@@ -183,6 +183,25 @@
   }
   .chips button:hover { border-color: var(--signal-a); color: var(--signal-a); }
 
+  .anychain {
+    display: flex; align-items: center; gap: 0.45rem;
+    margin-top: 0.6rem;
+    font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em;
+    color: var(--muted); cursor: pointer; user-select: none;
+  }
+  .anychain input { accent-color: var(--signal-a); margin: 0; cursor: pointer; }
+  .anychain:hover { color: var(--ink-dim); }
+
+  /* The chain a result came from is load-bearing, not decoration: searching every chain widens
+     the impostor surface, so the answer must say where it looked. */
+  .netbadge {
+    font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.1em;
+    text-transform: uppercase; padding: 0.14em 0.45em;
+    border: 1px solid var(--line-bright); border-radius: 2px;
+    color: var(--ink-dim); margin-left: 0.45rem;
+  }
+  .netbadge.off { color: var(--signal-a); border-color: var(--signal-a); }
+
   .runsteps {
     display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.8rem;
     font-family: var(--mono); font-size: 0.6rem;
@@ -474,6 +493,10 @@
           <button type="button" data-t="TIBBIR">TIBBIR</button>
           <button type="button" data-t="DEGEN">DEGEN</button>
         </div>
+        <label class="anychain">
+          <input type="checkbox" id="anychain" />
+          <span>Search every chain, not just Base</span>
+        </label>
         <div class="runsteps" id="steps" hidden>
           <span data-s="social">social</span>
           <span data-s="onchain">onchain</span>
@@ -1226,6 +1249,13 @@
   "use strict";
   const RM = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const $ = (id) => document.getElementById(id);
+
+  /* Pool names and network ids come from a third-party index and land in innerHTML, so they are
+     escaped rather than trusted. */
+  const esc = (v) =>
+    String(v).replace(/[&<>"']/g, (c) =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]
+    );
   const NS = "http://www.w3.org/2000/svg";
   const el = (t, a) => { const n = document.createElementNS(NS, t); for (const k in a) n.setAttribute(k, a[k]); return n; };
 
@@ -1441,7 +1471,11 @@
     if (steps) { steps.hidden = false; resetSteps(); setStep("social", "on"); setStep("onchain", "on"); }
 
     try {
-      const r = await fetch("/api/analyze?symbol=" + encodeURIComponent(sym), { signal: ctrl.signal });
+      const anyChain = document.getElementById("anychain")?.checked;
+      const r = await fetch(
+        "/api/analyze?symbol=" + encodeURIComponent(sym) + (anyChain ? "&chain=any" : ""),
+        { signal: ctrl.signal }
+      );
       const d = await r.json();
 
       if (!r.ok) {
@@ -1459,7 +1493,11 @@
       const v = d.divergence, sc = v.divergenceScore || 0, up = sc > 0;
       $("rTk").textContent = d.symbol;
       $("rDir").textContent = (v.direction || "").replace("-", " ");
-      $("rPl").textContent = d.pool.name + " · $" + Math.round(d.pool.liquidityUsd).toLocaleString();
+      // Badge highlights when the pool is NOT on Base, since that is the case a reader most
+      // needs to notice before trusting the reading.
+      $("rPl").innerHTML =
+        esc(d.pool.name) + " · $" + Math.round(d.pool.liquidityUsd).toLocaleString() +
+        '<span class="netbadge' + (net === "base" ? "" : " off") + '">' + esc(net) + "</span>";
       const s = $("rSc");
       s.textContent = (up ? "+" : "") + sc.toFixed(2);
       s.style.color = up ? "var(--signal-a)" : "var(--signal-b)";
@@ -1471,9 +1509,28 @@
         "<span>bucket <b>" + new Date(d.bucketMs).toISOString().slice(0, 16).replace("T", " ") + " UTC</b></span>" +
         (v.suppressedReason ? '<span style="color:var(--warn)">suppressed &mdash; volume too thin</span>' : "");
 
+      // Hardcoding BaseScan was fine while every result was a Base pool. Sending someone to
+      // BaseScan for a Solana address would be worse than giving no link at all.
+      const net = d.pool.network || "base";
+      const EXPLORER = {
+        base: ["BaseScan", "https://basescan.org/address/"],
+        eth: ["Etherscan", "https://etherscan.io/address/"],
+        bsc: ["BscScan", "https://bscscan.com/address/"],
+        polygon_pos: ["Polygonscan", "https://polygonscan.com/address/"],
+        arbitrum: ["Arbiscan", "https://arbiscan.io/address/"],
+        optimism: ["Optimistic Etherscan", "https://optimistic.etherscan.io/address/"],
+        avax: ["Snowscan", "https://snowscan.xyz/address/"],
+        solana: ["Solscan", "https://solscan.io/account/"],
+      };
+      const ex = EXPLORER[net];
+      const verifyLink = ex
+        ? '<a href="' + ex[1] + d.pool.address + '" rel="noopener">' + ex[0] + "</a>"
+        : '<a href="https://www.geckoterminal.com/' + encodeURIComponent(net) + "/pools/" + d.pool.address + '" rel="noopener">GeckoTerminal</a>';
+
       $("rW").innerHTML =
-        "Pool matched by ticker and ranked by liquidity — that does not prove token identity. Verify on " +
-        '<a href="https://basescan.org/address/' + d.pool.address + '" rel="noopener">BaseScan</a>: ' + d.pool.address;
+        "Pool matched by ticker on <b>" + net + "</b> and ranked by liquidity — that does not prove " +
+        "token identity, and searching every chain widens the surface for lookalikes. Verify on " +
+        verifyLink + ": " + d.pool.address;
 
       spark(d.series);
       const nn = $("rN");

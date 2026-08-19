@@ -48,6 +48,11 @@ function withDeadline<T>(work: Promise<T>, ms: number): Promise<T> {
 const analyzeFn = async (req: Request, context: { ip?: string }) => {
   const url = new URL(req.url);
   const raw = url.searchParams.get("symbol") ?? "";
+  // ?chain=any searches every indexed chain; ?chain=eth pins one; omitted keeps Base, so an
+  // existing caller sees no change in behaviour.
+  const chainParam = (url.searchParams.get("chain") ?? "").trim().toLowerCase();
+  const network =
+    chainParam === "any" ? null : chainParam && /^[a-z0-9_]{2,20}$/.test(chainParam) ? chainParam : undefined;
 
   let symbol: string;
   try {
@@ -70,7 +75,10 @@ const analyzeFn = async (req: Request, context: { ip?: string }) => {
     // concurrent load the provider throttles queue instead - LunarCrush allows 10 req/min, and
     // exceeding it drops connections rather than returning 429, so the spacing cannot be tuned
     // away. Better to say "busy, retry" at 8s than to be killed at 10 with no response at all.
-    const r = await withDeadline(analyzeToken(symbol, { narrate: false }), 8000);
+    const r = await withDeadline(
+      analyzeToken(symbol, { narrate: false, ...(network !== undefined ? { network } : {}) }),
+      8000
+    );
 
     return json(
       {
